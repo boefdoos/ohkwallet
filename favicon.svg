@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="120" height="120"><svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <image id="SvgjsImage1017" x="0" y="0" width="120" height="120" xlink:href="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZDbSAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAeKADAAQAAAABAAAAeAAAAAAI4lXuAAABrElEQVR4Ae3TAQ0AIAzEQMC/50GQ0dwctN3vebdc1sDJkgH7BgSOP4LAAscNxPEsWOC4gTieBQscNxDHs2CB4wbieBYscNxAHM+CBY4biONZsMBxA3E8CxY4biCOZ8ECxw3E8SxY4LiBOJ4FCxw3EMezYIHjBuJ4Fixw3EAcz4IFjhuI41mwwHEDcTwLFjhuII5nwQLHDcTxLFjguIE4ngULHDcQx7NggeMG4ngWLHDcQBzPggWOG4jjWbDAcQNxPAsWOG4gjmfBAscNxPEsWOC4gTieBQscNxDHs2CB4wbieBYscNxAHM+CBY4biONZsMBxA3E8CxY4biCOZ8ECxw3E8SxY4LiBOJ4FCxw3EMezYIHjBuJ4Fixw3EAcz4IFjhuI41mwwHEDcTwLFjhuII5nwQLHDcTxLFjguIE4ngULHDcQx7NggeMG4ngWLHDcQBzPggWOG4jjWbDAcQNxPAsWOG4gjmfBAscNxPEsWOC4gTieBQscNxDHs2CB4wbieBYscNxAHM+CBY4biONZsMBxA3E8CxY4biCOZ8ECxw3E8SxY4LiBOJ4FxwNfHMUE7BEPa+kAAAAASUVORK5CYII="></image>
+    <linearGradient id="SvgjsLinearGradient1016" x1="0.584127" y1="59.942113" x2="120.601221" y2="59.942113" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#ffbc39" stop-opacity="1"></stop>
+        <stop offset="1" stop-color="#00a0ff" stop-opacity="1"></stop>
+    </linearGradient>
+    <path id="SvgjsPath1015" fill="url(#linearGradient1)" fill-rule="evenodd" stroke="none" d="M 0 104 C 0 112.836555 7.163444 120 16 120 L 104 120 C 112.836555 120 120 112.836555 120 104 L 120 16 C 120 7.163445 112.836555 0 104 0 L 16 0 C 7.163444 0 0 7.163445 0 16 Z"></path>
+    <g id="SvgjsG1014">
+        <linearGradient id="SvgjsLinearGradient1013" x1="11.012333" y1="66.963338" x2="108.844786" y2="66.963338" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ffbc39" stop-opacity="1"></stop>
+            <stop offset="1" stop-color="#ffffff" stop-opacity="1"></stop>
+        </linearGradient>
+        <path id="SvgjsPath1012" fill="url(#linearGradient2)" fill-rule="evenodd" stroke="#000000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M 108 67 C 108 61.963165 109.271408 56.398819 107 52 C 99.807213 38.070419 79.857216 29 59.5 29 C 36.999916 29 16.478891 33.719589 11 50 C 9.956402 53.101028 11 63.642109 11 67 C 11 87.986816 33.214188 105 60 105 C 86.785812 105 108 87.986816 108 67 Z"></path>
+        <linearGradient id="SvgjsLinearGradient1011" x1="11.47217" y1="52.963338" x2="108.485987" y2="52.963338" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ffbc39" stop-opacity="1"></stop>
+            <stop offset="1" stop-color="#fffdf2" stop-opacity="1"></stop>
+        </linearGradient>
+        <path id="SvgjsPath1010" fill="url(#linearGradient3)" fill-rule="evenodd" stroke="#000000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M 108 53 C 108 32.013184 86.285812 15 59.5 15 C 32.714188 15 11 32.013184 11 53 C 11 73.986816 33.214188 91 60 91 C 86.785812 91 108 73.986816 108 53 Z"></path>
+    </g>
+    <path id="SvgjsPath1009" fill="#000000" fill-rule="evenodd" stroke="none" d="M 58.945976 81.869995 C 87.467712 81.869995 100 70.125 100 52.028999 C 100 34.542 86.603424 22.884003 58.945976 22.884003 C 31.396574 22.884003 18 34.542 18 52.028999 C 18 70.995003 31.288534 81.869995 58.945976 81.869995 Z M 58.945976 62.294998 C 55.056652 62.294998 51.92358 60.380997 51.92358 52.203003 C 51.92358 44.634003 55.056652 42.459 58.945976 42.459 C 62.943344 42.459 65.968369 44.634003 65.968369 52.203003 C 65.968369 60.380997 62.943344 62.294998 58.945976 62.294998 Z"></path>
+</svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
+@media (prefers-color-scheme: dark) { :root { filter: none; } }
+</style></svg>
