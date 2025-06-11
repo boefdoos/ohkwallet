@@ -1,0 +1,1951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0076FF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>My OHK Wallet - Reward System</title>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <style>
+        /* === ROOT VARIABLES === */
+        :root {
+            --primary: #0076FF;
+            --primary-dark: #0062D6;
+            --background: #FFFFFF;
+            --text: #333333;
+            --gray: #777777;
+            --light-gray: #F5F5F5;
+            --border: #E0E0E0;
+            --success: #43A047;
+            --danger: #E53935;
+            --danger-dark: #C62828;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+            --min-touch-target: 44px;
+        }
+
+        /* === FONT IMPORT === */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        /* === GLOBAL RESET === */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* === LAYOUT === */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px;
+            width: 100%;
+        }
+
+        /* === AUTHENTICATION CONTAINER === */
+        .auth-container {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 32px 24px;
+            background: var(--background);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--primary);
+            font-size: clamp(20px, 4vw, 24px);
+            line-height: 1.2;
+        }
+
+        .header p {
+            color: var(--gray);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        /* === TABS === */
+        .tabs {
+            display: flex;
+            margin-bottom: 24px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 16px 12px;
+            text-align: center;
+            background: var(--light-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text);
+            font-weight: 500;
+            font-size: 14px;
+            min-height: var(--min-touch-target);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tab:hover {
+            background: var(--border);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* === FORMS === */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            background: var(--background);
+            color: var(--text);
+            min-height: var(--min-touch-target);
+            -webkit-appearance: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 118, 255, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: #999;
+        }
+
+        /* === BUTTONS === */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-height: var(--min-touch-target);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            line-height: 1;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 118, 255, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--light-gray) !important;
+            color: var(--text) !important;
+            border: 1px solid var(--border) !important;
+        }
+
+        .btn-secondary:hover {
+            background: var(--border) !important;
+            color: var(--text) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .btn-danger {
+            background: var(--danger) !important;
+            color: white !important;
+        }
+
+        .btn-danger:hover {
+            background: var(--danger-dark) !important;
+            box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3) !important;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* === DASHBOARD === */
+        .dashboard {
+            display: none;
+        }
+
+        .admin-panel {
+            display: none;
+        }
+
+        .dashboard-header {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dashboard-header h1 {
+            font-size: clamp(18px, 4vw, 24px);
+            margin-bottom: 4px;
+            color: var(--primary);
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
+
+        .dashboard-header p {
+            color: var(--gray);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* === TOKEN DISPLAY === */
+        .token-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            background: var(--background);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .token-card {
+            text-align: center;
+            padding: 20px 16px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border);
+        }
+
+        .token-card i {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .token-card p {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .token-card h3 {
+            color: var(--primary);
+            font-size: clamp(24px, 5vw, 32px);
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        /* === TABLES === */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border);
+            background: var(--background);
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 500px;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .history-table th {
+            background: var(--light-gray);
+            font-weight: 600;
+            color: var(--text);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .history-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* === USER LIST === */
+        .user-list {
+            background: var(--background);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .user-item {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .user-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-info h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            word-wrap: break-word;
+            line-height: 1.3;
+        }
+
+        .user-info p {
+            color: var(--gray);
+            font-size: 14px;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+
+        .user-stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1;
+        }
+
+        .badge-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* === MODALS === */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: var(--background);
+            margin: 20px auto;
+            padding: 24px;
+            border-radius: var(--border-radius);
+            width: calc(100% - 40px);
+            max-width: 600px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .modal-content h2,
+        .modal-content h3 {
+            color: var(--primary);
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .close {
+            position: absolute;
+            right: 16px;
+            top: 16px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+            width: 32px;
+            height: 32px;
+            text-align: center;
+            line-height: 32px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            min-height: var(--min-touch-target);
+            min-width: var(--min-touch-target);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close:hover {
+            background: var(--light-gray);
+            color: var(--text);
+        }
+
+        /* === SEARCH BAR === */
+        .search-bar {
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            min-height: var(--min-touch-target);
+        }
+
+        /* === ALERTS === */
+        .alert {
+            padding: 16px;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius);
+            color: white;
+            display: none;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: var(--success);
+        }
+
+        .alert-danger {
+            background: var(--danger);
+        }
+
+        /* === LOADING === */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .spinner {
+            border: 4px solid var(--border);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border-left-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+        }
+
+        #loading-overlay .loading-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--background);
+            padding: 32px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            min-width: 200px;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* === STATUS BAR === */
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            background: var(--background);
+            padding: 8px 12px;
+            font-size: 12px;
+            border: 1px solid var(--border);
+            border-bottom: none;
+            border-right: none;
+            border-top-left-radius: var(--border-radius);
+            z-index: 100;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .status-bar:hover {
+            opacity: 1;
+        }
+
+        .status-connected,
+        .status-disconnected {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .status-connected {
+            color: var(--success);
+        }
+
+        .status-disconnected {
+            color: var(--danger);
+        }
+
+        .status-connected::before,
+        .status-disconnected::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-connected::before {
+            background: var(--success);
+        }
+
+        .status-disconnected::before {
+            background: var(--danger);
+        }
+
+        /* === MOBILE OPTIMIZATIONS === */
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .auth-container {
+                margin: 20px auto;
+                padding: 24px 20px;
+            }
+
+            .dashboard-header {
+                gap: 12px;
+            }
+
+            .dashboard-actions {
+                flex-direction: column;
+            }
+
+            .dashboard-actions .btn {
+                width: 100%;
+            }
+
+            .user-item {
+                padding: 16px;
+            }
+
+            .user-actions {
+                flex-direction: column;
+            }
+
+            .user-actions .btn {
+                width: 100%;
+            }
+
+            .modal-content {
+                margin: 10px auto;
+                width: calc(100% - 20px);
+                max-height: calc(100vh - 20px);
+                padding: 20px 16px;
+            }
+
+            .token-display {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                padding: 16px;
+            }
+
+            .close {
+                right: 12px;
+                top: 12px;
+            }
+
+            /* Quick action buttons stack on mobile */
+            #quickTokenActions {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            #quickTokenActions .btn {
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .dashboard-header {
+                flex-direction: row;
+                align-items: flex-start;
+                justify-content: space-between;
+            }
+
+            .dashboard-actions {
+                flex-shrink: 0;
+            }
+
+            .user-item {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .user-info {
+                flex: 1;
+            }
+
+            .user-actions {
+                flex-direction: row;
+                flex-shrink: 0;
+            }
+
+            #quickTokenActions {
+                display: flex;
+                gap: 8px;
+            }
+
+            #quickTokenActions .btn {
+                flex: 1;
+            }
+        }
+
+        /* === UTILITY CLASSES === */
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* === IMPROVEMENTS FOR TOUCH === */
+        .btn, .tab, .form-control, input[type="text"], input[type="email"], input[type="password"], input[type="tel"], input[type="number"] {
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Prevent zoom on iOS when focusing inputs */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+            select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"] {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Connection Status Bar -->
+    <div class="status-bar" id="statusBar">
+        <span id="connectionStatus">Connecting...</span>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p id="loadingMessage">Loading...</p>
+        </div>
+    </div>
+    
+    <!-- Auth Container -->
+    <div class="auth-container" id="authContainer">
+        <div class="header">
+            <h1><i class="fas fa-wallet"></i> My OHK Wallet</h1>
+            <p>Your creative community reward system</p>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" id="loginTab">Login</div>
+            <div class="tab" id="registerTab">Register</div>
+        </div>
+        
+        <!-- Login Form -->
+        <form id="loginForm">
+            <div class="alert alert-danger" id="loginAlert"></div>
+            <div class="form-group">
+                <label for="loginEmail">Email</label>
+                <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-full">Login</button>
+            </div>
+            <div class="text-center" style="margin-top: 16px;">
+                <a href="#" id="forgotPasswordLink" style="color: var(--primary); text-decoration: none;">Forgot Password?</a>
+            </div>
+        </form>
+        
+        <!-- Register Form -->
+        <form id="registerForm" class="hidden">
+            <div class="alert alert-danger" id="registerAlert"></div>
+            <div class="form-group">
+                <label for="registerName">Full Name</label>
+                <input type="text" id="registerName" class="form-control" placeholder="Enter your full name" required autocomplete="name">
+            </div>
+            <div class="form-group">
+                <label for="registerPhone">Phone Number</label>
+                <input type="tel" id="registerPhone" class="form-control" placeholder="Enter your phone number" required autocomplete="tel">
+            </div>
+            <div class="form-group">
+                <label for="registerEmail">Email</label>
+                <input type="email" id="registerEmail" class="form-control" placeholder="Enter your email" required autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">Password</label>
+                <input type="password" id="registerPassword" class="form-control" placeholder="Choose a password (min 6 characters)" required autocomplete="new-password">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-full">Register</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- User Dashboard -->
+    <div class="container dashboard" id="dashboardContainer">
+        <div class="dashboard-header">
+            <div>
+                <h1>Welcome, <span id="userName">Artist</span>!</h1>
+                <p>Your creative contribution dashboard</p>
+            </div>
+            <div class="dashboard-actions">
+                <button class="btn btn-secondary" id="accountSettingsBtn">Account Settings</button>
+                <button class="btn" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+        
+        <div class="token-display">
+            <div class="token-card">
+                <i class="fas fa-coins"></i>
+                <p>Available Tokens</p>
+                <h3 id="availableTokens">0</h3>
+            </div>
+            <div class="token-card">
+                <i class="fas fa-star"></i>
+                <p>Total Earned</p>
+                <h3 id="totalEarned">0</h3>
+            </div>
+            <div class="token-card">
+                <i class="fas fa-calendar-check"></i>
+                <p>Activities</p>
+                <h3 id="workingDays">0</h3>
+            </div>
+        </div>
+        
+        <h2 style="margin-bottom: 16px; color: var(--primary);">Transaction History</h2>
+        <div class="loading" id="historyLoading">
+            <div class="spinner"></div>
+            <p>Loading transaction history...</p>
+        </div>
+        <div class="table-container">
+            <table class="history-table" id="historyTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Tokens</th>
+                        <th>Balance</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    <!-- Transaction history will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Admin Panel -->
+    <div class="container admin-panel" id="adminContainer">
+        <div class="dashboard-header">
+            <div>
+                <h1>Admin Dashboard</h1>
+                <p>Manage community rewards</p>
+            </div>
+            <div class="dashboard-actions">
+                <button class="btn btn-secondary" id="exportDataBtn">Export Data</button>
+                <button class="btn btn-secondary" id="addUserBtn">Add User</button>
+                <button class="btn btn-secondary" id="adminPasswordBtn">Change Password</button>
+                <button class="btn" id="adminLogoutBtn">Logout</button>
+            </div>
+        </div>
+        
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search volunteers by name or phone..." autocomplete="off">
+        </div>
+        
+        <div class="user-list" id="userList">
+            <div class="loading" id="usersLoading">
+                <div class="spinner"></div>
+                <p>Loading volunteers...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modals -->
+    
+    <!-- Token Management Modal -->
+    <div class="modal" id="tokenModal">
+        <div class="modal-content">
+            <span class="close" id="closeTokenModal">&times;</span>
+            <h2>Manage Tokens for <span id="modalUserName"></span></h2>
+            
+            <div class="token-display mb-20">
+                <div class="token-card">
+                    <p>Current Balance</p>
+                    <h3 id="modalCurrentTokens">0</h3>
+                </div>
+                <div class="token-card">
+                    <p>Working Days</p>
+                    <h3 id="modalWorkingDays">0</h3>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div id="quickTokenActions" class="mb-20">
+                <button type="button" class="btn" id="quickAddBtn">+1 Token</button>
+                <button type="button" class="btn btn-danger" id="quickRemoveBtn">-1 Token</button>
+            </div>
+            
+            <form id="addTokensForm">
+                <div class="form-group">
+                    <label for="tokenAmount">Token Amount</label>
+                    <input type="number" id="tokenAmount" class="form-control" placeholder="Enter token amount" required>
+                </div>
+                <div class="form-group">
+                    <label for="tokenReason">Reason</label>
+                    <input type="text" id="tokenReason" class="form-control" placeholder="Reason for adding/removing tokens" required>
+                </div>
+                
+                <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button type="submit" class="btn" style="flex: 1; min-width: 120px;">Add Tokens</button>
+                    <button type="button" class="btn btn-danger" id="removeTokensBtn" style="flex: 1; min-width: 120px;">Remove Tokens</button>
+                </div>
+                
+                <div class="form-group">
+                    <button type="button" class="btn btn-secondary btn-full" id="addWorkDayBtn">Record one shift (+3 tokens)</button>
+                </div>
+            </form>
+            
+            <h3 style="margin: 24px 0 12px 0; color: var(--primary);">Transaction History</h3>
+            <div class="table-container" style="max-height: 250px; overflow-y: auto;">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Tokens</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modalHistoryTableBody"></tbody>
+                </table>
+            </div>
+            
+            <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); text-align: center;">
+                <button class="btn btn-danger" id="deleteUserBtn" style="max-width: 200px;">Delete User</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add User Modal -->
+    <div class="modal" id="addUserModal">
+        <div class="modal-content">
+            <span class="close" id="closeAddUserModal">&times;</span>
+            <h2>Add New User</h2>
+            
+            <form id="addUserForm">
+                <div class="alert alert-danger" id="addUserAlert"></div>
+                <div class="form-group">
+                    <label for="addUserName">Full Name</label>
+                    <input type="text" id="addUserName" class="form-control" placeholder="Enter full name" required autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label for="addUserPhone">Phone Number</label>
+                    <input type="tel" id="addUserPhone" class="form-control" placeholder="Enter phone number" required autocomplete="tel">
+                </div>
+                <div class="form-group">
+                    <label for="addUserEmail">Email</label>
+                    <input type="email" id="addUserEmail" class="form-control" placeholder="Enter email" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="addUserPassword">Password</label>
+                    <input type="password" id="addUserPassword" class="form-control" placeholder="Enter password (min 6 characters)" required autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-full">Add User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Password Reset Modal -->
+    <div class="modal" id="passwordResetModal">
+        <div class="modal-content">
+            <span class="close" id="closePasswordResetModal">&times;</span>
+            <h2>Reset Password</h2>
+            
+            <div class="alert alert-success" id="passwordResetSuccessAlert"></div>
+            <div class="alert alert-danger" id="passwordResetAlert"></div>
+            
+            <p style="margin-bottom: 20px; color: var(--gray);">Enter your email address and we'll send you a link to reset your password.</p>
+            
+            <form id="passwordResetForm">
+                <div class="form-group">
+                    <label for="resetEmail">Email</label>
+                    <input type="email" id="resetEmail" class="form-control" placeholder="Enter your email" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-full">Send Reset Email</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Account Settings Modal -->
+    <div class="modal" id="accountSettingsModal">
+        <div class="modal-content">
+            <span class="close" id="closeAccountSettingsModal">&times;</span>
+            <h2>Account Settings</h2>
+            
+            <div class="alert alert-success" id="accountSettingsSuccessAlert"></div>
+            <div class="alert alert-danger" id="accountSettingsAlert"></div>
+            
+            <form id="changeUsernameForm">
+                <h3 style="margin: 20px 0 10px 0; color: var(--primary);">Change Username</h3>
+                <div class="form-group">
+                    <label for="newUsername">New Username</label>
+                    <input type="text" id="newUsername" class="form-control" placeholder="Enter new username" required autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-secondary btn-full">Update Username</button>
+                </div>
+            </form>
+            
+            <form id="changePasswordForm">
+                <h3 style="margin: 20px 0 10px 0; color: var(--primary);">Change Password</h3>
+                <div class="form-group">
+                    <label for="currentPassword">Current Password</label>
+                    <input type="password" id="currentPassword" class="form-control" placeholder="Enter current password" required autocomplete="current-password">
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <input type="password" id="newPassword" class="form-control" placeholder="Enter new password (min 6 characters)" required autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-full">Change Password</button>
+                </div>
+            </form>
+            
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
+                <h3 style="margin-bottom: 10px; color: var(--danger);">Delete Account</h3>
+                <p style="margin-bottom: 15px; color: var(--gray);">This action is permanent and cannot be undone. All your data will be deleted.</p>
+                <div class="form-group">
+                    <button id="deleteAccountBtn" class="btn btn-danger btn-full">Delete My Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Admin Password Modal -->
+    <div class="modal" id="adminPasswordModal">
+        <div class="modal-content">
+            <span class="close" id="closeAdminPasswordModal">&times;</span>
+            <h2>Change Admin Password</h2>
+            
+            <div class="alert alert-success" id="adminPasswordSuccessAlert"></div>
+            <div class="alert alert-danger" id="adminPasswordAlert"></div>
+            
+            <form id="adminPasswordForm">
+                <div class="form-group">
+                    <label for="adminCurrentPassword">Current Password</label>
+                    <input type="password" id="adminCurrentPassword" class="form-control" placeholder="Enter current password" required autocomplete="current-password">
+                </div>
+                <div class="form-group">
+                    <label for="adminNewPassword">New Password</label>
+                    <input type="password" id="adminNewPassword" class="form-control" placeholder="Enter new password (min 6 characters)" required autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-full">Change Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAev2VvDz3FCxdZmZo2W2jpgACFh9Q_YlA",
+            authDomain: "ohk-volunteers.firebaseapp.com",
+            databaseURL: "https://ohk-volunteers-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "ohk-volunteers",
+            storageBucket: "ohk-volunteers.firebasestorage.app",
+            messagingSenderId: "637356396673",
+            appId: "1:637356396673:web:e9cbfcf21dc509cadb7d80",
+            measurementId: "G-R4KV130GN8"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+        
+        // Constants
+        const USERS_PATH = 'users';
+        const TRANSACTIONS_PATH = 'transactions';
+        const ADMINS_PATH = 'admins';
+        const DEACTIVATED_USERS_PATH = 'deactivated_users';
+        const DELETED_EMAILS_PATH = 'deleted_emails';
+        
+        // DOM Elements
+        const elements = {
+            authContainer: document.getElementById('authContainer'),
+            dashboardContainer: document.getElementById('dashboardContainer'),
+            adminContainer: document.getElementById('adminContainer'),
+            
+            loginTab: document.getElementById('loginTab'),
+            registerTab: document.getElementById('registerTab'),
+            loginForm: document.getElementById('loginForm'),
+            registerForm: document.getElementById('registerForm'),
+            
+            loginAlert: document.getElementById('loginAlert'),
+            registerAlert: document.getElementById('registerAlert'),
+            
+            userName: document.getElementById('userName'),
+            availableTokens: document.getElementById('availableTokens'),
+            totalEarned: document.getElementById('totalEarned'),
+            workingDays: document.getElementById('workingDays'),
+            historyTableBody: document.getElementById('historyTableBody'),
+            
+            searchInput: document.getElementById('searchInput'),
+            userList: document.getElementById('userList'),
+            
+            tokenModal: document.getElementById('tokenModal'),
+            modalUserName: document.getElementById('modalUserName'),
+            modalCurrentTokens: document.getElementById('modalCurrentTokens'),
+            modalWorkingDays: document.getElementById('modalWorkingDays'),
+            modalHistoryTableBody: document.getElementById('modalHistoryTableBody'),
+            
+            passwordResetModal: document.getElementById('passwordResetModal'),
+            addUserModal: document.getElementById('addUserModal'),
+            accountSettingsModal: document.getElementById('accountSettingsModal'),
+            adminPasswordModal: document.getElementById('adminPasswordModal'),
+            
+            historyLoading: document.getElementById('historyLoading'),
+            usersLoading: document.getElementById('usersLoading'),
+            loadingOverlay: document.getElementById('loading-overlay'),
+            loadingMessage: document.getElementById('loadingMessage'),
+            
+            connectionStatus: document.getElementById('connectionStatus')
+        };
+        
+        // State
+        let selectedUserId = null;
+        let isInitialized = false;
+        
+        // Utility Functions
+        function showLoading(message = 'Loading...') {
+            elements.loadingMessage.textContent = message;
+            elements.loadingOverlay.style.display = 'block';
+        }
+        
+        function hideLoading() {
+            elements.loadingOverlay.style.display = 'none';
+        }
+        
+        function showAlert(alertElement, message) {
+            alertElement.textContent = message;
+            alertElement.style.display = 'block';
+            setTimeout(() => {
+                alertElement.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showSuccessAlert(alertElement, message) {
+            alertElement.textContent = message;
+            alertElement.style.display = 'block';
+            setTimeout(() => {
+                alertElement.style.display = 'none';
+            }, 5000);
+        }
+        
+        function generateId() {
+            return Math.random().toString(36).substring(2, 15) + 
+                   Math.random().toString(36).substring(2, 15);
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+        
+        function showContainer(containerName) {
+            elements.authContainer.style.display = containerName === 'auth' ? 'block' : 'none';
+            elements.dashboardContainer.style.display = containerName === 'dashboard' ? 'block' : 'none';
+            elements.adminContainer.style.display = containerName === 'admin' ? 'block' : 'none';
+        }
+        
+        // Initialize Application
+        function initializeApp() {
+            showLoading('Initializing application...');
+            
+            // Connection status
+            const connectedRef = database.ref('.info/connected');
+            connectedRef.on('value', (snap) => {
+                if (snap.val() === true) {
+                    elements.connectionStatus.textContent = 'Connected';
+                    elements.connectionStatus.className = 'status-connected';
+                } else {
+                    elements.connectionStatus.textContent = 'Offline';
+                    elements.connectionStatus.className = 'status-disconnected';
+                }
+            });
+            
+            // Auth state listener
+            auth.onAuthStateChanged(async (user) => {
+                hideLoading();
+                
+                if (user) {
+                    try {
+                        const userSnapshot = await database.ref(`${USERS_PATH}/${user.uid}`).once('value');
+                        
+                        if (!userSnapshot.exists()) {
+                            const deactivatedSnapshot = await database.ref(`${DEACTIVATED_USERS_PATH}/${user.uid}`).once('value');
+                            
+                            if (deactivatedSnapshot.exists()) {
+                                alert('This account has been deactivated. Please contact an administrator.');
+                                await auth.signOut();
+                                showContainer('auth');
+                                return;
+                            }
+                            
+                            showLoading('Setting up your profile...');
+                            await createUserProfile(user);
+                            hideLoading();
+                        }
+                        
+                        const isAdmin = await checkIfAdmin(user.uid);
+                        
+                        if (isAdmin) {
+                            await showAdminPanel();
+                        } else {
+                            await showUserDashboard();
+                        }
+                    } catch (error) {
+                        console.error('Error in auth state change:', error);
+                        showContainer('auth');
+                        alert('Error loading user data: ' + error.message);
+                    }
+                } else {
+                    showContainer('auth');
+                }
+                
+                if (!isInitialized) {
+                    isInitialized = true;
+                    setupAdminIfNeeded();
+                }
+            });
+        }
+        
+        // Setup admin account if needed
+        async function setupAdminIfNeeded() {
+            try {
+                const adminsSnapshot = await database.ref(ADMINS_PATH).once('value');
+                
+                if (!adminsSnapshot.exists() || adminsSnapshot.numChildren() === 0) {
+                    showLoading('Setting up admin account...');
+                    
+                    try {
+                        const userCredential = await auth.createUserWithEmailAndPassword('admin@volunteer-system.com', 'admin123');
+                        const user = userCredential.user;
+                        
+                        await database.ref(`${USERS_PATH}/${user.uid}`).set({
+                            name: 'Admin User',
+                            email: 'admin@volunteer-system.com',
+                            phone: 'admin',
+                            tokens: 0,
+                            workingDays: 0
+                        });
+                        
+                        await database.ref(`${ADMINS_PATH}/${user.uid}`).set(true);
+                        
+                        alert('Default admin account created. Email: admin@volunteer-system.com, Password: admin123');
+                    } catch (error) {
+                        console.error('Error creating admin:', error);
+                        if (error.code === 'auth/email-already-in-use') {
+                            alert('Admin account exists. Sign in with admin@volunteer-system.com and password admin123');
+                        }
+                    } finally {
+                        hideLoading();
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking admin setup:', error);
+            }
+        }
+        
+        async function checkIfAdmin(uid) {
+            const adminSnapshot = await database.ref(`${ADMINS_PATH}/${uid}`).once('value');
+            return adminSnapshot.exists() && adminSnapshot.val() === true;
+        }
+        
+        async function createUserProfile(user, additionalData = {}) {
+            const userData = {
+                name: additionalData.name || user.displayName || 'User',
+                email: user.email,
+                phone: additionalData.phone || '',
+                tokens: 0,
+                workingDays: 0
+            };
+            
+            await database.ref(`${USERS_PATH}/${user.uid}`).set(userData);
+            return userData;
+        }
+        
+        // Dashboard Functions
+        async function showUserDashboard() {
+            showLoading('Loading your dashboard...');
+            
+            try {
+                const user = auth.currentUser;
+                const userSnapshot = await database.ref(`${USERS_PATH}/${user.uid}`).once('value');
+                
+                if (!userSnapshot.exists()) {
+                    throw new Error('User profile not found');
+                }
+                
+                const userData = userSnapshot.val();
+                
+                showContainer('dashboard');
+                
+                elements.userName.textContent = userData.name || user.displayName || 'Volunteer';
+                elements.availableTokens.textContent = userData.tokens || 0;
+                elements.workingDays.textContent = userData.workingDays || 0;
+                
+                // Calculate total earned tokens
+                const transactionsSnapshot = await database.ref(TRANSACTIONS_PATH)
+                    .orderByChild('userId')
+                    .equalTo(user.uid)
+                    .once('value');
+                
+                let totalEarnedTokens = 0;
+                if (transactionsSnapshot.exists()) {
+                    transactionsSnapshot.forEach((transactionSnapshot) => {
+                        const transaction = transactionSnapshot.val();
+                        if (transaction.amount > 0) {
+                            totalEarnedTokens += transaction.amount;
+                        }
+                    });
+                }
+                
+                elements.totalEarned.textContent = totalEarnedTokens;
+                
+                elements.historyLoading.style.display = 'block';
+                elements.historyTableBody.innerHTML = '';
+                
+                await loadTransactionHistory(user.uid);
+                elements.historyLoading.style.display = 'none';
+                
+                hideLoading();
+            } catch (error) {
+                console.error('Error showing dashboard:', error);
+                hideLoading();
+                alert('Failed to load dashboard: ' + error.message);
+                showContainer('auth');
+            }
+        }
+        
+        async function showAdminPanel() {
+            showLoading('Loading admin panel...');
+            
+            try {
+                showContainer('admin');
+                
+                elements.usersLoading.style.display = 'block';
+                await loadUsers();
+                elements.usersLoading.style.display = 'none';
+                
+                hideLoading();
+            } catch (error) {
+                console.error('Error showing admin panel:', error);
+                hideLoading();
+                alert('Failed to load admin panel: ' + error.message);
+                showContainer('auth');
+            }
+        }
+        
+        async function loadTransactionHistory(userId) {
+            try {
+                const transactionsSnapshot = await database.ref(TRANSACTIONS_PATH)
+                    .orderByChild('userId')
+                    .equalTo(userId)
+                    .once('value');
+                
+                elements.historyTableBody.innerHTML = '';
+                
+                if (!transactionsSnapshot.exists()) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = '<td colspan="4" style="text-align: center;">No transactions found</td>';
+                    elements.historyTableBody.appendChild(row);
+                    return;
+                }
+                
+                const transactions = [];
+                transactionsSnapshot.forEach((transactionSnapshot) => {
+                    transactions.push(transactionSnapshot.val());
+                });
+                
+                transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                let balance = 0;
+                transactions.forEach(transaction => {
+                    balance += transaction.amount;
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${formatDate(transaction.date)}</td>
+                        <td>${transaction.description}</td>
+                        <td style="color: ${transaction.amount >= 0 ? 'var(--success)' : 'var(--danger)'}">
+                            ${transaction.amount >= 0 ? '+' : ''}${transaction.amount}
+                        </td>
+                        <td>${balance}</td>
+                    `;
+                    elements.historyTableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading transaction history:', error);
+                elements.historyTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--danger);">Error loading transaction history</td></tr>';
+            }
+        }
+        
+        async function loadModalTransactionHistory(userId) {
+            try {
+                const transactionsSnapshot = await database.ref(TRANSACTIONS_PATH)
+                    .orderByChild('userId')
+                    .equalTo(userId)
+                    .once('value');
+                
+                elements.modalHistoryTableBody.innerHTML = '';
+                
+                if (!transactionsSnapshot.exists()) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = '<td colspan="3" style="text-align: center;">No transactions found</td>';
+                    elements.modalHistoryTableBody.appendChild(row);
+                    return;
+                }
+                
+                const transactions = [];
+                transactionsSnapshot.forEach((transactionSnapshot) => {
+                    transactions.push(transactionSnapshot.val());
+                });
+                
+                transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                transactions.forEach(transaction => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${formatDate(transaction.date)}</td>
+                        <td>${transaction.description}</td>
+                        <td style="color: ${transaction.amount >= 0 ? 'var(--success)' : 'var(--danger)'}">
+                            ${transaction.amount >= 0 ? '+' : ''}${transaction.amount}
+                        </td>
+                    `;
+                    elements.modalHistoryTableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading modal transaction history:', error);
+                elements.modalHistoryTableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--danger);">Error loading transaction history</td></tr>';
+            }
+        }
+        
+        async function loadUsers(searchTerm = '') {
+            try {
+                const currentUser = auth.currentUser;
+                const usersSnapshot = await database.ref(USERS_PATH).once('value');
+                const users = [];
+                
+                usersSnapshot.forEach((userSnapshot) => {
+                    const userId = userSnapshot.key;
+                    const userData = userSnapshot.val();
+                    
+                    if (userId !== currentUser.uid) {
+                        userData.id = userId;
+                        users.push(userData);
+                    }
+                });
+                
+                const filteredUsers = users.filter(user => {
+                    if (!searchTerm) return true;
+                    
+                    const nameMatch = user.name && user.name.toLowerCase().includes(searchTerm.toLowerCase());
+                    const phoneMatch = user.phone && user.phone.toLowerCase().includes(searchTerm.toLowerCase());
+                    const emailMatch = user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase());
+                    
+                    return nameMatch || phoneMatch || emailMatch;
+                });
+                
+                elements.userList.innerHTML = '';
+                
+                if (filteredUsers.length === 0) {
+                    elements.userList.innerHTML = '<div class="user-item" style="text-align: center;">No volunteers found</div>';
+                    return;
+                }
+                
+                filteredUsers.forEach(user => {
+                    const userItem = document.createElement('div');
+                    userItem.className = 'user-item';
+                    userItem.innerHTML = `
+                        <div class="user-info">
+                            <h3>${user.name}</h3>
+                            <p>${user.phone || 'No phone'} | ${user.email || 'No email'}</p>
+                        </div>
+                        <div class="user-stats">
+                            <span class="badge badge-primary">${user.tokens || 0} Tokens</span>
+                            <span class="badge" style="background: var(--light-gray); color: var(--text);">${user.workingDays || 0} Days</span>
+                        </div>
+                        <div class="user-actions">
+                            <button class="btn manage-user" data-id="${user.id}">Manage</button>
+                        </div>
+                    `;
+                    
+                    elements.userList.appendChild(userItem);
+                    
+                    userItem.querySelector('.manage-user').addEventListener('click', () => {
+                        openTokenModal(user.id);
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading users:', error);
+                elements.userList.innerHTML = '<div class="user-item" style="text-align: center; color: var(--danger);">Error loading volunteers</div>';
+            }
+        }
+        
+        async function openTokenModal(userId) {
+            showLoading('Loading user data...');
+            
+            try {
+                const userSnapshot = await database.ref(`${USERS_PATH}/${userId}`).once('value');
+                
+                if (!userSnapshot.exists()) {
+                    throw new Error('User not found');
+                }
+                
+                const user = userSnapshot.val();
+                selectedUserId = userId;
+                
+                elements.modalUserName.textContent = user.name || 'User';
+                elements.modalCurrentTokens.textContent = user.tokens || 0;
+                elements.modalWorkingDays.textContent = user.workingDays || 0;
+                
+                await loadModalTransactionHistory(userId);
+                
+                elements.tokenModal.style.display = 'block';
+                
+                hideLoading();
+            } catch (error) {
+                console.error('Error opening token modal:', error);
+                hideLoading();
+                alert('Failed to load user data: ' + error.message);
+            }
+        }
+        
+        async function addTokensToUser(userId, amount, reason) {
+            showLoading(amount >= 0 ? 'Adding tokens...' : 'Removing tokens...');
+            
+            try {
+                const userSnapshot = await database.ref(`${USERS_PATH}/${userId}`).once('value');
+                
+                if (!userSnapshot.exists()) {
+                    throw new Error('User not found');
+                }
+                
+                const user = userSnapshot.val();
+                const currentTokens = user.tokens || 0;
+                const newTokens = currentTokens + amount;
+                
+                const transactionId = generateId();
+                const transaction = {
+                    id: transactionId,
+                    userId,
+                    amount,
+                    description: reason,
+                    date: new Date().toISOString()
+                };
+                
+                const updates = {};
+                updates[`${USERS_PATH}/${userId}/tokens`] = newTokens;
+                updates[`${TRANSACTIONS_PATH}/${transactionId}`] = transaction;
+                
+                await database.ref().update(updates);
+                
+                elements.modalCurrentTokens.textContent = newTokens;
+                await loadModalTransactionHistory(userId);
+                
+                if (elements.adminContainer.style.display === 'block') {
+                    await loadUsers(elements.searchInput.value);
+                }
+                
+                hideLoading();
+            } catch (error) {
+                console.error('Error adding tokens:', error);
+                hideLoading();
+                alert('Failed to update tokens: ' + error.message);
+            }
+        }
+        
+        async function addWorkDayToUser(userId) {
+            showLoading('Recording work day...');
+            
+            try {
+                const userSnapshot = await database.ref(`${USERS_PATH}/${userId}`).once('value');
+                
+                if (!userSnapshot.exists()) {
+                    throw new Error('User not found');
+                }
+                
+                const user = userSnapshot.val();
+                const currentWorkingDays = user.workingDays || 0;
+                const currentTokens = user.tokens || 0;
+                
+                const newWorkingDays = currentWorkingDays + 1;
+                const newTokens = currentTokens + 3;
+                
+                const transactionId = generateId();
+                const transaction = {
+                    id: transactionId,
+                    userId,
+                    amount: 3,
+                    description: `Worked day ${newWorkingDays}`,
+                    date: new Date().toISOString()
+                };
+                
+                const updates = {};
+                updates[`${USERS_PATH}/${userId}/workingDays`] = newWorkingDays;
+                updates[`${USERS_PATH}/${userId}/tokens`] = newTokens;
+                updates[`${TRANSACTIONS_PATH}/${transactionId}`] = transaction;
+                
+                await database.ref().update(updates);
+                
+                elements.modalCurrentTokens.textContent = newTokens;
+                elements.modalWorkingDays.textContent = newWorkingDays;
+                await loadModalTransactionHistory(userId);
+                
+                if (elements.adminContainer.style.display === 'block') {
+                    await loadUsers(elements.searchInput.value);
+                }
+                
+                hideLoading();
+            } catch (error) {
+                console.error('Error adding work day:', error);
+                hideLoading();
+                alert('Failed to record work day: ' + error.message);
+            }
+        }
+        
+        async function logout() {
+            showLoading('Signing out...');
+            
+            try {
+                await auth.signOut();
+            } catch (error) {
+                console.error('Logout error:', error);
+                hideLoading();
+                alert('Failed to sign out: ' + error.message);
+            }
+        }
+        
+        async function exportUserData() {
+            showLoading('Exporting data...');
+            
+            try {
+                const currentUser = auth.currentUser;
+                const usersSnapshot = await database.ref(USERS_PATH).once('value');
+                const users = [];
+                const userMap = {};
+                
+                usersSnapshot.forEach((userSnapshot) => {
+                    const userId = userSnapshot.key;
+                    const userData = userSnapshot.val();
+                    
+                    if (userId !== currentUser.uid) {
+                        users.push(userData);
+                        userMap[userId] = {
+                            name: userData.name || 'Unknown',
+                            phone: userData.phone || 'No Phone'
+                        };
+                    }
+                });
+                
+                const transactionsSnapshot = await database.ref(TRANSACTIONS_PATH).once('value');
+                const transactions = [];
+                
+                transactionsSnapshot.forEach((transactionSnapshot) => {
+                    const transaction = transactionSnapshot.val();
+                    const userInfo = userMap[transaction.userId] || { name: 'Unknown', phone: 'Unknown' };
+                    transaction.userName = userInfo.name;
+                    transaction.userPhone = userInfo.phone;
+                    transactions.push(transaction);
+                });
+                
+                let userCsv = 'Name,Email,Phone,Tokens,Working Days\n';
+                users.forEach(user => {
+                    userCsv += `"${user.name || ''}","${user.email || ''}","${user.phone || ''}",${user.tokens || 0},${user.workingDays || 0}\n`;
+                });
+                
+                let transactionCsv = 'Transaction ID,Volunteer Name,Phone Number,Amount,Description,Date\n';
+                transactions.forEach(transaction => {
+                    transactionCsv += `"${transaction.id || ''}","${transaction.userName}","${transaction.userPhone}",${transaction.amount || 0},"${transaction.description || ''}","${transaction.date || ''}"\n`;
+                });
+                
+                const userBlob = new Blob([userCsv], { type: 'text/csv' });
+                const transactionBlob = new Blob([transactionCsv], { type: 'text/csv' });
+                
+                const userLink = document.createElement('a');
+                userLink.href = URL.createObjectURL(userBlob);
+                userLink.download = 'volunteer_users.csv';
+                
+                const transactionLink = document.createElement('a');
+                transactionLink.href = URL.createObjectURL(transactionBlob);
+                transactionLink.download = 'volunteer_transactions.csv';
+                
+                userLink.click();
+                setTimeout(() => {
+                    transactionLink.click();
+                }, 100);
+                
+                hideLoading();
+            } catch (error) {
+                console.error('Error exporting data:', error);
+                hideLoading();
+                alert('Failed to export data: ' + error.message);
+            }
+        }
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+            
+            // Tab switching
+            elements.loginTab.addEventListener('click', () => {
+                elements.loginTab.classList.add('active');
+                elements.registerTab.classList.remove('active');
+                elements.loginForm.style.display = 'block';
+                elements.registerForm.style.display = 'none';
+            });
+            
+            elements.registerTab.addEventListener('click', () => {
+                elements.registerTab.classList.add('active');
+                elements.loginTab.classList.remove('active');
+                elements.registerForm.style.display = 'block';
+                elements.loginForm.style.display = 'none';
+            });
+            
+            // Login form
+            elements.loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                if (!email || !password) {
+                    showAlert(elements.loginAlert, 'Please fill in all fields');
+                    return;
+                }
+                
+                showLoading('Signing in...');
+                
+                try {
+                    await auth.signInWithEmailAndPassword(email, password);
+                } catch (error) {
+                    console.error('Login error:', error);
+                    hideLoading();
+                    
+                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                        showAlert(elements.loginAlert, 'Invalid email or password');
+                    } else {
+                        showAlert(elements.loginAlert, `Login failed: ${error.message}`);
+                    }
+                }
+            });
+            
+            // Register form
+            elements.registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const name = document.getElementById('registerName').value;
+                const phone = document.getElementById('registerPhone').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                
+                if (!name || !phone || !email || !password) {
+                    showAlert(elements.registerAlert, 'Please fill in all fields');
+                    return;
+                }
+                
+                if (password.length < 6) {
+                    showAlert(elements.registerAlert, 'Password must be at least 6 characters');
+                    return;
+                }
+                
+                showLoading('Creating your account...');
+                
+                try {
+                    const encodedEmail = encodeURIComponent(email);
+                    const emailCheckSnapshot = await database.ref(`${DELETED_EMAILS_PATH}/${encodedEmail}`).once('value');
+                    
+                    if (emailCheckSnapshot.exists()) {
+                        showAlert(elements.registerAlert, 'This email was previously used. Please contact an administrator to reactivate your account or use a different email.');
+                        hideLoading();
+                        return;
+                    }
+                    
+                    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                    const user = userCredential.user;
+                    
+                    await createUserProfile(user, { name, phone });
+                } catch (error) {
+                    console.error('Registration error:', error);
+                    hideLoading();
+                    
+                    if (error.code === 'auth/email-already-in-use') {
+                        showAlert(elements.registerAlert, 'Email is already in use. If you previously had an account, please contact an administrator.');
+                    } else if (error.code === 'auth/invalid-email') {
+                        showAlert(elements.registerAlert, 'Invalid email address');
+                    } else if (error.code === 'auth/weak-password') {
+                        showAlert(elements.registerAlert, 'Password is too weak');
+                    } else {
+                        showAlert(elements.registerAlert, `Registration failed: ${error.message}`);
+                    }
+                }
+            });
+            
+            // Logout buttons
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            document.getElementById('adminLogoutBtn').addEventListener('click', logout);
+            
+            // Search functionality
+            elements.searchInput.addEventListener('input', async () => {
+                const searchTerm = elements.searchInput.value.toLowerCase();
+                await loadUsers(searchTerm);
+            });
+            
+            // Modal close buttons
+            document.getElementById('closeTokenModal').addEventListener('click', () => {
+                elements.tokenModal.style.display = 'none';
+            });
+            
+            document.getElementById('closeAddUserModal').addEventListener('click', () => {
+                elements.addUserModal.style.display = 'none';
+            });
+            
+            document.getElementById('closePasswordResetModal').addEventListener('click', () => {
+                elements.passwordResetModal.style.display = 'none';
+            });
+            
+            document.getElementById('closeAccountSettingsModal').addEventListener('click', () => {
+                elements.accountSettingsModal.style.display = 'none';
+            });
+            
+            document.getElementById('closeAdminPasswordModal').addEventListener('click', () => {
+                elements.adminPasswordModal.style.display = 'none';
+            });
+            
+            // Action buttons
+            document.getElementById('addUserBtn').addEventListener('click', () => {
+                document.getElementById('addUserForm').reset();
+                document.getElementById('addUserAlert').style.display = 'none';
+                elements.addUserModal.style.display = 'block';
+            });
+            
+            document.getElementById('accountSettingsBtn').addEventListener('click', () => {
+                document.getElementById('changePasswordForm').reset();
+                document.getElementById('accountSettingsAlert').style.display = 'none';
+                document.getElementById('accountSettingsSuccessAlert').style.display = 'none';
+                elements.accountSettingsModal.style.display = 'block';
+            });
+            
+            document.getElementById('adminPasswordBtn').addEventListener('click', () => {
+                document.getElementById('adminPasswordForm').reset();
+                document.getElementById('adminPasswordAlert').style.display = 'none';
+                document.getElementById('adminPasswordSuccessAlert').style.display = 'none';
+                elements.adminPasswordModal.style.display = 'block';
+            });
+            
+            document.getElementById('exportDataBtn').addEventListener('click', exportUserData);
+            
+            // Quick token buttons
+            document.getElementById('quickAddBtn').addEventListener('click', async () => {
+                await addTokensToUser(selectedUserId, 1, "Quick token addition");
+            });
+            
+            document.getElementById('quickRemoveBtn').addEventListener('click', async () => {
+                await addTokensToUser(selectedUserId, -1, "Quick token removal");
+            });
+            
+            // Token form
+            document.getElementById('addTokensForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const amount = parseInt(document.getElementById('tokenAmount').value);
+                const reason = document.getElementById('tokenReason').value;
+                
+                if (!amount || !reason) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                await addTokensToUser(selectedUserId, amount, reason);
+                document.getElementById('addTokensForm').reset();
+            });
+            
+            document.getElementById('removeTokensBtn').addEventListener('click', async () => {
+                const amount = parseInt(document.getElementById('tokenAmount').value);
+                const reason = document.getElementById('tokenReason').value;
+                
+                if (!amount || !reason) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                await addTokensToUser(selectedUserId, -amount, reason);
+                document.getElementById('addTokensForm').reset();
+            });
+            
+            document.getElementById('addWorkDayBtn').addEventListener('click', async () => {
+                await addWorkDayToUser(selectedUserId);
+            });
+            
+            // Password reset
+            document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                const loginEmail = document.getElementById('loginEmail').value;
+                document.getElementById('resetEmail').value = loginEmail || '';
+                
+                document.getElementById('passwordResetAlert').style.display = 'none';
+                document.getElementById('passwordResetSuccessAlert').style.display = 'none';
+                
+                elements.passwordResetModal.style.display = 'block';
+            });
+            
+            document.getElementById('passwordResetForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('resetEmail').value;
+                
+                if (!email) {
+                    showAlert(document.getElementById('passwordResetAlert'), 'Please enter your email address');
+                    return;
+                }
+                
+                showLoading('Sending password reset email...');
+                
+                try {
+                    await auth.sendPasswordResetEmail(email);
+                    hideLoading();
+                    showSuccessAlert(document.getElementById('passwordResetSuccessAlert'), 'Password reset email sent! Check your inbox.');
+                    document.getElementById('resetEmail').value = '';
+                } catch (error) {
+                    console.error('Password reset error:', error);
+                    hideLoading();
+                    
+                    if (error.code === 'auth/user-not-found') {
+                        showAlert(document.getElementById('passwordResetAlert'), 'No account found with this email address');
+                    } else {
+                        showAlert(document.getElementById('passwordResetAlert'), `Error sending reset email: ${error.message}`);
+                    }
+                }
+            });
+            
+            // Click outside modal to close
+            window.addEventListener('click', (e) => {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
