@@ -1,673 +1,401 @@
-<style>
-        /* === CORE RESET === */
-        /* Ensures all modals and backgrounds are opaque */
-        .modal-content, 
-        .token-display, 
-        .history-table,
-        .auth-container,
-        .user-list,
-        .user-item,
-        .form-control,
-        #loading-overlay .loading-content,
-        .modal-content div,
-        .modal-content form,
-        .modal-content .form-group,
-        .modal-content h2,
-        .modal-content h3,
-        .modal-content p,
-        .token-card,
-        .history-table th,
-        .history-table td {
-            background-color: #FFFFFF !important;
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-            background-image: none !important;
-            opacity: 1 !important;
-        }
-        
-        /* Table headers consistent color */
-        th {
-            background-color: #F5F5F5 !important;
-        }
-        
-        /* Token cards */
-        .token-card {
-            background-color: #F5F5F5 !important;
-        }
-        
-        /* === BUTTON STYLE RESET === */
-        /* Primary buttons - Blue with white text */
-        .btn {
-            background-color: #0076FF !important;
-            color: white !important;
-            border: none !important;
-        }
-        
-        .btn:hover, 
-        .btn:active,
-        .btn:focus {
-            background-color: #0062D6 !important;
-            color: white !important;
-        }
-        
-        /* Secondary buttons - Light gray with dark text */
-        .btn-secondary {
-            background-color: #F5F5F5 !important;
-            color: #333333 !important;
-            border: 1px solid #E0E0E0 !important;
-        }
-        
-        .btn-secondary:hover,
-        .btn-secondary:active,
-        .btn-secondary:focus {
-            background-color: #E0E0E0 !important;
-            color: #333333 !important;
-        }
-        
-        /* Danger buttons - Red with white text */
-        .btn-danger {
-            background-color: #E53935 !important;
-            color: white !important;
-        }
-        
-        .btn-danger:hover,
-        .btn-danger:active,
-        .btn-danger:focus {
-            background-color: #C62828 !important;
-            color: white !important;
-        }
-        </style><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Add this style block inside the existing <head> section -->
-<style>
-    /* Enhanced Mobile Styles for Admin Dashboard */
-    @media (max-width: 576px) {
-        /* Adjust admin header for better mobile display */
-        .dashboard-header > div:last-child {
-            flex-direction: column;
-            width: 100%;
-        }
-        
-        .dashboard-header > div:last-child button {
-            margin-bottom: 8px;
-            width: 100%;
-        }
-        
-        /* Fix heading display on mobile */
-        .dashboard-header h1 {
-            font-size: 18px;
-            white-space: normal !important;
-            line-height: 1.3;
-        }
-        
-        .dashboard-header p {
-            white-space: normal !important;
-        }
-        
-        /* Improve user listing items on mobile */
-        .user-item {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        
-        .user-info {
-            margin-bottom: 10px;
-            width: 100%;
-        }
-        
-        .user-info h3 {
-            white-space: normal !important;
-            word-wrap: break-word;
-        }
-        
-        .user-info p {
-            white-space: normal !important;
-            word-wrap: break-word;
-        }
-        
-        .user-stats {
-            margin-bottom: 10px;
-            display: flex;
-            gap: 8px;
-        }
-        
-        .user-actions {
-            width: 100%;
-        }
-        
-        .user-actions button {
-            width: 100%;
-            margin-top: 5px;
-        }
-        
-        /* Improve search bar on mobile */
-        .search-bar {
-            margin-bottom: 15px;
-        }
-        
-        .search-bar input {
-            height: 48px; /* Larger tap target */
-        }
-        
-        /* Remove forced white-space nowrap for text elements in admin panel */
-        #adminContainer h1, 
-        #adminContainer h2, 
-        #adminContainer h3, 
-        #adminContainer p {
-            white-space: normal !important;
-        }
-        
-        /* Modal improvements for mobile */
-        .modal-content {
-            padding: 20px 15px;
-            margin: 5% auto;
-            max-height: 85vh;
-        }
-    }
-</style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#FFFFFF">
+    <meta name="theme-color" content="#0076FF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>My OHK Wallet - Reward System</title>
+    
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        /* === CORE RESET === */
-        /* Ensures all modals and backgrounds are opaque */
-        .modal-content, 
-        .token-display, 
-        .history-table,
-        .auth-container,
-        .user-list,
-        .user-item,
-        .form-control,
-        #loading-overlay .loading-content,
-        .modal-content div,
-        .modal-content form,
-        .modal-content .form-group,
-        .modal-content h2,
-        .modal-content h3,
-        .modal-content p,
-        .token-card,
-        .history-table th,
-        .history-table td {
-            background-color: #FFFFFF !important;
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-            background-image: none !important;
-            opacity: 1 !important;
-        }
-        
-        /* Table headers consistent color */
-        th {
-            background-color: #F5F5F5 !important;
-        }
-        
-        /* Token cards */
-        .token-card {
-            background-color: #F5F5F5 !important;
-        }
-        
-        /* === BUTTON STYLE RESET === */
-        /* Primary buttons - Blue with white text */
-        .btn {
-            background-color: #0076FF !important;
-            color: white !important;
-            border: none !important;
-        }
-        
-        .btn:hover, 
-        .btn:active,
-        .btn:focus {
-            background-color: #0062D6 !important;
-            color: white !important;
-        }
-        
-        /* Secondary buttons - Light gray with dark text */
-        .btn-secondary {
-            background-color: #F5F5F5 !important;
-            color: #333333 !important;
-            border: 1px solid #E0E0E0 !important;
-        }
-        
-        .btn-secondary:hover,
-        .btn-secondary:active,
-        .btn-secondary:focus {
-            background-color: #E0E0E0 !important;
-            color: #333333 !important;
-        }
-        
-        /* Danger buttons - Red with white text */
-        .btn-danger {
-            background-color: #E53935 !important;
-            color: white !important;
-        }
-        
-        .btn-danger:hover,
-        .btn-danger:active,
-        .btn-danger:focus {
-            background-color: #C62828 !important;
-            color: white !important;
-        }
-    </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Firebase App (the core Firebase SDK) -->
+    
+    <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <!-- Add Firebase Auth and Database -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
     <style>
+        /* === ROOT VARIABLES === */
         :root {
-            /* Simplified color scheme - just 3 colors */
-            --primary: #0076FF;    /* Vibrant blue for buttons, headers */
-            --background: #FFFFFF; /* Background color */
-            --text: #333333;       /* Text color */
+            --primary: #0076FF;
+            --primary-dark: #0062D6;
+            --background: #FFFFFF;
+            --text: #333333;
+            --gray: #777777;
+            --light-gray: #F5F5F5;
+            --border: #E0E0E0;
+            --success: #43A047;
+            --danger: #E53935;
+            --danger-dark: #C62828;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+            --min-touch-target: 44px;
         }
-        
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-        
+
+        /* === FONT IMPORT === */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        /* === GLOBAL RESET === */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Roboto', sans-serif;
         }
-        
+
         body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--background);
             color: var(--text);
             line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-        
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        /* Remove theme toggle related code */
-        
+
+        /* === LAYOUT === */
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 15px;
+            padding: 16px;
             width: 100%;
         }
-        
+
+        /* === AUTHENTICATION CONTAINER === */
         .auth-container {
             max-width: 500px;
-            margin: 30px auto;
-            padding: 25px 20px;
+            margin: 40px auto;
+            padding: 32px 24px;
             background: var(--background);
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            border: 1px solid #E0E0E0;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
         }
-        
+
         .header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 32px;
         }
-        
+
         .header h1 {
             font-weight: 700;
             margin-bottom: 8px;
             color: var(--primary);
-            font-size: 24px;
-            white-space: nowrap;
+            font-size: clamp(20px, 4vw, 24px);
+            line-height: 1.2;
         }
-        
+
         .header p {
-            color: var(--text);
+            color: var(--gray);
             font-size: 14px;
-            white-space: nowrap;
+            line-height: 1.4;
         }
-        
+
+        /* === TABS === */
         .tabs {
             display: flex;
-            margin-bottom: 20px;
-            border-radius: 6px;
+            margin-bottom: 24px;
+            border-radius: var(--border-radius);
             overflow: hidden;
-            border: 1px solid #E0E0E0;
+            border: 1px solid var(--border);
         }
-        
+
         .tab {
             flex: 1;
-            padding: 12px;
+            padding: 16px 12px;
             text-align: center;
-            background: #F5F5F5;
+            background: var(--light-gray);
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
             color: var(--text);
             font-weight: 500;
-            white-space: nowrap;
+            font-size: 14px;
+            min-height: var(--min-touch-target);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        
+
         .tab:hover {
-            background: #E0E0E0;
+            background: var(--border);
         }
-        
+
         .tab.active {
             background: var(--primary);
             color: white;
         }
-        
+
+        /* === FORMS === */
         .form-group {
             margin-bottom: 20px;
         }
-        
+
         .form-group label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 500;
             color: var(--text);
             font-size: 14px;
         }
-        
+
         .form-control {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #E0E0E0;
-            border-radius: 6px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
             font-size: 16px;
             background: var(--background);
             color: var(--text);
+            min-height: var(--min-touch-target);
+            -webkit-appearance: none;
+            transition: border-color 0.3s ease;
         }
-        
+
         .form-control:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(74, 118, 184, 0.1);
+            box-shadow: 0 0 0 3px rgba(0, 118, 255, 0.1);
         }
-        
+
         .form-control::placeholder {
-            color: #999999;
+            color: #999;
         }
-        
+
+        /* === BUTTONS === */
         .btn {
-            display: inline-block;
-            padding: 16px 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 24px;
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: var(--border-radius);
             cursor: pointer;
             font-size: 16px;
-            width: 100%;
-            transition: all 0.3s ease;
             font-weight: 500;
-            letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-height: var(--min-touch-target);
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
+            line-height: 1;
         }
-        
+
         .btn:hover {
             background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 118, 255, 0.3);
         }
-        
+
         .btn:active {
             transform: translateY(0);
         }
-        
-        .btn::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.5);
-            opacity: 0;
-            border-radius: 100%;
-            transform: scale(1, 1) translate(-50%);
-            transform-origin: 50% 50%;
-        }
-        
-        .btn:focus:not(:active)::after {
-            animation: ripple 1s ease-out;
-        }
-        
-        /* Mobile Responsive Styles */
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .header h1 {
-                font-size: 22px;
-            }
-            
-            .dashboard-header h1 {
-                font-size: 20px;
-            }
-            
-            .token-display {
-                flex-direction: column;
-            }
-            
-            .token-card {
-                margin-bottom: 10px;
-                min-width: 100%;
-                flex: 1 0 100%;
-            }
-            
-            /* Keep all text on one line */
-            h1, h2, h3, p, .btn, .form-control, label, .tab {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            
-            /* Make the table scrollable horizontally */
-            .history-table-container {
-                overflow-x: auto;
-                width: 100%;
-                -webkit-overflow-scrolling: touch;
-            }
-            
-            .history-table {
-                min-width: 500px; /* Ensure table has minimum width */
-            }
-            
-            /* Larger touch targets */
-            .btn, .form-control, .tab {
-                padding: 12px;
-                min-height: 44px; /* Minimum touch target size */
-            }
-            
-            .close {
-                font-size: 28px;
-                padding: 8px;
-            }
-            
-            /* Better spacing for modals */
-            .modal-content {
-                margin: 5% auto;
-                padding: 15px;
-                width: 95%;
-            }
-            
-            /* Quick token buttons */
-            #quickAddBtn, #quickRemoveBtn {
-                min-height: 52px;
-            }
-        }
-        
+
         .btn-secondary {
-            background: var(--secondary);
-            color: var(--dark);
+            background: var(--light-gray) !important;
+            color: var(--text) !important;
+            border: 1px solid var(--border) !important;
         }
-        
+
         .btn-secondary:hover {
-            background: rgba(0, 229, 255, 0.8);
+            background: var(--border) !important;
+            color: var(--text) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
         }
-        
+
         .btn-danger {
-            background: var(--danger);
+            background: var(--danger) !important;
+            color: white !important;
         }
-        
+
         .btn-danger:hover {
-            background: rgba(255, 23, 68, 0.8);
+            background: var(--danger-dark) !important;
+            box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3) !important;
         }
-        
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* === DASHBOARD === */
         .dashboard {
             display: none;
         }
-        
+
         .admin-panel {
             display: none;
         }
-        
+
         .dashboard-header {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #E0E0E0;
-            gap: 15px;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
         }
-        
-        .dashboard-header > div:last-child {
-            width: 100%;
-            display: flex;
-            gap: 10px;
-        }
-        
+
         .dashboard-header h1 {
-            font-size: 22px;
-            margin-bottom: 5px;
+            font-size: clamp(18px, 4vw, 24px);
+            margin-bottom: 4px;
             color: var(--primary);
-            white-space: nowrap;
+            line-height: 1.2;
+            word-wrap: break-word;
         }
-        
+
         .dashboard-header p {
-            color: var(--text);
+            color: var(--gray);
             font-size: 14px;
-            white-space: nowrap;
+            line-height: 1.4;
         }
-        
-        .token-display {
+
+        .dashboard-actions {
             display: flex;
-            flex-direction: row;
+            gap: 12px;
             flex-wrap: wrap;
-            justify-content: space-between;
-            background: var(--background);
-            padding: 15px;
-            border-radius: 6px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
-            border: 1px solid #E0E0E0;
-            gap: 15px;
         }
-        
+
+        /* === TOKEN DISPLAY === */
+        .token-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            background: var(--background);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
         .token-card {
             text-align: center;
-            padding: 15px;
-            background: #F5F5F5;
-            border-radius: 6px;
-            flex: 1 0 calc(33.333% - 15px);
-            min-width: 100px;
-            margin: 0;
-            border: 1px solid #E0E0E0;
+            padding: 20px 16px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border);
         }
-        
+
+        .token-card i {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
         .token-card p {
-            color: var(--text);
+            color: var(--gray);
             font-size: 14px;
-            margin-bottom: 5px;
-            white-space: nowrap;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
-        
+
         .token-card h3 {
             color: var(--primary);
-            font-size: 28px;
-            margin: 10px 0;
+            font-size: clamp(24px, 5vw, 32px);
             font-weight: 700;
+            line-height: 1;
         }
-        
+
+        /* === TABLES === */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border);
+            background: var(--background);
+        }
+
         .history-table {
             width: 100%;
             border-collapse: collapse;
-            background: var(--modal-bg);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border-color);
+            min-width: 500px;
         }
-        
-        .history-table th, .history-table td {
-            padding: 15px;
+
+        .history-table th,
+        .history-table td {
+            padding: 16px;
             text-align: left;
-            border-bottom: 1px solid var(--border-color);
-            color: var(--light-text);
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
         }
-        
+
         .history-table th {
-            background: var(--card-bg);
+            background: var(--light-gray);
             font-weight: 600;
-            color: var(--light);
+            color: var(--text);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-        
-        .history-table th, .history-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
+
+        .history-table tr:last-child td {
+            border-bottom: none;
         }
-        
-        .history-table th {
-            background: #f8f9fa;
-            font-weight: 600;
-        }
-        
+
+        /* === USER LIST === */
         .user-list {
-            background: white;
-            border-radius: 10px;
+            background: var(--background);
+            border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
         }
-        
+
         .user-item {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
+            flex-direction: column;
+            gap: 16px;
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
         }
-        
-        .user-info {
-            flex: 1;
+
+        .user-item:last-child {
+            border-bottom: none;
         }
-        
-        .user-actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 50px;
-            font-size: 14px;
+
+        .user-info h3 {
+            font-size: 18px;
             font-weight: 600;
+            margin-bottom: 4px;
+            word-wrap: break-word;
+            line-height: 1.3;
         }
-        
+
+        .user-info p {
+            color: var(--gray);
+            font-size: 14px;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+
+        .user-stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1;
+        }
+
         .badge-primary {
             background: var(--primary);
             color: white;
         }
-        
+
+        .user-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* === MODALS === */
         .modal {
             display: none;
             position: fixed;
@@ -677,105 +405,108 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-        }
-        
-        .modal-content {
-            background-color: var(--modal-bg);
-            margin: 10% auto;
-            padding: 25px 20px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), var(--neon-glow);
+        }
+
+        .modal-content {
+            background: var(--background);
+            margin: 20px auto;
+            padding: 24px;
+            border-radius: var(--border-radius);
+            width: calc(100% - 40px);
+            max-width: 600px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.2);
             position: relative;
-            border: 1px solid var(--border-color);
-            color: var(--light-text);
         }
-        
-        .modal-content h2, .modal-content h3 {
+
+        .modal-content h2,
+        .modal-content h3 {
             color: var(--primary);
-            margin-bottom: 15px;
-            text-shadow: var(--text-shadow);
+            margin-bottom: 16px;
+            line-height: 1.3;
         }
-        
+
         .close {
             position: absolute;
-            right: 15px;
-            top: 10px;
+            right: 16px;
+            top: 16px;
             font-size: 24px;
             cursor: pointer;
-            color: var(--light-text);
-            width: 30px;
-            height: 30px;
+            color: var(--gray);
+            width: 32px;
+            height: 32px;
             text-align: center;
-            line-height: 30px;
+            line-height: 32px;
             border-radius: 50%;
             transition: all 0.3s ease;
+            min-height: var(--min-touch-target);
+            min-width: var(--min-touch-target);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        
+
         .close:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--light-gray);
+            color: var(--text);
         }
-        
-        .close {
-            position: absolute;
-            right: 15px;
-            top: 10px;
-            font-size: 24px;
-            cursor: pointer;
-        }
-        
+
+        /* === SEARCH BAR === */
         .search-bar {
             margin-bottom: 20px;
         }
-        
+
         .search-bar input {
             width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
             font-size: 16px;
-        }
-        
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            color: white;
-            display: none;
-        }
-        
-        .alert-success {
-            background-color: var(--success);
-        }
-        
-        .alert-danger {
-            background-color: var(--danger);
+            min-height: var(--min-touch-target);
         }
 
+        /* === ALERTS === */
+        .alert {
+            padding: 16px;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius);
+            color: white;
+            display: none;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: var(--success);
+        }
+
+        .alert-danger {
+            background: var(--danger);
+        }
+
+        /* === LOADING === */
         .loading {
             display: none;
             text-align: center;
-            padding: 20px;
+            padding: 40px 20px;
         }
 
         .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 36px;
-            height: 36px;
+            border: 4px solid var(--border);
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             border-left-color: var(--primary);
             animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
+            margin: 0 auto 16px;
         }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
+
         #loading-overlay {
             display: none;
             position: fixed;
@@ -783,7 +514,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 9999;
         }
 
@@ -792,87 +523,192 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: var(--modal-bg);
-            padding: 25px;
-            border-radius: 15px;
+            background: var(--background);
+            padding: 32px;
+            border-radius: var(--border-radius);
             text-align: center;
-            border: 1px solid var(--border-color);
-            color: var(--light-text);
-            max-width: 90%;
+            min-width: 200px;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.3);
         }
-        
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border-left-color: var(--primary);
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-        
+
+        /* === STATUS BAR === */
         .status-bar {
-            background-color: var(--modal-bg);
-            padding: 4px 6px;
-            font-size: 12px;
-            border-bottom: 1px solid var(--border-color);
             position: fixed;
             bottom: 0;
             right: 0;
-            z-index: 90;
-            width: auto;
-            border-top-left-radius: 8px;
-            opacity: 0.8;
+            background: var(--background);
+            padding: 8px 12px;
+            font-size: 12px;
+            border: 1px solid var(--border);
+            border-bottom: none;
+            border-right: none;
+            border-top-left-radius: var(--border-radius);
+            z-index: 100;
+            opacity: 0.9;
             transition: opacity 0.3s ease;
         }
-        
+
         .status-bar:hover {
             opacity: 1;
         }
-        
+
+        .status-connected,
+        .status-disconnected {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
         .status-connected {
             color: var(--success);
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
-        
-        .status-connected::before {
-            content: "";
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: var(--success);
-            border-radius: 50%;
-        }
-        
+
         .status-disconnected {
             color: var(--danger);
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
-        
+
+        .status-connected::before,
         .status-disconnected::before {
             content: "";
-            display: inline-block;
             width: 8px;
             height: 8px;
-            background-color: var(--danger);
             border-radius: 50%;
         }
-        
-        .connection-info {
-            display: none;
+
+        .status-connected::before {
+            background: var(--success);
         }
-        
-        .status-bar:hover .connection-info {
-            display: block;
-            color: var(--gray);
-            font-size: 11px;
-            margin-top: 3px;
+
+        .status-disconnected::before {
+            background: var(--danger);
+        }
+
+        /* === MOBILE OPTIMIZATIONS === */
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .auth-container {
+                margin: 20px auto;
+                padding: 24px 20px;
+            }
+
+            .dashboard-header {
+                gap: 12px;
+            }
+
+            .dashboard-actions {
+                flex-direction: column;
+            }
+
+            .dashboard-actions .btn {
+                width: 100%;
+            }
+
+            .user-item {
+                padding: 16px;
+            }
+
+            .user-actions {
+                flex-direction: column;
+            }
+
+            .user-actions .btn {
+                width: 100%;
+            }
+
+            .modal-content {
+                margin: 10px auto;
+                width: calc(100% - 20px);
+                max-height: calc(100vh - 20px);
+                padding: 20px 16px;
+            }
+
+            .token-display {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                padding: 16px;
+            }
+
+            .close {
+                right: 12px;
+                top: 12px;
+            }
+
+            /* Quick action buttons stack on mobile */
+            #quickTokenActions {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            #quickTokenActions .btn {
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .dashboard-header {
+                flex-direction: row;
+                align-items: flex-start;
+                justify-content: space-between;
+            }
+
+            .dashboard-actions {
+                flex-shrink: 0;
+            }
+
+            .user-item {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .user-info {
+                flex: 1;
+            }
+
+            .user-actions {
+                flex-direction: row;
+                flex-shrink: 0;
+            }
+
+            #quickTokenActions {
+                display: flex;
+                gap: 8px;
+            }
+
+            #quickTokenActions .btn {
+                flex: 1;
+            }
+        }
+
+        /* === UTILITY CLASSES === */
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* === IMPROVEMENTS FOR TOUCH === */
+        .btn, .tab, .form-control, input[type="text"], input[type="email"], input[type="password"], input[type="tel"], input[type="number"] {
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Prevent zoom on iOS when focusing inputs */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+            select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"] {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -880,21 +716,20 @@
     <!-- Connection Status Bar -->
     <div class="status-bar" id="statusBar">
         <span id="connectionStatus">Connecting...</span>
-        <div class="connection-info" id="connectionInfo"></div>
     </div>
     
     <!-- Loading Overlay -->
     <div id="loading-overlay">
         <div class="loading-content">
             <div class="spinner"></div>
-            <p id="loadingMessage">Loading data...</p>
+            <p id="loadingMessage">Loading...</p>
         </div>
     </div>
     
-    <!-- Auth Container (Login/Register) -->
+    <!-- Auth Container -->
     <div class="auth-container" id="authContainer">
         <div class="header">
-            <h1><i class="fas fa-wallet"></i> My OHK Wallet <i class="fas fa-coins"></i></h1>
+            <h1><i class="fas fa-wallet"></i> My OHK Wallet</h1>
             <p>Your creative community reward system</p>
         </div>
         
@@ -908,41 +743,41 @@
             <div class="alert alert-danger" id="loginAlert"></div>
             <div class="form-group">
                 <label for="loginEmail">Email</label>
-                <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required>
+                <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required autocomplete="email">
             </div>
             <div class="form-group">
                 <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
+                <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
             </div>
             <div class="form-group">
-                <button type="submit" class="btn">Login</button>
+                <button type="submit" class="btn btn-full">Login</button>
             </div>
-            <div style="text-align: center; margin-top: 15px;">
-                <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+            <div class="text-center" style="margin-top: 16px;">
+                <a href="#" id="forgotPasswordLink" style="color: var(--primary); text-decoration: none;">Forgot Password?</a>
             </div>
         </form>
         
         <!-- Register Form -->
-        <form id="registerForm" style="display: none;">
+        <form id="registerForm" class="hidden">
             <div class="alert alert-danger" id="registerAlert"></div>
             <div class="form-group">
                 <label for="registerName">Full Name</label>
-                <input type="text" id="registerName" class="form-control" placeholder="Enter your full name" required>
+                <input type="text" id="registerName" class="form-control" placeholder="Enter your full name" required autocomplete="name">
             </div>
             <div class="form-group">
                 <label for="registerPhone">Phone Number</label>
-                <input type="tel" id="registerPhone" class="form-control" placeholder="Enter your phone number" required>
+                <input type="tel" id="registerPhone" class="form-control" placeholder="Enter your phone number" required autocomplete="tel">
             </div>
             <div class="form-group">
                 <label for="registerEmail">Email</label>
-                <input type="email" id="registerEmail" class="form-control" placeholder="Enter your email" required>
+                <input type="email" id="registerEmail" class="form-control" placeholder="Enter your email" required autocomplete="email">
             </div>
             <div class="form-group">
                 <label for="registerPassword">Password</label>
-                <input type="password" id="registerPassword" class="form-control" placeholder="Choose a password (min 6 characters)" required>
+                <input type="password" id="registerPassword" class="form-control" placeholder="Choose a password (min 6 characters)" required autocomplete="new-password">
             </div>
             <div class="form-group">
-                <button type="submit" class="btn">Register</button>
+                <button type="submit" class="btn btn-full">Register</button>
             </div>
         </form>
     </div>
@@ -951,10 +786,10 @@
     <div class="container dashboard" id="dashboardContainer">
         <div class="dashboard-header">
             <div>
-                <h1><i class="fas fa-wallet"></i> Welcome to My OHK Wallet, <span id="userName">Artist</span>!</h1>
+                <h1>Welcome, <span id="userName">Artist</span>!</h1>
                 <p>Your creative contribution dashboard</p>
             </div>
-            <div style="display: flex; gap: 10px;">
+            <div class="dashboard-actions">
                 <button class="btn btn-secondary" id="accountSettingsBtn">Account Settings</button>
                 <button class="btn" id="logoutBtn">Logout</button>
             </div>
@@ -962,28 +797,28 @@
         
         <div class="token-display">
             <div class="token-card">
-                <i class="fas fa-coins" style="font-size: 24px; color: var(--accent);"></i>
+                <i class="fas fa-coins"></i>
                 <p>Available Tokens</p>
                 <h3 id="availableTokens">0</h3>
             </div>
             <div class="token-card">
-                <i class="fas fa-star" style="font-size: 24px; color: var(--accent);"></i>
+                <i class="fas fa-star"></i>
                 <p>Total Earned</p>
                 <h3 id="totalEarned">0</h3>
             </div>
             <div class="token-card">
-                <i class="fas fa-calendar-check" style="font-size: 24px; color: var(--accent);"></i>
+                <i class="fas fa-calendar-check"></i>
                 <p>Activities</p>
                 <h3 id="workingDays">0</h3>
             </div>
         </div>
         
-        <h2>Transaction History</h2>
+        <h2 style="margin-bottom: 16px; color: var(--primary);">Transaction History</h2>
         <div class="loading" id="historyLoading">
             <div class="spinner"></div>
             <p>Loading transaction history...</p>
         </div>
-        <div class="history-table-container">
+        <div class="table-container">
             <table class="history-table" id="historyTable">
                 <thead>
                     <tr>
@@ -1004,10 +839,11 @@
     <div class="container admin-panel" id="adminContainer">
         <div class="dashboard-header">
             <div>
-                <h1><i class="fas fa-sliders-h"></i> My OHK Wallet Admin Dashboard</h1>
+                <h1>Admin Dashboard</h1>
                 <p>Manage community rewards</p>
             </div>
-            <div style="display: flex; gap: 10px;">
+            <div class="dashboard-actions">
+                <button class="btn btn-secondary" id="exportDataBtn">Export Data</button>
                 <button class="btn btn-secondary" id="addUserBtn">Add User</button>
                 <button class="btn btn-secondary" id="adminPasswordBtn">Change Password</button>
                 <button class="btn" id="adminLogoutBtn">Logout</button>
@@ -1015,11 +851,10 @@
         </div>
         
         <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search volunteers by name or phone...">
+            <input type="text" id="searchInput" placeholder="Search volunteers by name or phone..." autocomplete="off">
         </div>
         
         <div class="user-list" id="userList">
-            <!-- Users will be populated here -->
             <div class="loading" id="usersLoading">
                 <div class="spinner"></div>
                 <p>Loading volunteers...</p>
@@ -1027,28 +862,68 @@
         </div>
     </div>
     
-    <!-- Admin Password Change Modal -->
-    <div class="modal" id="adminPasswordModal">
+    <!-- Modals -->
+    
+    <!-- Token Management Modal -->
+    <div class="modal" id="tokenModal">
         <div class="modal-content">
-            <span class="close" id="closeAdminPasswordModal">&times;</span>
-            <h2>Change Admin Password</h2>
+            <span class="close" id="closeTokenModal">&times;</span>
+            <h2>Manage Tokens for <span id="modalUserName"></span></h2>
             
-            <div class="alert alert-success" id="adminPasswordSuccessAlert"></div>
-            <div class="alert alert-danger" id="adminPasswordAlert"></div>
+            <div class="token-display mb-20">
+                <div class="token-card">
+                    <p>Current Balance</p>
+                    <h3 id="modalCurrentTokens">0</h3>
+                </div>
+                <div class="token-card">
+                    <p>Working Days</p>
+                    <h3 id="modalWorkingDays">0</h3>
+                </div>
+            </div>
             
-            <form id="adminPasswordForm">
+            <!-- Quick Actions -->
+            <div id="quickTokenActions" class="mb-20">
+                <button type="button" class="btn" id="quickAddBtn">+1 Token</button>
+                <button type="button" class="btn btn-danger" id="quickRemoveBtn">-1 Token</button>
+            </div>
+            
+            <form id="addTokensForm">
                 <div class="form-group">
-                    <label for="adminCurrentPassword">Current Password</label>
-                    <input type="password" id="adminCurrentPassword" class="form-control" placeholder="Enter current password" required>
+                    <label for="tokenAmount">Token Amount</label>
+                    <input type="number" id="tokenAmount" class="form-control" placeholder="Enter token amount" required>
                 </div>
                 <div class="form-group">
-                    <label for="adminNewPassword">New Password</label>
-                    <input type="password" id="adminNewPassword" class="form-control" placeholder="Enter new password (min 6 characters)" required>
+                    <label for="tokenReason">Reason</label>
+                    <input type="text" id="tokenReason" class="form-control" placeholder="Reason for adding/removing tokens" required>
                 </div>
+                
+                <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button type="submit" class="btn" style="flex: 1; min-width: 120px;">Add Tokens</button>
+                    <button type="button" class="btn btn-danger" id="removeTokensBtn" style="flex: 1; min-width: 120px;">Remove Tokens</button>
+                </div>
+                
                 <div class="form-group">
-                    <button type="submit" class="btn">Change Password</button>
+                    <button type="button" class="btn btn-secondary btn-full" id="addWorkDayBtn">Record one shift (+3 tokens)</button>
                 </div>
             </form>
+            
+            <h3 style="margin: 24px 0 12px 0; color: var(--primary);">Transaction History</h3>
+            <div class="table-container" style="max-height: 250px; overflow-y: auto;">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Tokens</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modalHistoryTableBody"></tbody>
+                </table>
+            </div>
+            
+            <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); text-align: center;">
+                <button class="btn btn-danger" id="deleteUserBtn" style="max-width: 200px;">Delete User</button>
+            </div>
         </div>
     </div>
     
@@ -1062,88 +937,24 @@
                 <div class="alert alert-danger" id="addUserAlert"></div>
                 <div class="form-group">
                     <label for="addUserName">Full Name</label>
-                    <input type="text" id="addUserName" class="form-control" placeholder="Enter full name" required>
+                    <input type="text" id="addUserName" class="form-control" placeholder="Enter full name" required autocomplete="name">
                 </div>
                 <div class="form-group">
                     <label for="addUserPhone">Phone Number</label>
-                    <input type="tel" id="addUserPhone" class="form-control" placeholder="Enter phone number" required>
+                    <input type="tel" id="addUserPhone" class="form-control" placeholder="Enter phone number" required autocomplete="tel">
                 </div>
                 <div class="form-group">
                     <label for="addUserEmail">Email</label>
-                    <input type="email" id="addUserEmail" class="form-control" placeholder="Enter email" required>
+                    <input type="email" id="addUserEmail" class="form-control" placeholder="Enter email" required autocomplete="email">
                 </div>
                 <div class="form-group">
                     <label for="addUserPassword">Password</label>
-                    <input type="password" id="addUserPassword" class="form-control" placeholder="Enter password (min 6 characters)" required>
+                    <input type="password" id="addUserPassword" class="form-control" placeholder="Enter password (min 6 characters)" required autocomplete="new-password">
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn">Add User</button>
+                    <button type="submit" class="btn btn-full">Add User</button>
                 </div>
             </form>
-        </div>
-    </div>
-    
-    <!-- Token Management Modal -->
-    <div class="modal" id="tokenModal">
-        <div class="modal-content">
-            <span class="close" id="closeTokenModal">&times;</span>
-            <h2>Manage Tokens for <span id="modalUserName"></span></h2>
-            <div class="token-display">
-                <div class="token-card">
-                    <p>Current Balance</p>
-                    <h3 id="modalCurrentTokens">0</h3>
-                </div>
-                <div class="token-card">
-                    <p>Working Days</p>
-                    <h3 id="modalWorkingDays">0</h3>
-                </div>
-            </div>
-            
-            <!-- Quick Token Adjustment Buttons -->
-            <div style="display: flex; gap: 5px; margin-bottom: 20px;">
-                <button type="button" class="btn" id="quickAddBtn" style="flex: 1; font-size: 18px; font-weight: bold;">+1 Token</button>
-                <button type="button" class="btn btn-danger" id="quickRemoveBtn" style="flex: 1; font-size: 18px; font-weight: bold;">-1 Token</button>
-            </div>
-            
-            <form id="addTokensForm">
-                <div class="form-group">
-                    <label for="tokenAmount">Token Amount</label>
-                    <input type="number" id="tokenAmount" class="form-control" placeholder="Enter token amount" required>
-                </div>
-                <div class="form-group">
-                    <label for="tokenReason">Reason</label>
-                    <input type="text" id="tokenReason" class="form-control" placeholder="Reason for adding/removing tokens" required>
-                </div>
-                
-                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <button type="submit" class="btn" style="flex: 1">Add Tokens</button>
-                    <button type="button" class="btn btn-danger" id="removeTokensBtn" style="flex: 1">Remove Tokens</button>
-                </div>
-                
-                <div class="form-group">
-                    <button type="button" class="btn btn-secondary" id="addWorkDayBtn" style="width: 100%;">Record one shift (+3 tokens)</button>
-                </div>
-            </form>
-            
-            <h3 style="margin: 20px 0 10px 0; color: var(--primary); background-color: #FFFFFF;">Transaction History</h3>
-            <div class="history-table-container" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px; background-color: #FFFFFF;">
-                <table class="history-table" style="background-color: #FFFFFF;">
-                    <thead>
-                        <tr>
-                            <th style="background-color: #F5F5F5;">Date</th>
-                            <th style="background-color: #F5F5F5;">Description</th>
-                            <th style="background-color: #F5F5F5;">Tokens</th>
-                        </tr>
-                    </thead>
-                    <tbody id="modalHistoryTableBody">
-                        <!-- Transaction history will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <div style="margin-top: 20px; display: flex; justify-content: center;">
-                <button class="btn btn-danger" id="deleteUserBtn" style="max-width: 200px;">Delete User</button>
-            </div>
         </div>
     </div>
     
@@ -1156,15 +967,15 @@
             <div class="alert alert-success" id="passwordResetSuccessAlert"></div>
             <div class="alert alert-danger" id="passwordResetAlert"></div>
             
-            <p style="margin-bottom: 20px;">Enter your email address and we'll send you a link to reset your password.</p>
+            <p style="margin-bottom: 20px; color: var(--gray);">Enter your email address and we'll send you a link to reset your password.</p>
             
             <form id="passwordResetForm">
                 <div class="form-group">
                     <label for="resetEmail">Email</label>
-                    <input type="email" id="resetEmail" class="form-control" placeholder="Enter your email" required>
+                    <input type="email" id="resetEmail" class="form-control" placeholder="Enter your email" required autocomplete="email">
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn">Send Reset Email</button>
+                    <button type="submit" class="btn btn-full">Send Reset Email</button>
                 </div>
             </form>
         </div>
@@ -1180,61 +991,85 @@
             <div class="alert alert-danger" id="accountSettingsAlert"></div>
             
             <form id="changeUsernameForm">
-                <h3 style="margin: 20px 0 10px 0;">Change Username</h3>
+                <h3 style="margin: 20px 0 10px 0; color: var(--primary);">Change Username</h3>
                 <div class="form-group">
                     <label for="newUsername">New Username</label>
-                    <input type="text" id="newUsername" class="form-control" placeholder="Enter new username" required>
+                    <input type="text" id="newUsername" class="form-control" placeholder="Enter new username" required autocomplete="name">
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-secondary">Update Username</button>
+                    <button type="submit" class="btn btn-secondary btn-full">Update Username</button>
                 </div>
             </form>
             
             <form id="changePasswordForm">
-                <h3 style="margin: 20px 0 10px 0;">Change Password</h3>
+                <h3 style="margin: 20px 0 10px 0; color: var(--primary);">Change Password</h3>
                 <div class="form-group">
                     <label for="currentPassword">Current Password</label>
-                    <input type="password" id="currentPassword" class="form-control" placeholder="Enter current password" required>
+                    <input type="password" id="currentPassword" class="form-control" placeholder="Enter current password" required autocomplete="current-password">
                 </div>
                 <div class="form-group">
                     <label for="newPassword">New Password</label>
-                    <input type="password" id="newPassword" class="form-control" placeholder="Enter new password (min 6 characters)" required>
+                    <input type="password" id="newPassword" class="form-control" placeholder="Enter new password (min 6 characters)" required autocomplete="new-password">
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn">Change Password</button>
+                    <button type="submit" class="btn btn-full">Change Password</button>
                 </div>
             </form>
             
-            <div style="margin-top: 30px; border-top: 1px solid #E0E0E0; padding-top: 20px; background-color: #FFFFFF;">
-                <h3 style="margin-bottom: 10px; color: #E53935; background-color: #FFFFFF;">Delete Account</h3>
-                <p style="margin-bottom: 15px; background-color: #FFFFFF;">This action is permanent and cannot be undone. All your data will be deleted.</p>
-                <div class="form-group" style="background-color: #FFFFFF;">
-                    <button id="deleteAccountBtn" class="btn btn-danger">Delete My Account</button>
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
+                <h3 style="margin-bottom: 10px; color: var(--danger);">Delete Account</h3>
+                <p style="margin-bottom: 15px; color: var(--gray);">This action is permanent and cannot be undone. All your data will be deleted.</p>
+                <div class="form-group">
+                    <button id="deleteAccountBtn" class="btn btn-danger btn-full">Delete My Account</button>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- Admin Password Modal -->
+    <div class="modal" id="adminPasswordModal">
+        <div class="modal-content">
+            <span class="close" id="closeAdminPasswordModal">&times;</span>
+            <h2>Change Admin Password</h2>
+            
+            <div class="alert alert-success" id="adminPasswordSuccessAlert"></div>
+            <div class="alert alert-danger" id="adminPasswordAlert"></div>
+            
+            <form id="adminPasswordForm">
+                <div class="form-group">
+                    <label for="adminCurrentPassword">Current Password</label>
+                    <input type="password" id="adminCurrentPassword" class="form-control" placeholder="Enter current password" required autocomplete="current-password">
+                </div>
+                <div class="form-group">
+                    <label for="adminNewPassword">New Password</label>
+                    <input type="password" id="adminNewPassword" class="form-control" placeholder="Enter new password (min 6 characters)" required autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-full">Change Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-  <script>
-        // Firebase Configuration 
-      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAev2VvDz3FCxdZmZo2W2jpgACFh9Q_YlA",
-  authDomain: "ohk-volunteers.firebaseapp.com",
-  databaseURL: "https://ohk-volunteers-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "ohk-volunteers",
-  storageBucket: "ohk-volunteers.firebasestorage.app",
-  messagingSenderId: "637356396673",
-  appId: "1:637356396673:web:e9cbfcf21dc509cadb7d80",
-  measurementId: "G-R4KV130GN8"
-};
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAev2VvDz3FCxdZmZo2W2jpgACFh9Q_YlA",
+            authDomain: "ohk-volunteers.firebaseapp.com",
+            databaseURL: "https://ohk-volunteers-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "ohk-volunteers",
+            storageBucket: "ohk-volunteers.firebasestorage.app",
+            messagingSenderId: "637356396673",
+            appId: "1:637356396673:web:e9cbfcf21dc509cadb7d80",
+            measurementId: "G-R4KV130GN8"
+        };
         
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
         
-        // Firebase Database Paths
+        // Constants
         const USERS_PATH = 'users';
         const TRANSACTIONS_PATH = 'transactions';
         const ADMINS_PATH = 'admins';
@@ -1242,162 +1077,148 @@ const firebaseConfig = {
         const DELETED_EMAILS_PATH = 'deleted_emails';
         
         // DOM Elements
-        const authContainer = document.getElementById('authContainer');
-        const dashboardContainer = document.getElementById('dashboardContainer');
-        const adminContainer = document.getElementById('adminContainer');
+        const elements = {
+            authContainer: document.getElementById('authContainer'),
+            dashboardContainer: document.getElementById('dashboardContainer'),
+            adminContainer: document.getElementById('adminContainer'),
+            
+            loginTab: document.getElementById('loginTab'),
+            registerTab: document.getElementById('registerTab'),
+            loginForm: document.getElementById('loginForm'),
+            registerForm: document.getElementById('registerForm'),
+            
+            loginAlert: document.getElementById('loginAlert'),
+            registerAlert: document.getElementById('registerAlert'),
+            
+            userName: document.getElementById('userName'),
+            availableTokens: document.getElementById('availableTokens'),
+            totalEarned: document.getElementById('totalEarned'),
+            workingDays: document.getElementById('workingDays'),
+            historyTableBody: document.getElementById('historyTableBody'),
+            
+            searchInput: document.getElementById('searchInput'),
+            userList: document.getElementById('userList'),
+            
+            tokenModal: document.getElementById('tokenModal'),
+            modalUserName: document.getElementById('modalUserName'),
+            modalCurrentTokens: document.getElementById('modalCurrentTokens'),
+            modalWorkingDays: document.getElementById('modalWorkingDays'),
+            modalHistoryTableBody: document.getElementById('modalHistoryTableBody'),
+            
+            passwordResetModal: document.getElementById('passwordResetModal'),
+            addUserModal: document.getElementById('addUserModal'),
+            accountSettingsModal: document.getElementById('accountSettingsModal'),
+            adminPasswordModal: document.getElementById('adminPasswordModal'),
+            
+            historyLoading: document.getElementById('historyLoading'),
+            usersLoading: document.getElementById('usersLoading'),
+            loadingOverlay: document.getElementById('loading-overlay'),
+            loadingMessage: document.getElementById('loadingMessage'),
+            
+            connectionStatus: document.getElementById('connectionStatus')
+        };
         
-        const loginTab = document.getElementById('loginTab');
-        const registerTab = document.getElementById('registerTab');
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        
-        const loginAlert = document.getElementById('loginAlert');
-        const registerAlert = document.getElementById('registerAlert');
-        
-        const logoutBtn = document.getElementById('logoutBtn');
-        const adminLogoutBtn = document.getElementById('adminLogoutBtn');
-        const accountSettingsBtn = document.getElementById('accountSettingsBtn');
-        
-        const userName = document.getElementById('userName');
-        const availableTokens = document.getElementById('availableTokens');
-        const totalEarned = document.getElementById('totalEarned');
-        const workingDays = document.getElementById('workingDays');
-        const historyTableBody = document.getElementById('historyTableBody');
-        
-        const searchInput = document.getElementById('searchInput');
-        const userList = document.getElementById('userList');
-        const addUserBtn = document.getElementById('addUserBtn');
-        
-        const tokenModal = document.getElementById('tokenModal');
-        const closeTokenModal = document.getElementById('closeTokenModal');
-        const modalUserName = document.getElementById('modalUserName');
-        const modalCurrentTokens = document.getElementById('modalCurrentTokens');
-        const modalWorkingDays = document.getElementById('modalWorkingDays');
-        const quickAddBtn = document.getElementById('quickAddBtn');
-        const quickRemoveBtn = document.getElementById('quickRemoveBtn');
-        const addTokensForm = document.getElementById('addTokensForm');
-        const tokenAmount = document.getElementById('tokenAmount');
-        const tokenReason = document.getElementById('tokenReason');
-        const removeTokensBtn = document.getElementById('removeTokensBtn');
-        const addWorkDayBtn = document.getElementById('addWorkDayBtn');
-        const modalHistoryTableBody = document.getElementById('modalHistoryTableBody');
-        const deleteUserBtn = document.getElementById('deleteUserBtn');
-        
-        const passwordResetModal = document.getElementById('passwordResetModal');
-        const closePasswordResetModal = document.getElementById('closePasswordResetModal');
-        const passwordResetForm = document.getElementById('passwordResetForm');
-        const resetEmail = document.getElementById('resetEmail');
-        const passwordResetAlert = document.getElementById('passwordResetAlert');
-        const passwordResetSuccessAlert = document.getElementById('passwordResetSuccessAlert');
-        const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-        
-        const addUserModal = document.getElementById('addUserModal');
-        const closeAddUserModal = document.getElementById('closeAddUserModal');
-        const addUserForm = document.getElementById('addUserForm');
-        const addUserAlert = document.getElementById('addUserAlert');
-        
-        const accountSettingsModal = document.getElementById('accountSettingsModal');
-        const closeAccountSettingsModal = document.getElementById('closeAccountSettingsModal');
-        const changeUsernameForm = document.getElementById('changeUsernameForm');
-        const newUsername = document.getElementById('newUsername');
-        const changePasswordForm = document.getElementById('changePasswordForm');
-        const accountSettingsAlert = document.getElementById('accountSettingsAlert');
-        const accountSettingsSuccessAlert = document.getElementById('accountSettingsSuccessAlert');
-        const deleteAccountBtn = document.getElementById('deleteAccountBtn');
-        
-        const historyLoading = document.getElementById('historyLoading');
-        const usersLoading = document.getElementById('usersLoading');
-        const loadingOverlay = document.getElementById('loading-overlay');
-        const loadingMessage = document.getElementById('loadingMessage');
-        
-        const statusBar = document.getElementById('statusBar');
-        const connectionStatus = document.getElementById('connectionStatus');
-        const connectionInfo = document.getElementById('connectionInfo');
-        
-        // Admin Password Modal Elements
-        const adminPasswordBtn = document.getElementById('adminPasswordBtn');
-        const adminPasswordModal = document.getElementById('adminPasswordModal');
-        const closeAdminPasswordModal = document.getElementById('closeAdminPasswordModal');
-        const adminPasswordForm = document.getElementById('adminPasswordForm');
-        const adminPasswordAlert = document.getElementById('adminPasswordAlert');
-        const adminPasswordSuccessAlert = document.getElementById('adminPasswordSuccessAlert');
-
-        // Current selected user in admin modal
+        // State
         let selectedUserId = null;
         let isInitialized = false;
         
-        // Initialize app and set up auth listener
+        // Utility Functions
+        function showLoading(message = 'Loading...') {
+            elements.loadingMessage.textContent = message;
+            elements.loadingOverlay.style.display = 'block';
+        }
+        
+        function hideLoading() {
+            elements.loadingOverlay.style.display = 'none';
+        }
+        
+        function showAlert(alertElement, message) {
+            alertElement.textContent = message;
+            alertElement.style.display = 'block';
+            setTimeout(() => {
+                alertElement.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showSuccessAlert(alertElement, message) {
+            alertElement.textContent = message;
+            alertElement.style.display = 'block';
+            setTimeout(() => {
+                alertElement.style.display = 'none';
+            }, 5000);
+        }
+        
+        function generateId() {
+            return Math.random().toString(36).substring(2, 15) + 
+                   Math.random().toString(36).substring(2, 15);
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+        
+        function showContainer(containerName) {
+            elements.authContainer.style.display = containerName === 'auth' ? 'block' : 'none';
+            elements.dashboardContainer.style.display = containerName === 'dashboard' ? 'block' : 'none';
+            elements.adminContainer.style.display = containerName === 'admin' ? 'block' : 'none';
+        }
+        
+        // Initialize Application
         function initializeApp() {
             showLoading('Initializing application...');
             
-            // Check connection status
+            // Connection status
             const connectedRef = database.ref('.info/connected');
             connectedRef.on('value', (snap) => {
-                // Set connection status more subtly
                 if (snap.val() === true) {
-                    connectionStatus.textContent = 'Connected';
-                    connectionStatus.className = 'status-connected';
-                    connectionInfo.textContent = 'Data is syncing across devices';
+                    elements.connectionStatus.textContent = 'Connected';
+                    elements.connectionStatus.className = 'status-connected';
                 } else {
-                    connectionStatus.textContent = 'Offline';
-                    connectionStatus.className = 'status-disconnected';
-                    connectionInfo.textContent = 'Check your connection';
+                    elements.connectionStatus.textContent = 'Offline';
+                    elements.connectionStatus.className = 'status-disconnected';
                 }
             });
             
-            // Set up auth state listener
+            // Auth state listener
             auth.onAuthStateChanged(async (user) => {
                 hideLoading();
                 
                 if (user) {
-                    // User is signed in
                     try {
-                        // First check if user profile exists in active users
                         const userSnapshot = await database.ref(`${USERS_PATH}/${user.uid}`).once('value');
                         
-                        // If profile doesn't exist in active users, check if deactivated
                         if (!userSnapshot.exists()) {
-                            // CHECK IF USER IS DEACTIVATED
                             const deactivatedSnapshot = await database.ref(`${DEACTIVATED_USERS_PATH}/${user.uid}`).once('value');
                             
                             if (deactivatedSnapshot.exists()) {
-                                // User is deactivated - log them out
-                                alert('This account has been deactivated. Please contact an administrator if you believe this is an error.');
+                                alert('This account has been deactivated. Please contact an administrator.');
                                 await auth.signOut();
-                                showAuthContainer();
+                                showContainer('auth');
                                 return;
                             }
-                        }
-                        
-                        // Continue with normal flow - either create profile or show dashboard
-                        if (!userSnapshot.exists()) {
-                            // If user auth exists but profile doesn't exist and not deactivated,
-                            // create new profile
+                            
                             showLoading('Setting up your profile...');
                             await createUserProfile(user);
                             hideLoading();
                         }
                         
-                        // Check if user is admin
                         const isAdmin = await checkIfAdmin(user.uid);
                         
                         if (isAdmin) {
                             await showAdminPanel();
-                            // We're not adding the deactivated users button as requested
                         } else {
                             await showUserDashboard();
                         }
                     } catch (error) {
                         console.error('Error in auth state change:', error);
-                        showAuthContainer();
+                        showContainer('auth');
                         alert('Error loading user data: ' + error.message);
                     }
                 } else {
-                    // User is signed out
-                    showAuthContainer();
+                    showContainer('auth');
                 }
                 
-                // Check if we need to create admin account on first run
                 if (!isInitialized) {
                     isInitialized = true;
                     setupAdminIfNeeded();
@@ -1405,22 +1226,18 @@ const firebaseConfig = {
             });
         }
         
-        // Check and create admin account if it doesn't exist
+        // Setup admin account if needed
         async function setupAdminIfNeeded() {
             try {
-                // Check if admins list exists
                 const adminsSnapshot = await database.ref(ADMINS_PATH).once('value');
                 
                 if (!adminsSnapshot.exists() || adminsSnapshot.numChildren() === 0) {
-                    // No admins exist, create default admin
                     showLoading('Setting up admin account...');
                     
                     try {
-                        // Create admin auth account
                         const userCredential = await auth.createUserWithEmailAndPassword('admin@volunteer-system.com', 'admin123');
                         const user = userCredential.user;
                         
-                        // Create admin profile
                         await database.ref(`${USERS_PATH}/${user.uid}`).set({
                             name: 'Admin User',
                             email: 'admin@volunteer-system.com',
@@ -1429,15 +1246,13 @@ const firebaseConfig = {
                             workingDays: 0
                         });
                         
-                        // Mark user as admin
                         await database.ref(`${ADMINS_PATH}/${user.uid}`).set(true);
                         
                         alert('Default admin account created. Email: admin@volunteer-system.com, Password: admin123');
                     } catch (error) {
                         console.error('Error creating admin:', error);
-                        // If admin already exists in auth but not in database
                         if (error.code === 'auth/email-already-in-use') {
-                            alert('Admin account exists but may not be properly set up. Please sign in with admin@volunteer-system.com and password admin123');
+                            alert('Admin account exists. Sign in with admin@volunteer-system.com and password admin123');
                         }
                     } finally {
                         hideLoading();
@@ -1448,13 +1263,11 @@ const firebaseConfig = {
             }
         }
         
-        // Check if a user is an admin
         async function checkIfAdmin(uid) {
             const adminSnapshot = await database.ref(`${ADMINS_PATH}/${uid}`).once('value');
             return adminSnapshot.exists() && adminSnapshot.val() === true;
         }
         
-        // Create user profile in database
         async function createUserProfile(user, additionalData = {}) {
             const userData = {
                 name: additionalData.name || user.displayName || 'User',
@@ -1468,630 +1281,12 @@ const firebaseConfig = {
             return userData;
         }
         
-        // Show auth container
-        function showAuthContainer() {
-            authContainer.style.display = 'block';
-            dashboardContainer.style.display = 'none';
-            adminContainer.style.display = 'none';
-        }
-        
-        // Show loading overlay
-        function showLoading(message = 'Loading...') {
-            loadingMessage.textContent = message;
-            loadingOverlay.style.display = 'block';
-        }
-        
-        // Hide loading overlay
-        function hideLoading() {
-            loadingOverlay.style.display = 'none';
-        }
-        
-        // Tab switching
-        loginTab.addEventListener('click', () => {
-            loginTab.classList.add('active');
-            registerTab.classList.remove('active');
-            loginForm.style.display = 'block';
-            registerForm.style.display = 'none';
-        });
-        
-        registerTab.addEventListener('click', () => {
-            registerTab.classList.add('active');
-            loginTab.classList.remove('active');
-            registerForm.style.display = 'block';
-            loginForm.style.display = 'none';
-        });
-        
-        // Login form submission
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            // Validate inputs
-            if (!email || !password) {
-                showAlert(loginAlert, 'Please fill in all fields');
-                return;
-            }
-            
-            showLoading('Signing in...');
-            
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                // Auth state listener will handle redirection
-            } catch (error) {
-                console.error('Login error:', error);
-                hideLoading();
-                
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                    showAlert(loginAlert, 'Invalid email or password');
-                } else {
-                    showAlert(loginAlert, `Login failed: ${error.message}`);
-                }
-            }
-        });
-        
-        // Register form submission
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const name = document.getElementById('registerName').value;
-            const phone = document.getElementById('registerPhone').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            
-            // Validate inputs
-            if (!name || !phone || !email || !password) {
-                showAlert(registerAlert, 'Please fill in all fields');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showAlert(registerAlert, 'Password must be at least 6 characters');
-                return;
-            }
-            
-            showLoading('Creating your account...');
-            
-            try {
-                // Check if this email was previously deleted/deactivated
-                const encodedEmail = encodeURIComponent(email);
-                const emailCheckSnapshot = await database.ref(`${DELETED_EMAILS_PATH}/${encodedEmail}`).once('value');
-                
-                if (emailCheckSnapshot.exists()) {
-                    // This email was previously used by a deleted account
-                    // We need to handle this specially
-                    showAlert(registerAlert, 'This email was previously used. Please contact an administrator to reactivate your account or use a different email.');
-                    hideLoading();
-                    return;
-                }
-                
-                // Create user in Firebase Auth
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-                
-                // Create user profile
-                await createUserProfile(user, { name, phone });
-                
-                // Auth state listener will handle redirection
-            } catch (error) {
-                console.error('Registration error:', error);
-                hideLoading();
-                
-                if (error.code === 'auth/email-already-in-use') {
-                    showAlert(registerAlert, 'Email is already in use. If you previously had an account, please contact an administrator.');
-                } else if (error.code === 'auth/invalid-email') {
-                    showAlert(registerAlert, 'Invalid email address');
-                } else if (error.code === 'auth/weak-password') {
-                    showAlert(registerAlert, 'Password is too weak');
-                } else {
-                    showAlert(registerAlert, `Registration failed: ${error.message}`);
-                }
-            }
-        });
-        
-        // Logout buttons
-        logoutBtn.addEventListener('click', logout);
-        adminLogoutBtn.addEventListener('click', logout);
-        
-        // Search functionality
-        searchInput.addEventListener('input', async () => {
-            const searchTerm = searchInput.value.toLowerCase();
-            await loadUsers(searchTerm);
-        });
-        
-        // Token modal close
-        closeTokenModal.addEventListener('click', () => {
-            tokenModal.style.display = 'none';
-        });
-        
-        // Add User Button
-        addUserBtn.addEventListener('click', () => {
-            addUserForm.reset();
-            addUserAlert.style.display = 'none';
-            addUserModal.style.display = 'block';
-        });
-        
-        // Close Add User Modal
-        closeAddUserModal.addEventListener('click', () => {
-            addUserModal.style.display = 'none';
-        });
-        
-        // Add User Form Submission
-        addUserForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const name = document.getElementById('addUserName').value;
-            const phone = document.getElementById('addUserPhone').value;
-            const email = document.getElementById('addUserEmail').value;
-            const password = document.getElementById('addUserPassword').value;
-            
-            // Validate inputs
-            if (!name || !phone || !email || !password) {
-                showAlert(addUserAlert, 'Please fill in all fields');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showAlert(addUserAlert, 'Password must be at least 6 characters');
-                return;
-            }
-            
-            showLoading('Adding new user...');
-            
-            try {
-                // Create user with admin SDK (we're using client SDK here as a simplification)
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-                
-                // Create user profile
-                await createUserProfile(user, { name, phone });
-                
-                // Sign back in as admin (since we just created a new user)
-                const adminUser = auth.currentUser;
-                
-                // Close modal and refresh user list
-                addUserModal.style.display = 'none';
-                await loadUsers(searchInput.value);
-                
-                hideLoading();
-            } catch (error) {
-                console.error('Add user error:', error);
-                hideLoading();
-                
-                if (error.code === 'auth/email-already-in-use') {
-                    showAlert(addUserAlert, 'Email is already in use');
-                } else {
-                    showAlert(addUserAlert, `Failed to add user: ${error.message}`);
-                }
-            }
-        });
-        
-        // Account Settings Button
-        accountSettingsBtn.addEventListener('click', () => {
-            changePasswordForm.reset();
-            accountSettingsAlert.style.display = 'none';
-            accountSettingsSuccessAlert.style.display = 'none';
-            accountSettingsModal.style.display = 'block';
-        });
-        
-        // Close Account Settings Modal
-        closeAccountSettingsModal.addEventListener('click', () => {
-            accountSettingsModal.style.display = 'none';
-        });
-        
-        // Admin Password Button
-        adminPasswordBtn.addEventListener('click', () => {
-            adminPasswordForm.reset();
-            adminPasswordAlert.style.display = 'none';
-            adminPasswordSuccessAlert.style.display = 'none';
-            adminPasswordModal.style.display = 'block';
-        });
-        
-        // Close Admin Password Modal
-        closeAdminPasswordModal.addEventListener('click', () => {
-            adminPasswordModal.style.display = 'none';
-        });
-        
-        // Admin Password Form Submission
-        adminPasswordForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const currentPassword = document.getElementById('adminCurrentPassword').value;
-            const newPassword = document.getElementById('adminNewPassword').value;
-            
-            // Validate inputs
-            if (!currentPassword || !newPassword) {
-                showAlert(adminPasswordAlert, 'Please fill in all fields');
-                return;
-            }
-            
-            if (newPassword.length < 6) {
-                showAlert(adminPasswordAlert, 'New password must be at least 6 characters');
-                return;
-            }
-            
-            showLoading('Changing password...');
-            
-            try {
-                const user = auth.currentUser;
-                
-                // Reauthenticate user first
-                const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
-                await user.reauthenticateWithCredential(credential);
-                
-                // Update password
-                await user.updatePassword(newPassword);
-                
-                // Show success message
-                showSuccessAlert(adminPasswordSuccessAlert, 'Password changed successfully');
-                
-                // Reset form
-                adminPasswordForm.reset();
-                
-                hideLoading();
-            } catch (error) {
-                console.error('Change admin password error:', error);
-                hideLoading();
-                
-                if (error.code === 'auth/wrong-password') {
-                    showAlert(adminPasswordAlert, 'Current password is incorrect');
-                } else {
-                    showAlert(adminPasswordAlert, `Failed to change password: ${error.message}`);
-                }
-            }
-        });
-        
-        // Quick Add Token Button
-        quickAddBtn.addEventListener('click', async () => {
-            await addTokensToUser(selectedUserId, 1, "Quick token addition");
-        });
-        
-        // Quick Remove Token Button
-        quickRemoveBtn.addEventListener('click', async () => {
-            await addTokensToUser(selectedUserId, -1, "Quick token removal");
-        });
-        
-        // Forgot Password Link
-        forgotPasswordLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            // Pre-fill email if entered in login form
-            const loginEmail = document.getElementById('loginEmail').value;
-            resetEmail.value = loginEmail || '';
-            
-            // Reset alerts
-            passwordResetAlert.style.display = 'none';
-            passwordResetSuccessAlert.style.display = 'none';
-            
-            // Show modal
-            passwordResetModal.style.display = 'block';
-        });
-        
-        // Close Password Reset Modal
-        closePasswordResetModal.addEventListener('click', () => {
-            passwordResetModal.style.display = 'none';
-        });
-        
-        // Password Reset Form Submission
-        passwordResetForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const email = resetEmail.value;
-            
-            if (!email) {
-                showAlert(passwordResetAlert, 'Please enter your email address');
-                return;
-            }
-            
-            showLoading('Sending password reset email...');
-            
-            try {
-                await auth.sendPasswordResetEmail(email);
-                hideLoading();
-                showSuccessAlert(passwordResetSuccessAlert, 'Password reset email sent! Check your inbox.');
-                resetEmail.value = '';
-            } catch (error) {
-                console.error('Password reset error:', error);
-                hideLoading();
-                
-                if (error.code === 'auth/user-not-found') {
-                    showAlert(passwordResetAlert, 'No account found with this email address');
-                } else {
-                    showAlert(passwordResetAlert, `Error sending reset email: ${error.message}`);
-                }
-            }
-        });
-        
-        // Add Tokens Form Submission
-        addTokensForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const amount = parseInt(tokenAmount.value);
-            const reason = tokenReason.value;
-            
-            // Validate inputs
-            if (!amount || !reason) {
-                alert('Please fill in all fields');
-                return;
-            }
-            
-            await addTokensToUser(selectedUserId, amount, reason);
-            
-            // Reset form
-            addTokensForm.reset();
-        });
-        
-        // Remove Tokens Button Click
-        removeTokensBtn.addEventListener('click', async () => {
-            const amount = parseInt(tokenAmount.value);
-            const reason = tokenReason.value;
-            
-            // Validate inputs
-            if (!amount || !reason) {
-                alert('Please fill in all fields');
-                return;
-            }
-            
-            await addTokensToUser(selectedUserId, -amount, reason);
-            
-            // Reset form
-            addTokensForm.reset();
-        });
-        
-        // Add Work Day Button Click
-        addWorkDayBtn.addEventListener('click', async () => {
-            await addWorkDayToUser(selectedUserId);
-        });
-        
-        // Change Username Form Submission
-        changeUsernameForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const username = newUsername.value;
-            
-            // Validate input
-            if (!username) {
-                showAlert(accountSettingsAlert, 'Please enter a username');
-                return;
-            }
-            
-            showLoading('Updating username...');
-            
-            try {
-                const user = auth.currentUser;
-                
-                // Update profile in Firebase Auth
-                await user.updateProfile({
-                    displayName: username
-                });
-                
-                // Update user data in Realtime Database
-                await database.ref(`${USERS_PATH}/${user.uid}/name`).set(username);
-                
-                // Update UI
-                userName.textContent = username;
-                
-                // Show success message
-                showSuccessAlert(accountSettingsSuccessAlert, 'Username updated successfully');
-                
-                // Reset form
-                newUsername.value = '';
-                
-                hideLoading();
-            } catch (error) {
-                console.error('Change username error:', error);
-                hideLoading();
-                showAlert(accountSettingsAlert, `Failed to update username: ${error.message}`);
-            }
-        });
-        
-        // Change Password Form Submission
-        changePasswordForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const currentPassword = document.getElementById('currentPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            
-            // Validate inputs
-            if (!currentPassword || !newPassword) {
-                showAlert(accountSettingsAlert, 'Please fill in all fields');
-                return;
-            }
-            
-            if (newPassword.length < 6) {
-                showAlert(accountSettingsAlert, 'New password must be at least 6 characters');
-                return;
-            }
-            
-            showLoading('Changing password...');
-            
-            try {
-                const user = auth.currentUser;
-                
-                // Reauthenticate user first
-                const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
-                await user.reauthenticateWithCredential(credential);
-                
-                // Update password
-                await user.updatePassword(newPassword);
-                
-                // Show success message
-                showSuccessAlert(accountSettingsSuccessAlert, 'Password changed successfully');
-                
-                // Reset form
-                changePasswordForm.reset();
-                
-                hideLoading();
-            } catch (error) {
-                console.error('Change password error:', error);
-                hideLoading();
-                
-                if (error.code === 'auth/wrong-password') {
-                    showAlert(accountSettingsAlert, 'Current password is incorrect');
-                } else {
-                    showAlert(accountSettingsAlert, `Failed to change password: ${error.message}`);
-                }
-            }
-        });
-        
-        // Delete Account Button
-        deleteAccountBtn.addEventListener('click', async () => {
-            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-                await deleteUserAccount();
-            }
-        });
-        
-        // Delete User Button
-        deleteUserBtn.addEventListener('click', async () => {
-            // Show modal with options
-            if (confirm('What would you like to do with this user account?\n\n- Click OK to deactivate the account (data preserved, can be restored)\n- Click Cancel to choose another option')) {
-                // User chose to deactivate
-                await deleteUser(selectedUserId, false);
-                alert('User account has been deactivated. You can restore it from the Deactivated Users section.');
-            } else {
-                // Ask if they want to permanently delete
-                if (confirm('Do you want to PERMANENTLY delete this user and all their data?\nThis action CANNOT be undone.')) {
-                    if (confirm('FINAL WARNING: This will permanently erase all user data and cannot be recovered. Proceed?')) {
-                        await deleteUser(selectedUserId, true);
-                        alert('User account and all associated data has been permanently deleted.');
-                    }
-                }
-            }
-        });
-        
-        // Delete User Account
-        async function deleteUserAccount() {
-            showLoading('Deactivating your account...');
-            
-            try {
-                const user = auth.currentUser;
-                
-                // First soft delete the user data
-                const success = await deleteUser(user.uid, false);
-                
-                if (success) {
-                    // Now sign out but DON'T delete the auth account
-                    // This allows admins to reactivate if needed
-                    await auth.signOut();
-                    alert('Your account has been deactivated. Contact an administrator if you wish to restore it.');
-                }
-                
-                // Auth state change will handle redirection
-            } catch (error) {
-                console.error('Delete account error:', error);
-                hideLoading();
-                
-                if (error.code === 'auth/requires-recent-login') {
-                    alert('Please login again before deleting your account');
-                    logout();
-                } else {
-                    alert('Failed to deactivate account: ' + error.message);
-                }
-            }
-        }
-        
-        // Delete User with soft deletion option
-        async function deleteUser(userId, permanent = false) {
-            showLoading(permanent ? 'Permanently deleting user...' : 'Deactivating user account...');
-            
-            try {
-                // Get user data before deletion
-                const userSnapshot = await database.ref(`${USERS_PATH}/${userId}`).once('value');
-                
-                if (!userSnapshot.exists()) {
-                    throw new Error('User not found');
-                }
-                
-                const userData = userSnapshot.val();
-                
-                // Get user transactions
-                const transactionsSnapshot = await database.ref(TRANSACTIONS_PATH)
-                    .orderByChild('userId')
-                    .equalTo(userId)
-                    .once('value');
-                
-                const transactions = {};
-                if (transactionsSnapshot.exists()) {
-                    transactionsSnapshot.forEach((transactionSnapshot) => {
-                        transactions[transactionSnapshot.key] = transactionSnapshot.val();
-                    });
-                }
-                
-                if (permanent) {
-                    // PERMANENT DELETION - Remove all data
-                    const updates = {};
-                    updates[`${USERS_PATH}/${userId}`] = null;
-                    updates[`${ADMINS_PATH}/${userId}`] = null;
-                    updates[`${DEACTIVATED_USERS_PATH}/${userId}`] = null;
-                    
-                    // Add transaction deletions to updates
-                    if (transactionsSnapshot.exists()) {
-                        transactionsSnapshot.forEach((transactionSnapshot) => {
-                            updates[`${TRANSACTIONS_PATH}/${transactionSnapshot.key}`] = null;
-                        });
-                    }
-                    
-                    // Execute the multi-path update
-                    await database.ref().update(updates);
-                } else {
-                    // SOFT DELETION - Move to deactivated users
-                    const deactivatedData = {
-                        userData: userData,
-                        transactions: transactions,
-                        deactivatedAt: new Date().toISOString(),
-                        isAdmin: false // Will be updated if user is admin
-                    };
-                    
-                    // Check if user is admin
-                    const adminSnapshot = await database.ref(`${ADMINS_PATH}/${userId}`).once('value');
-                    if (adminSnapshot.exists()) {
-                        deactivatedData.isAdmin = true;
-                    }
-                    
-                    // Create multi-path update
-                    const updates = {};
-                    
-                    // Save to deactivated users
-                    updates[`${DEACTIVATED_USERS_PATH}/${userId}`] = deactivatedData;
-                    
-                    // Remove from active users
-                    updates[`${USERS_PATH}/${userId}`] = null;
-                    updates[`${ADMINS_PATH}/${userId}`] = null;
-                    
-                    // Keep transactions in the main tree for simplicity
-                    // This allows the system to maintain referential integrity
-                    // If you want to hide them, you could add a 'deactivated' field to each
-                    
-                    // Execute the update
-                    await database.ref().update(updates);
-                }
-                
-                // If in admin panel, refresh user list and close modal
-                if (adminContainer.style.display === 'block') {
-                    await loadUsers(searchInput.value);
-                    tokenModal.style.display = 'none';
-                }
-                
-                hideLoading();
-                
-                return true;
-            } catch (error) {
-                console.error('Delete user error:', error);
-                hideLoading();
-                alert('Failed to process user account: ' + error.message);
-                return false;
-            }
-        }
-        
-        // Show user dashboard
+        // Dashboard Functions
         async function showUserDashboard() {
             showLoading('Loading your dashboard...');
             
             try {
                 const user = auth.currentUser;
-                
-                // Get user profile
                 const userSnapshot = await database.ref(`${USERS_PATH}/${user.uid}`).once('value');
                 
                 if (!userSnapshot.exists()) {
@@ -2100,16 +1295,11 @@ const firebaseConfig = {
                 
                 const userData = userSnapshot.val();
                 
-                authContainer.style.display = 'none';
-                dashboardContainer.style.display = 'block';
-                adminContainer.style.display = 'none';
+                showContainer('dashboard');
                 
-                // Set username for the change form
-                newUsername.value = userData.name || user.displayName || '';
-                
-                userName.textContent = userData.name || user.displayName || 'Volunteer';
-                availableTokens.textContent = userData.tokens || 0;
-                workingDays.textContent = userData.workingDays || 0;
+                elements.userName.textContent = userData.name || user.displayName || 'Volunteer';
+                elements.availableTokens.textContent = userData.tokens || 0;
+                elements.workingDays.textContent = userData.workingDays || 0;
                 
                 // Calculate total earned tokens
                 const transactionsSnapshot = await database.ref(TRANSACTIONS_PATH)
@@ -2127,67 +1317,42 @@ const firebaseConfig = {
                     });
                 }
                 
-                totalEarned.textContent = totalEarnedTokens;
+                elements.totalEarned.textContent = totalEarnedTokens;
                 
-                // Show loading
-                historyLoading.style.display = 'block';
-                historyTableBody.innerHTML = '';
+                elements.historyLoading.style.display = 'block';
+                elements.historyTableBody.innerHTML = '';
                 
-                // Load transaction history
                 await loadTransactionHistory(user.uid);
-                historyLoading.style.display = 'none';
+                elements.historyLoading.style.display = 'none';
                 
                 hideLoading();
             } catch (error) {
                 console.error('Error showing dashboard:', error);
                 hideLoading();
                 alert('Failed to load dashboard: ' + error.message);
-                authContainer.style.display = 'block';
-                dashboardContainer.style.display = 'none';
+                showContainer('auth');
             }
         }
         
-        // Show admin panel
         async function showAdminPanel() {
             showLoading('Loading admin panel...');
             
             try {
-                authContainer.style.display = 'none';
-                dashboardContainer.style.display = 'none';
-                adminContainer.style.display = 'block';
+                showContainer('admin');
                 
-                // Show loading
-                usersLoading.style.display = 'block';
-                
-                // Load users
+                elements.usersLoading.style.display = 'block';
                 await loadUsers();
-                usersLoading.style.display = 'none';
+                elements.usersLoading.style.display = 'none';
                 
                 hideLoading();
             } catch (error) {
                 console.error('Error showing admin panel:', error);
                 hideLoading();
                 alert('Failed to load admin panel: ' + error.message);
-                authContainer.style.display = 'block';
-                adminContainer.style.display = 'none';
+                showContainer('auth');
             }
         }
         
-        // Logout
-        async function logout() {
-            showLoading('Signing out...');
-            
-            try {
-                await auth.signOut();
-                // Auth state listener will handle redirection
-            } catch (error) {
-                console.error('Logout error:', error);
-                hideLoading();
-                alert('Failed to sign out: ' + error.message);
-            }
-        }
-        
-        // Load transaction history for a user
         async function loadTransactionHistory(userId) {
             try {
                 const transactionsSnapshot = await database.ref(TRANSACTIONS_PATH)
@@ -2195,16 +1360,15 @@ const firebaseConfig = {
                     .equalTo(userId)
                     .once('value');
                 
-                historyTableBody.innerHTML = '';
+                elements.historyTableBody.innerHTML = '';
                 
                 if (!transactionsSnapshot.exists()) {
                     const row = document.createElement('tr');
                     row.innerHTML = '<td colspan="4" style="text-align: center;">No transactions found</td>';
-                    historyTableBody.appendChild(row);
+                    elements.historyTableBody.appendChild(row);
                     return;
                 }
                 
-                // Convert to array and sort by date
                 const transactions = [];
                 transactionsSnapshot.forEach((transactionSnapshot) => {
                     transactions.push(transactionSnapshot.val());
@@ -2220,20 +1384,19 @@ const firebaseConfig = {
                     row.innerHTML = `
                         <td>${formatDate(transaction.date)}</td>
                         <td>${transaction.description}</td>
-                        <td style="color: ${transaction.amount >= 0 ? 'green' : 'red'}">
+                        <td style="color: ${transaction.amount >= 0 ? 'var(--success)' : 'var(--danger)'}">
                             ${transaction.amount >= 0 ? '+' : ''}${transaction.amount}
                         </td>
                         <td>${balance}</td>
                     `;
-                    historyTableBody.appendChild(row);
+                    elements.historyTableBody.appendChild(row);
                 });
             } catch (error) {
                 console.error('Error loading transaction history:', error);
-                historyTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: red;">Error loading transaction history</td></tr>';
+                elements.historyTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--danger);">Error loading transaction history</td></tr>';
             }
         }
         
-        // Load modal transaction history
         async function loadModalTransactionHistory(userId) {
             try {
                 const transactionsSnapshot = await database.ref(TRANSACTIONS_PATH)
@@ -2241,16 +1404,15 @@ const firebaseConfig = {
                     .equalTo(userId)
                     .once('value');
                 
-                modalHistoryTableBody.innerHTML = '';
+                elements.modalHistoryTableBody.innerHTML = '';
                 
                 if (!transactionsSnapshot.exists()) {
                     const row = document.createElement('tr');
                     row.innerHTML = '<td colspan="3" style="text-align: center;">No transactions found</td>';
-                    modalHistoryTableBody.appendChild(row);
+                    elements.modalHistoryTableBody.appendChild(row);
                     return;
                 }
                 
-                // Convert to array and sort by date
                 const transactions = [];
                 transactionsSnapshot.forEach((transactionSnapshot) => {
                     transactions.push(transactionSnapshot.val());
@@ -2263,22 +1425,20 @@ const firebaseConfig = {
                     row.innerHTML = `
                         <td>${formatDate(transaction.date)}</td>
                         <td>${transaction.description}</td>
-                        <td style="color: ${transaction.amount >= 0 ? 'green' : 'red'}">
+                        <td style="color: ${transaction.amount >= 0 ? 'var(--success)' : 'var(--danger)'}">
                             ${transaction.amount >= 0 ? '+' : ''}${transaction.amount}
                         </td>
                     `;
-                    modalHistoryTableBody.appendChild(row);
+                    elements.modalHistoryTableBody.appendChild(row);
                 });
             } catch (error) {
                 console.error('Error loading modal transaction history:', error);
-                modalHistoryTableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: red;">Error loading transaction history</td></tr>';
+                elements.modalHistoryTableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--danger);">Error loading transaction history</td></tr>';
             }
         }
         
-        // Load users for admin panel
         async function loadUsers(searchTerm = '') {
             try {
-                // Get all users except current admin
                 const currentUser = auth.currentUser;
                 const usersSnapshot = await database.ref(USERS_PATH).once('value');
                 const users = [];
@@ -2287,14 +1447,12 @@ const firebaseConfig = {
                     const userId = userSnapshot.key;
                     const userData = userSnapshot.val();
                     
-                    // Skip current admin
                     if (userId !== currentUser.uid) {
-                        userData.id = userId; // Add ID to user data
+                        userData.id = userId;
                         users.push(userData);
                     }
                 });
                 
-                // Filter by search term
                 const filteredUsers = users.filter(user => {
                     if (!searchTerm) return true;
                     
@@ -2305,10 +1463,10 @@ const firebaseConfig = {
                     return nameMatch || phoneMatch || emailMatch;
                 });
                 
-                userList.innerHTML = '';
+                elements.userList.innerHTML = '';
                 
                 if (filteredUsers.length === 0) {
-                    userList.innerHTML = '<div class="user-item" style="text-align: center;">No volunteers found</div>';
+                    elements.userList.innerHTML = '<div class="user-item" style="text-align: center;">No volunteers found</div>';
                     return;
                 }
                 
@@ -2322,27 +1480,25 @@ const firebaseConfig = {
                         </div>
                         <div class="user-stats">
                             <span class="badge badge-primary">${user.tokens || 0} Tokens</span>
-                            <span class="badge" style="background: #f0f0f0; color: #333;">${user.workingDays || 0} Days</span>
+                            <span class="badge" style="background: var(--light-gray); color: var(--text);">${user.workingDays || 0} Days</span>
                         </div>
                         <div class="user-actions">
                             <button class="btn manage-user" data-id="${user.id}">Manage</button>
                         </div>
                     `;
                     
-                    userList.appendChild(userItem);
+                    elements.userList.appendChild(userItem);
                     
-                    // Add click event to manage button
                     userItem.querySelector('.manage-user').addEventListener('click', () => {
                         openTokenModal(user.id);
                     });
                 });
             } catch (error) {
                 console.error('Error loading users:', error);
-                userList.innerHTML = '<div class="user-item" style="text-align: center; color: red;">Error loading volunteers</div>';
+                elements.userList.innerHTML = '<div class="user-item" style="text-align: center; color: var(--danger);">Error loading volunteers</div>';
             }
         }
         
-        // Open token management modal
         async function openTokenModal(userId) {
             showLoading('Loading user data...');
             
@@ -2356,13 +1512,13 @@ const firebaseConfig = {
                 const user = userSnapshot.val();
                 selectedUserId = userId;
                 
-                modalUserName.textContent = user.name || 'User';
-                modalCurrentTokens.textContent = user.tokens || 0;
-                modalWorkingDays.textContent = user.workingDays || 0;
+                elements.modalUserName.textContent = user.name || 'User';
+                elements.modalCurrentTokens.textContent = user.tokens || 0;
+                elements.modalWorkingDays.textContent = user.workingDays || 0;
                 
                 await loadModalTransactionHistory(userId);
                 
-                tokenModal.style.display = 'block';
+                elements.tokenModal.style.display = 'block';
                 
                 hideLoading();
             } catch (error) {
@@ -2372,12 +1528,10 @@ const firebaseConfig = {
             }
         }
         
-        // Add tokens to user
         async function addTokensToUser(userId, amount, reason) {
             showLoading(amount >= 0 ? 'Adding tokens...' : 'Removing tokens...');
             
             try {
-                // Get current user data
                 const userSnapshot = await database.ref(`${USERS_PATH}/${userId}`).once('value');
                 
                 if (!userSnapshot.exists()) {
@@ -2385,12 +1539,9 @@ const firebaseConfig = {
                 }
                 
                 const user = userSnapshot.val();
-                
-                // Update tokens
                 const currentTokens = user.tokens || 0;
                 const newTokens = currentTokens + amount;
                 
-                // Create transaction
                 const transactionId = generateId();
                 const transaction = {
                     id: transactionId,
@@ -2400,20 +1551,17 @@ const firebaseConfig = {
                     date: new Date().toISOString()
                 };
                 
-                // Update database
                 const updates = {};
                 updates[`${USERS_PATH}/${userId}/tokens`] = newTokens;
                 updates[`${TRANSACTIONS_PATH}/${transactionId}`] = transaction;
                 
                 await database.ref().update(updates);
                 
-                // Update modal
-                modalCurrentTokens.textContent = newTokens;
+                elements.modalCurrentTokens.textContent = newTokens;
                 await loadModalTransactionHistory(userId);
                 
-                // Refresh user list if admin panel is visible
-                if (adminContainer.style.display === 'block') {
-                    await loadUsers(searchInput.value);
+                if (elements.adminContainer.style.display === 'block') {
+                    await loadUsers(elements.searchInput.value);
                 }
                 
                 hideLoading();
@@ -2424,12 +1572,10 @@ const firebaseConfig = {
             }
         }
         
-        // Add work day to user
         async function addWorkDayToUser(userId) {
             showLoading('Recording work day...');
             
             try {
-                // Get current user data
                 const userSnapshot = await database.ref(`${USERS_PATH}/${userId}`).once('value');
                 
                 if (!userSnapshot.exists()) {
@@ -2437,25 +1583,21 @@ const firebaseConfig = {
                 }
                 
                 const user = userSnapshot.val();
-                
-                // Update working days and tokens
                 const currentWorkingDays = user.workingDays || 0;
                 const currentTokens = user.tokens || 0;
                 
                 const newWorkingDays = currentWorkingDays + 1;
-                const newTokens = currentTokens + 3; // 3 tokens per working day (fixed from 5)
+                const newTokens = currentTokens + 3;
                 
-                // Create transaction
                 const transactionId = generateId();
                 const transaction = {
                     id: transactionId,
                     userId,
-                    amount: 3, // 3 tokens per working day (fixed from 5)
+                    amount: 3,
                     description: `Worked day ${newWorkingDays}`,
                     date: new Date().toISOString()
                 };
                 
-                // Update database
                 const updates = {};
                 updates[`${USERS_PATH}/${userId}/workingDays`] = newWorkingDays;
                 updates[`${USERS_PATH}/${userId}/tokens`] = newTokens;
@@ -2463,14 +1605,12 @@ const firebaseConfig = {
                 
                 await database.ref().update(updates);
                 
-                // Update modal
-                modalCurrentTokens.textContent = newTokens;
-                modalWorkingDays.textContent = newWorkingDays;
+                elements.modalCurrentTokens.textContent = newTokens;
+                elements.modalWorkingDays.textContent = newWorkingDays;
                 await loadModalTransactionHistory(userId);
                 
-                // Refresh user list if admin panel is visible
-                if (adminContainer.style.display === 'block') {
-                    await loadUsers(searchInput.value);
+                if (elements.adminContainer.style.display === 'block') {
+                    await loadUsers(elements.searchInput.value);
                 }
                 
                 hideLoading();
@@ -2481,73 +1621,33 @@ const firebaseConfig = {
             }
         }
         
-        // Show alert message
-        function showAlert(alertElement, message) {
-            alertElement.textContent = message;
-            alertElement.style.display = 'block';
+        async function logout() {
+            showLoading('Signing out...');
             
-            // Ensure proper styling is applied
-            if (alertElement.classList.contains('alert-danger')) {
-                alertElement.style.backgroundColor = '#E53935';
-                alertElement.style.color = 'white';
+            try {
+                await auth.signOut();
+            } catch (error) {
+                console.error('Logout error:', error);
+                hideLoading();
+                alert('Failed to sign out: ' + error.message);
             }
-            
-            setTimeout(() => {
-                alertElement.style.display = 'none';
-            }, 5000); // Increased visibility time to 5 seconds
         }
         
-        // Show success alert message
-        function showSuccessAlert(alertElement, message) {
-            alertElement.textContent = message;
-            alertElement.style.display = 'block';
-            
-            // Ensure proper styling is applied
-            if (alertElement.classList.contains('alert-success')) {
-                alertElement.style.backgroundColor = '#43A047';
-                alertElement.style.color = 'white';
-            }
-            
-            setTimeout(() => {
-                alertElement.style.display = 'none';
-            }, 5000); // Increased visibility time to 5 seconds
-        }
-        
-        // Generate random ID
-        function generateId() {
-            return Math.random().toString(36).substring(2, 15) + 
-                   Math.random().toString(36).substring(2, 15);
-        }
-        
-        // Format date
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-        }
-        
-        // Export user data to CSV
         async function exportUserData() {
             showLoading('Exporting data...');
             
             try {
-                // Get current user
                 const currentUser = auth.currentUser;
-                
-                // Get all users except current admin
                 const usersSnapshot = await database.ref(USERS_PATH).once('value');
                 const users = [];
-                const userMap = {}; // Map to convert userId to name and phone
+                const userMap = {};
                 
                 usersSnapshot.forEach((userSnapshot) => {
                     const userId = userSnapshot.key;
                     const userData = userSnapshot.val();
                     
-                    // Skip current admin
                     if (userId !== currentUser.uid) {
-                        // Add user to users array without ID
                         users.push(userData);
-                        
-                        // Create a mapping of userId to name and phone
                         userMap[userId] = {
                             name: userData.name || 'Unknown',
                             phone: userData.phone || 'No Phone'
@@ -2555,33 +1655,27 @@ const firebaseConfig = {
                     }
                 });
                 
-                // Get all transactions
                 const transactionsSnapshot = await database.ref(TRANSACTIONS_PATH).once('value');
                 const transactions = [];
                 
                 transactionsSnapshot.forEach((transactionSnapshot) => {
                     const transaction = transactionSnapshot.val();
-                    // Find user info for this transaction
                     const userInfo = userMap[transaction.userId] || { name: 'Unknown', phone: 'Unknown' };
-                    // Add user info to transaction
                     transaction.userName = userInfo.name;
                     transaction.userPhone = userInfo.phone;
                     transactions.push(transaction);
                 });
                 
-                // Create user data CSV without user IDs
                 let userCsv = 'Name,Email,Phone,Tokens,Working Days\n';
                 users.forEach(user => {
                     userCsv += `"${user.name || ''}","${user.email || ''}","${user.phone || ''}",${user.tokens || 0},${user.workingDays || 0}\n`;
                 });
                 
-                // Create transaction data CSV with name and phone instead of user ID
                 let transactionCsv = 'Transaction ID,Volunteer Name,Phone Number,Amount,Description,Date\n';
                 transactions.forEach(transaction => {
                     transactionCsv += `"${transaction.id || ''}","${transaction.userName}","${transaction.userPhone}",${transaction.amount || 0},"${transaction.description || ''}","${transaction.date || ''}"\n`;
                 });
                 
-                // Create download links
                 const userBlob = new Blob([userCsv], { type: 'text/csv' });
                 const transactionBlob = new Blob([transactionCsv], { type: 'text/csv' });
                 
@@ -2593,7 +1687,6 @@ const firebaseConfig = {
                 transactionLink.href = URL.createObjectURL(transactionBlob);
                 transactionLink.download = 'volunteer_transactions.csv';
                 
-                // Trigger downloads
                 userLink.click();
                 setTimeout(() => {
                     transactionLink.click();
@@ -2607,282 +1700,251 @@ const firebaseConfig = {
             }
         }
         
-        // Add export button to admin panel
-        function addExportButton() {
-            const adminHeader = document.querySelector('#adminContainer .dashboard-header');
-            if (!adminHeader) return;
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
             
-            const exportBtn = document.createElement('button');
-            exportBtn.className = 'btn btn-secondary';
-            exportBtn.style.marginRight = '10px';
-            exportBtn.textContent = 'Export Data';
-            exportBtn.addEventListener('click', exportUserData);
+            // Tab switching
+            elements.loginTab.addEventListener('click', () => {
+                elements.loginTab.classList.add('active');
+                elements.registerTab.classList.remove('active');
+                elements.loginForm.style.display = 'block';
+                elements.registerForm.style.display = 'none';
+            });
             
-            const actionsDiv = adminHeader.querySelector('div:last-child');
-            if (actionsDiv) {
-                actionsDiv.prepend(exportBtn);
-            }
-        }
-        
-        // Add Deactivated Users Button to admin panel
-        function addDeactivatedUsersButton() {
-            const adminHeader = document.querySelector('#adminContainer .dashboard-header > div:last-child');
-            if (!adminHeader) return;
+            elements.registerTab.addEventListener('click', () => {
+                elements.registerTab.classList.add('active');
+                elements.loginTab.classList.remove('active');
+                elements.registerForm.style.display = 'block';
+                elements.loginForm.style.display = 'none';
+            });
             
-            const deactivatedBtn = document.createElement('button');
-            deactivatedBtn.className = 'btn btn-secondary';
-            deactivatedBtn.id = 'deactivatedUsersBtn';
-            deactivatedBtn.textContent = 'Deactivated Users';
-            deactivatedBtn.addEventListener('click', showDeactivatedUsersModal);
-            
-            adminHeader.insertBefore(deactivatedBtn, adminHeader.firstChild);
-        }
-        
-        // Create and show deactivated users modal
-        async function showDeactivatedUsersModal() {
-            // Create modal if it doesn't exist
-            if (!document.getElementById('deactivatedUsersModal')) {
-                const modal = document.createElement('div');
-                modal.className = 'modal';
-                modal.id = 'deactivatedUsersModal';
+            // Login form
+            elements.loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
                 
-                modal.innerHTML = `
-                    <div class="modal-content">
-                        <span class="close" id="closeDeactivatedModal">&times;</span>
-                        <h2>Deactivated Users</h2>
-                        <p>Users who have been deactivated. You can restore or permanently delete them.</p>
-                        
-                        <div class="loading" id="deactivatedLoading">
-                            <div class="spinner"></div>
-                            <p>Loading deactivated users...</p>
-                        </div>
-                        
-                        <div class="user-list" id="deactivatedUserList">
-                            <!-- Deactivated users will be listed here -->
-                        </div>
-                    </div>
-                `;
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
                 
-                document.body.appendChild(modal);
-                
-                // Add close button event
-                document.getElementById('closeDeactivatedModal').addEventListener('click', () => {
-                    document.getElementById('deactivatedUsersModal').style.display = 'none';
-                });
-            }
-            
-            // Show modal and load data
-            document.getElementById('deactivatedUsersModal').style.display = 'block';
-            document.getElementById('deactivatedLoading').style.display = 'block';
-            
-            await loadDeactivatedUsers();
-            
-            document.getElementById('deactivatedLoading').style.display = 'none';
-        }
-        
-        // Load deactivated users
-        async function loadDeactivatedUsers() {
-            const deactivatedUserList = document.getElementById('deactivatedUserList');
-            deactivatedUserList.innerHTML = '';
-            
-            try {
-                const snapshot = await database.ref(DEACTIVATED_USERS_PATH).once('value');
-                
-                if (!snapshot.exists() || snapshot.numChildren() === 0) {
-                    deactivatedUserList.innerHTML = '<div class="user-item" style="text-align: center;">No deactivated users found</div>';
+                if (!email || !password) {
+                    showAlert(elements.loginAlert, 'Please fill in all fields');
                     return;
                 }
                 
-                snapshot.forEach((userSnapshot) => {
-                    const userId = userSnapshot.key;
-                    const deactivatedData = userSnapshot.val();
-                    const userData = deactivatedData.userData;
+                showLoading('Signing in...');
+                
+                try {
+                    await auth.signInWithEmailAndPassword(email, password);
+                } catch (error) {
+                    console.error('Login error:', error);
+                    hideLoading();
                     
-                    const userItem = document.createElement('div');
-                    userItem.className = 'user-item';
-                    userItem.innerHTML = `
-                        <div class="user-info">
-                            <h3>${userData.name || 'Unknown'}</h3>
-                            <p>${userData.phone || 'No phone'} | ${userData.email || 'No email'}</p>
-                            <p style="color: #777; font-size: 12px;">Deactivated: ${formatDate(deactivatedData.deactivatedAt)}</p>
-                        </div>
-                        <div class="user-actions">
-                            <button class="btn btn-secondary restore-user" data-id="${userId}">Restore</button>
-                            <button class="btn btn-danger delete-user" data-id="${userId}">Delete Permanently</button>
-                        </div>
-                    `;
-                    
-                    deactivatedUserList.appendChild(userItem);
-                    
-                    // Add event listeners
-                    userItem.querySelector('.restore-user').addEventListener('click', () => {
-                        restoreUser(userId, deactivatedData);
-                    });
-                    
-                    userItem.querySelector('.delete-user').addEventListener('click', () => {
-                        if (confirm('Are you sure you want to permanently delete this user? This action cannot be undone.')) {
-                            deleteUser(userId, true);
-                            showDeactivatedUsersModal(); // Refresh list
-                        }
-                    });
-                });
-            } catch (error) {
-                console.error('Error loading deactivated users:', error);
-                deactivatedUserList.innerHTML = '<div class="user-item" style="text-align: center; color: red;">Error loading deactivated users</div>';
-            }
-        }
-        
-        // Restore a deactivated user
-        async function restoreUser(userId, deactivatedData) {
-            showLoading('Restoring user account...');
+                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                        showAlert(elements.loginAlert, 'Invalid email or password');
+                    } else {
+                        showAlert(elements.loginAlert, `Login failed: ${error.message}`);
+                    }
+                }
+            });
             
-            try {
-                const updates = {};
+            // Register form
+            elements.registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
                 
-                // Restore user data
-                updates[`${USERS_PATH}/${userId}`] = deactivatedData.userData;
+                const name = document.getElementById('registerName').value;
+                const phone = document.getElementById('registerPhone').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
                 
-                // Restore admin status if applicable
-                if (deactivatedData.isAdmin) {
-                    updates[`${ADMINS_PATH}/${userId}`] = true;
+                if (!name || !phone || !email || !password) {
+                    showAlert(elements.registerAlert, 'Please fill in all fields');
+                    return;
                 }
                 
-                // Remove from deactivated users
-                updates[`${DEACTIVATED_USERS_PATH}/${userId}`] = null;
-                
-                // Execute the update
-                await database.ref().update(updates);
-                
-                hideLoading();
-                alert('User account has been restored successfully.');
-                
-                // Refresh deactivated users list
-                showDeactivatedUsersModal();
-                
-                // Refresh active users list if visible
-                if (adminContainer.style.display === 'block') {
-                    await loadUsers(searchInput.value);
-                }
-            } catch (error) {
-                console.error('Error restoring user:', error);
-                hideLoading();
-                alert('Failed to restore user: ' + error.message);
-            }
-        }
-        
-        // Add CSS for deactivated users
-        function addDeactivatedCSS() {
-            const style = document.createElement('style');
-            style.textContent = `
-                /* Deactivated users modal styles */
-                #deactivatedUserList .user-item {
-                    border-left: 3px solid #E53935;
+                if (password.length < 6) {
+                    showAlert(elements.registerAlert, 'Password must be at least 6 characters');
+                    return;
                 }
                 
-                #deactivatedUserList .user-actions {
-                    display: flex;
-                    gap: 5px;
+                showLoading('Creating your account...');
+                
+                try {
+                    const encodedEmail = encodeURIComponent(email);
+                    const emailCheckSnapshot = await database.ref(`${DELETED_EMAILS_PATH}/${encodedEmail}`).once('value');
+                    
+                    if (emailCheckSnapshot.exists()) {
+                        showAlert(elements.registerAlert, 'This email was previously used. Please contact an administrator to reactivate your account or use a different email.');
+                        hideLoading();
+                        return;
+                    }
+                    
+                    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                    const user = userCredential.user;
+                    
+                    await createUserProfile(user, { name, phone });
+                } catch (error) {
+                    console.error('Registration error:', error);
+                    hideLoading();
+                    
+                    if (error.code === 'auth/email-already-in-use') {
+                        showAlert(elements.registerAlert, 'Email is already in use. If you previously had an account, please contact an administrator.');
+                    } else if (error.code === 'auth/invalid-email') {
+                        showAlert(elements.registerAlert, 'Invalid email address');
+                    } else if (error.code === 'auth/weak-password') {
+                        showAlert(elements.registerAlert, 'Password is too weak');
+                    } else {
+                        showAlert(elements.registerAlert, `Registration failed: ${error.message}`);
+                    }
+                }
+            });
+            
+            // Logout buttons
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            document.getElementById('adminLogoutBtn').addEventListener('click', logout);
+            
+            // Search functionality
+            elements.searchInput.addEventListener('input', async () => {
+                const searchTerm = elements.searchInput.value.toLowerCase();
+                await loadUsers(searchTerm);
+            });
+            
+            // Modal close buttons
+            document.getElementById('closeTokenModal').addEventListener('click', () => {
+                elements.tokenModal.style.display = 'none';
+            });
+            
+            document.getElementById('closeAddUserModal').addEventListener('click', () => {
+                elements.addUserModal.style.display = 'none';
+            });
+            
+            document.getElementById('closePasswordResetModal').addEventListener('click', () => {
+                elements.passwordResetModal.style.display = 'none';
+            });
+            
+            document.getElementById('closeAccountSettingsModal').addEventListener('click', () => {
+                elements.accountSettingsModal.style.display = 'none';
+            });
+            
+            document.getElementById('closeAdminPasswordModal').addEventListener('click', () => {
+                elements.adminPasswordModal.style.display = 'none';
+            });
+            
+            // Action buttons
+            document.getElementById('addUserBtn').addEventListener('click', () => {
+                document.getElementById('addUserForm').reset();
+                document.getElementById('addUserAlert').style.display = 'none';
+                elements.addUserModal.style.display = 'block';
+            });
+            
+            document.getElementById('accountSettingsBtn').addEventListener('click', () => {
+                document.getElementById('changePasswordForm').reset();
+                document.getElementById('accountSettingsAlert').style.display = 'none';
+                document.getElementById('accountSettingsSuccessAlert').style.display = 'none';
+                elements.accountSettingsModal.style.display = 'block';
+            });
+            
+            document.getElementById('adminPasswordBtn').addEventListener('click', () => {
+                document.getElementById('adminPasswordForm').reset();
+                document.getElementById('adminPasswordAlert').style.display = 'none';
+                document.getElementById('adminPasswordSuccessAlert').style.display = 'none';
+                elements.adminPasswordModal.style.display = 'block';
+            });
+            
+            document.getElementById('exportDataBtn').addEventListener('click', exportUserData);
+            
+            // Quick token buttons
+            document.getElementById('quickAddBtn').addEventListener('click', async () => {
+                await addTokensToUser(selectedUserId, 1, "Quick token addition");
+            });
+            
+            document.getElementById('quickRemoveBtn').addEventListener('click', async () => {
+                await addTokensToUser(selectedUserId, -1, "Quick token removal");
+            });
+            
+            // Token form
+            document.getElementById('addTokensForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const amount = parseInt(document.getElementById('tokenAmount').value);
+                const reason = document.getElementById('tokenReason').value;
+                
+                if (!amount || !reason) {
+                    alert('Please fill in all fields');
+                    return;
                 }
                 
-                @media (max-width: 576px) {
-                    #deactivatedUserList .user-actions {
-                        flex-direction: column;
-                        width: 100%;
-                    }
+                await addTokensToUser(selectedUserId, amount, reason);
+                document.getElementById('addTokensForm').reset();
+            });
+            
+            document.getElementById('removeTokensBtn').addEventListener('click', async () => {
+                const amount = parseInt(document.getElementById('tokenAmount').value);
+                const reason = document.getElementById('tokenReason').value;
+                
+                if (!amount || !reason) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                await addTokensToUser(selectedUserId, -amount, reason);
+                document.getElementById('addTokensForm').reset();
+            });
+            
+            document.getElementById('addWorkDayBtn').addEventListener('click', async () => {
+                await addWorkDayToUser(selectedUserId);
+            });
+            
+            // Password reset
+            document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                const loginEmail = document.getElementById('loginEmail').value;
+                document.getElementById('resetEmail').value = loginEmail || '';
+                
+                document.getElementById('passwordResetAlert').style.display = 'none';
+                document.getElementById('passwordResetSuccessAlert').style.display = 'none';
+                
+                elements.passwordResetModal.style.display = 'block';
+            });
+            
+            document.getElementById('passwordResetForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('resetEmail').value;
+                
+                if (!email) {
+                    showAlert(document.getElementById('passwordResetAlert'), 'Please enter your email address');
+                    return;
+                }
+                
+                showLoading('Sending password reset email...');
+                
+                try {
+                    await auth.sendPasswordResetEmail(email);
+                    hideLoading();
+                    showSuccessAlert(document.getElementById('passwordResetSuccessAlert'), 'Password reset email sent! Check your inbox.');
+                    document.getElementById('resetEmail').value = '';
+                } catch (error) {
+                    console.error('Password reset error:', error);
+                    hideLoading();
                     
-                    #deactivatedUserList .user-actions button {
-                        width: 100%;
-                        margin-top: 5px;
-                    }
-                    
-                    /* Enhanced Mobile Styles for Admin Dashboard */
-                    .dashboard-header > div:last-child {
-                        flex-direction: column;
-                        width: 100%;
-                    }
-                    
-                    .dashboard-header > div:last-child button {
-                        margin-bottom: 8px;
-                        width: 100%;
-                    }
-                    
-                    .dashboard-header h1 {
-                        font-size: 18px;
-                        white-space: normal !important;
-                        line-height: 1.3;
-                    }
-                    
-                    .dashboard-header p {
-                        white-space: normal !important;
-                    }
-                    
-                    .user-item {
-                        flex-direction: column;
-                        align-items: flex-start;
-                    }
-                    
-                    .user-info {
-                        margin-bottom: 10px;
-                        width: 100%;
-                    }
-                    
-                    .user-info h3 {
-                        white-space: normal !important;
-                        word-wrap: break-word;
-                    }
-                    
-                    .user-info p {
-                        white-space: normal !important;
-                        word-wrap: break-word;
-                    }
-                    
-                    .user-stats {
-                        margin-bottom: 10px;
-                        display: flex;
-                        gap: 8px;
-                    }
-                    
-                    .user-actions {
-                        width: 100%;
-                    }
-                    
-                    .user-actions button {
-                        width: 100%;
-                        margin-top: 5px;
-                    }
-                    
-                    .search-bar {
-                        margin-bottom: 15px;
-                    }
-                    
-                    .search-bar input {
-                        height: 48px; /* Larger tap target */
-                    }
-                    
-                    #adminContainer h1, 
-                    #adminContainer h2, 
-                    #adminContainer h3, 
-                    #adminContainer p {
-                        white-space: normal !important;
-                    }
-                    
-                    .modal-content {
-                        padding: 20px 15px;
-                        margin: 5% auto;
-                        max-height: 85vh;
+                    if (error.code === 'auth/user-not-found') {
+                        showAlert(document.getElementById('passwordResetAlert'), 'No account found with this email address');
+                    } else {
+                        showAlert(document.getElementById('passwordResetAlert'), `Error sending reset email: ${error.message}`);
                     }
                 }
-            `;
-            document.head.appendChild(style);
-        }
-        
-        // Initialize the app
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeApp();
-            setTimeout(() => {
-                addExportButton();
-                addDeactivatedCSS();
-            }, 1000);
+            });
+            
+            // Click outside modal to close
+            window.addEventListener('click', (e) => {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
         });
     </script>
 </body>
