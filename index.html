@@ -128,10 +128,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .tab:hover {
             background: var(--border);
+        }
+
+        .tab:active {
+            transform: scale(0.98);
         }
 
         .tab.active {
@@ -944,8 +950,8 @@
         </div>
         
         <div class="tabs">
-            <div class="tab active" id="userTab">Toegang Gebruiker</div>
-            <div class="tab" id="adminTab">Toegang Beheerder</div>
+            <div class="tab active" id="userTab" onclick="switchToUserTab()">Toegang Gebruiker</div>
+            <div class="tab" id="adminTab" onclick="switchToAdminTab()">Toegang Beheerder</div>
         </div>
         
         <!-- User Access Form -->
@@ -2631,6 +2637,35 @@
             }
         }
         
+        // Immediate tab setup on script load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded - Setting up tabs immediately');
+            
+            // Set up tabs immediately, even before other initialization
+            setTimeout(() => {
+                const userTab = document.getElementById('userTab');
+                const adminTab = document.getElementById('adminTab');
+                
+                if (userTab && adminTab) {
+                    console.log('Tabs found, adding click listeners immediately');
+                    
+                    userTab.onclick = function() {
+                        console.log('User tab clicked (direct onclick)');
+                        window.switchToUserTab();
+                    };
+                    
+                    adminTab.onclick = function() {
+                        console.log('Admin tab clicked (direct onclick)');
+                        window.switchToAdminTab();
+                    };
+                    
+                    console.log('Direct onclick handlers set up');
+                } else {
+                    console.error('Tabs not found on immediate setup');
+                }
+            }, 100);
+        });
+
         // Event Listeners
         document.addEventListener('DOMContentLoaded', () => {
             initializeApp();
