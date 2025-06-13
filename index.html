@@ -1880,7 +1880,6 @@
                     if (!isInitialized) {
                         isInitialized = true;
                         setupAdminIfNeeded();
-                        setupEventListeners(); // Call the new function here
                     }
                 });
             });
@@ -2900,7 +2899,7 @@
                     showAlert(document.getElementById('passwordResetAlert'), ''); // Clear error
                 } catch (error) {
                     showAlert(document.getElementById('passwordResetAlert'), error.message);
-                    showAlert(document.getElementById('passwordResetSuccessAlert'), '');
+                    showAlert(document.getElementById('passwordResetSuccessAlert'), ''); // Clear success
                 } finally {
                     hideLoading();
                 }
@@ -2990,6 +2989,9 @@
                 }, 300); // Debounce search input
             });
         }
+
+        // Call initializeApp when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
 </body>
 </html>
