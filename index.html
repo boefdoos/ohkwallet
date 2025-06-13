@@ -1316,8 +1316,10 @@
             // Find buttons (tested working method)
             const showAdminBtn = document.getElementById('showAdminLoginBtn');
             const backToUserBtn = document.getElementById('backToUserAccessBtn');
+            const loginForm = document.getElementById('loginForm');
+            const userAccessForm = document.getElementById('userAccessForm');
             
-            console.log('🔍 Buttons found:', !!showAdminBtn, !!backToUserBtn);
+            console.log('🔍 Elements found:', !!showAdminBtn, !!backToUserBtn, !!loginForm, !!userAccessForm);
             
             // Add event listeners (TESTED WORKING)
             if (showAdminBtn) {
@@ -1336,6 +1338,120 @@
                     showUserAccess();
                 });
                 console.log('✅ Back button listener added');
+            }
+
+            // Admin login form handler
+            if (loginForm) {
+                loginForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    console.log('🎯 Admin form submitted');
+                    
+                    const email = document.getElementById('loginEmail').value;
+                    const password = document.getElementById('loginPassword').value;
+                    
+                    if (!email || !password) {
+                        showAlert(document.getElementById('loginAlert'), 'Vul alle velden in');
+                        return;
+                    }
+                    
+                    showLoading('Inloggen als beheerder...');
+                    
+                    try {
+                        // Firebase admin login
+                        console.log('🔐 Attempting Firebase admin login...');
+                        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                        const user = userCredential.user;
+                        
+                        console.log('✅ Firebase login successful for:', user.email);
+                        
+                        // Check if user is admin
+                        const adminSnapshot = await database.ref(`admins/${user.uid}`).once('value');
+                        
+                        if (adminSnapshot.exists()) {
+                            const adminData = adminSnapshot.val();
+                            console.log('✅ Admin privileges confirmed:', adminData);
+                            
+                            hideLoading();
+                            showContainer('admin');
+                            
+                            // Initialize admin interface
+                            await initializeAdminPanel(adminData);
+                            
+                        } else {
+                            // User is not an admin - create admin entry for first superadmin
+                            console.log('⚠️ User not in admins table, checking if first admin...');
+                            
+                            const allAdminsSnapshot = await database.ref('admins').once('value');
+                            
+                            if (!allAdminsSnapshot.exists() || allAdminsSnapshot.numChildren() === 0) {
+                                // This is the first admin - make them superadmin
+                                console.log('🎉 Creating first superadmin...');
+                                
+                                await database.ref(`admins/${user.uid}`).set({
+                                    level: 'super',
+                                    email: user.email,
+                                    createdAt: new Date().toISOString(),
+                                    isFirstAdmin: true
+                                });
+                                
+                                hideLoading();
+                                showContainer('admin');
+                                
+                                const adminData = { level: 'super', email: user.email };
+                                await initializeAdminPanel(adminData);
+                                
+                                alert('🎉 Welkom! Je bent de eerste superadmin. Volledige toegang verleend.');
+                                
+                            } else {
+                                // User exists but is not admin
+                                hideLoading();
+                                await auth.signOut();
+                                showAlert(document.getElementById('loginAlert'), 'Geen admin rechten. Neem contact op met een beheerder.');
+                            }
+                        }
+                        
+                    } catch (error) {
+                        console.error('❌ Admin login error:', error);
+                        hideLoading();
+                        
+                        let errorMessage = 'Inloggen mislukt: ';
+                        if (error.code === 'auth/user-not-found') {
+                            errorMessage += 'Gebruiker niet gevonden';
+                        } else if (error.code === 'auth/wrong-password') {
+                            errorMessage += 'Verkeerd wachtwoord';
+                        } else if (error.code === 'auth/invalid-email') {
+                            errorMessage += 'Ongeldig e-mailadres';
+                        } else {
+                            errorMessage += error.message;
+                        }
+                        
+                        showAlert(document.getElementById('loginAlert'), errorMessage);
+                    }
+                });
+                console.log('✅ Admin login form listener added');
+            }
+
+            // User access form handler
+            if (userAccessForm) {
+                userAccessForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    console.log('🎯 User form submitted');
+                    
+                    const userCode = document.getElementById('userCodeInput').value;
+                    const stayLoggedIn = document.getElementById('stayLoggedIn').checked;
+                    
+                    if (!userCode || userCode.length !== 10) {
+                        showAlert(document.getElementById('userAccessAlert'), 'Voer een geldige 10-cijferige code in');
+                        return;
+                    }
+                    
+                    try {
+                        await loginWithUserCode(userCode, stayLoggedIn);
+                    } catch (error) {
+                        showAlert(document.getElementById('userAccessAlert'), error.message);
+                    }
+                });
+                console.log('✅ User form listener added');
             }
 
             // Format code input
@@ -1361,9 +1477,145 @@
                     statusElement.className = 'status-disconnected';
                 }
             });
+
+            // Firebase auth state listener
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    console.log('🔥 Auth state changed: User logged in:', user.email);
+                    
+                    // Check if this is an admin
+                    const adminSnapshot = await database.ref(`admins/${user.uid}`).once('value');
+                    if (adminSnapshot.exists()) {
+                        const adminData = adminSnapshot.val();
+                        console.log('✅ Admin state restored for:', user.email);
+                        showContainer('admin');
+                        await initializeAdminPanel(adminData);
+                    }
+                } else {
+                    console.log('🔓 Auth state changed: User logged out');
+                    showContainer('auth');
+                }
+            });
             
-            console.log('🎉 Full OHK Wallet setup complete with working admin button!');
+            console.log('🎉 Full OHK Wallet setup complete with working admin flow!');
         });
+
+        // Initialize admin panel with data
+        async function initializeAdminPanel(adminData) {
+            console.log('🛡️ Initializing admin panel with level:', adminData.level);
+            
+            // Set admin level badge
+            const badge = document.getElementById('adminLevelBadge');
+            if (adminData.level === 'super') {
+                badge.textContent = 'Super Beheerder';
+                badge.className = 'admin-level-badge admin-level-super';
+            } else {
+                badge.textContent = 'Beheerder';
+                badge.className = 'admin-level-badge admin-level-regular';
+            }
+            
+            // Show admin actions based on level
+            const adminActions = document.getElementById('adminActions');
+            if (adminData.level === 'super') {
+                adminActions.innerHTML = `
+                    <button class="btn btn-secondary" onclick="exportData()">
+                        <i class="fas fa-download"></i> Gegevens Exporteren
+                    </button>
+                    <button class="btn btn-secondary" onclick="addNewUser()">
+                        <i class="fas fa-user-plus"></i> Gebruiker Toevoegen
+                    </button>
+                `;
+            } else {
+                adminActions.innerHTML = `
+                    <p style="color: var(--gray);">Basis beheerder rechten - Token beheer beschikbaar</p>
+                `;
+            }
+            
+            // Load users list
+            await loadUsersList();
+            
+            console.log('✅ Admin panel initialized successfully');
+        }
+
+        // Load users list for admin
+        async function loadUsersList() {
+            console.log('📋 Loading users list...');
+            
+            const userList = document.getElementById('userList');
+            const usersLoading = document.getElementById('usersLoading');
+            
+            usersLoading.style.display = 'block';
+            
+            try {
+                const usersSnapshot = await database.ref('users').once('value');
+                
+                usersLoading.style.display = 'none';
+                
+                if (!usersSnapshot.exists()) {
+                    userList.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--gray);">Nog geen gebruikers in het systeem</div>';
+                    return;
+                }
+                
+                const users = [];
+                usersSnapshot.forEach((userSnapshot) => {
+                    const userData = userSnapshot.val();
+                    userData.id = userSnapshot.key;
+                    users.push(userData);
+                });
+                
+                // Display users
+                userList.innerHTML = '';
+                users.forEach(user => {
+                    const userItem = document.createElement('div');
+                    userItem.className = 'user-item';
+                    userItem.innerHTML = `
+                        <div class="user-info">
+                            <h3>${user.name || 'Onbekende Gebruiker'}</h3>
+                            <p>Code: <span class="user-code">${user.userCode || 'Geen code'}</span></p>
+                            <p>Tokens: ${user.tokens || 0} | Werkdagen: ${user.workingDays || 0}</p>
+                        </div>
+                        <div class="user-actions">
+                            <button class="btn btn-small" onclick="manageUserTokens('${user.id}')">
+                                <i class="fas fa-coins"></i> Beheer Tokens
+                            </button>
+                        </div>
+                    `;
+                    userList.appendChild(userItem);
+                });
+                
+                console.log('✅ Users list loaded:', users.length, 'users');
+                
+            } catch (error) {
+                console.error('❌ Error loading users:', error);
+                usersLoading.style.display = 'none';
+                userList.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--danger);">Fout bij laden gebruikers</div>';
+            }
+        }
+
+        // Demo functions for admin actions
+        function exportData() {
+            alert('🔄 Export functionaliteit wordt geïmplementeerd...');
+        }
+
+        function addNewUser() {
+            alert('🔄 Gebruiker toevoegen functionaliteit wordt geïmplementeerd...');
+        }
+
+        function manageUserTokens(userId) {
+            alert(`🔄 Token beheer voor gebruiker ${userId} wordt geïmplementeerd...`);
+        }
+
+        // Mock user login function
+        async function loginWithUserCode(userCode, stayLoggedIn) {
+            console.log('🔐 Mock user login with code:', userCode);
+            showLoading('Inloggen...');
+            
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            hideLoading();
+            alert('🔄 User login functionaliteit wordt geïmplementeerd...');
+        }
     </script>
 </body>
 </html>
