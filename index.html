@@ -908,8 +908,16 @@
         </form>
         
         <div class="text-center" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
-            <p style="color: var(--gray); font-size: 14px;">
+            <p style="color: var(--gray); font-size: 14px; margin-bottom: 12px;">
                 <i class="fas fa-info-circle"></i> New to the system? Contact an administrator to create your account.
+            </p>
+            <div style="margin-top: 16px;">
+                <button id="createAdminBtn" class="btn btn-secondary btn-small" style="font-size: 12px; padding: 8px 16px;">
+                    <i class="fas fa-user-shield"></i> Create Super Admin Account
+                </button>
+            </div>
+            <p style="color: var(--gray); font-size: 11px; margin-top: 8px; font-style: italic;">
+                Only use if you don't have admin access
             </p>
         </div>
     </div>
@@ -1523,73 +1531,100 @@
             });
         }
         
+        // Manual admin creation function
+        async function createSuperAdmin() {
+            if (!confirm('This will create a new Super Admin account. Continue?')) {
+                return;
+            }
+
+            showLoading('Creating Super Admin account...');
+            
+            try {
+                // Try to create the super admin account
+                const email = 'superadmin@ohk.com';
+                const password = 'SuperAdmin2024!';
+                
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                const userCode = generateUserCode();
+                
+                await database.ref(`${USERS_PATH}/${user.uid}`).set({
+                    name: 'Super Administrator',
+                    email: email,
+                    phone: 'admin',
+                    tokens: 0,
+                    workingDays: 0,
+                    userCode: userCode
+                });
+                
+                await database.ref(`${ADMINS_PATH}/${user.uid}`).set({
+                    level: ADMIN_LEVELS.SUPER,
+                    addedBy: user.uid,
+                    addedAt: new Date().toISOString()
+                });
+                
+                hideLoading();
+                alert(`Super Admin account created successfully!\n\nEmail: ${email}\nPassword: ${password}\n\nUser Code: ${userCode}\n\nYou can now log in with these credentials. Please change the password after first login.`);
+                
+            } catch (error) {
+                console.error('Error creating super admin:', error);
+                hideLoading();
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    // Try alternative email
+                    try {
+                        const altEmail = 'admin@ohk-wallet.com';
+                        const altPassword = 'AdminPass123!';
+                        
+                        showLoading('Trying alternative email...');
+                        
+                        const altCredential = await auth.createUserWithEmailAndPassword(altEmail, altPassword);
+                        const altUser = altCredential.user;
+                        
+                        const altUserCode = generateUserCode();
+                        
+                        await database.ref(`${USERS_PATH}/${altUser.uid}`).set({
+                            name: 'Super Administrator',
+                            email: altEmail,
+                            phone: 'admin',
+                            tokens: 0,
+                            workingDays: 0,
+                            userCode: altUserCode
+                        });
+                        
+                        await database.ref(`${ADMINS_PATH}/${altUser.uid}`).set({
+                            level: ADMIN_LEVELS.SUPER,
+                            addedBy: altUser.uid,
+                            addedAt: new Date().toISOString()
+                        });
+                        
+                        hideLoading();
+                        alert(`Super Admin account created with alternative email!\n\nEmail: ${altEmail}\nPassword: ${altPassword}\n\nUser Code: ${altUserCode}\n\nYou can now log in with these credentials.`);
+                        
+                    } catch (altError) {
+                        console.error('Error creating alternative admin:', altError);
+                        hideLoading();
+                        
+                        if (altError.code === 'auth/email-already-in-use') {
+                            alert('Both admin emails already exist. Try logging in with:\n\n1. superadmin@ohk.com / SuperAdmin2024!\n2. admin@ohk-wallet.com / AdminPass123!\n\nIf neither works, contact technical support.');
+                        } else {
+                            alert('Error creating admin account: ' + altError.message);
+                        }
+                    }
+                } else {
+                    alert('Error creating admin account: ' + error.message);
+                }
+            }
+        }
+
         // Setup admin account if needed
         async function setupAdminIfNeeded() {
             try {
                 const adminsSnapshot = await database.ref(ADMINS_PATH).once('value');
                 
                 if (!adminsSnapshot.exists() || adminsSnapshot.numChildren() === 0) {
-                    showLoading('Setting up super admin account...');
-                    
-                    try {
-                        // Try to create the super admin account
-                        const userCredential = await auth.createUserWithEmailAndPassword('superadmin@ohk.com', 'SuperAdmin2024!');
-                        const user = userCredential.user;
-                        
-                        const userCode = generateUserCode();
-                        
-                        await database.ref(`${USERS_PATH}/${user.uid}`).set({
-                            name: 'Super Administrator',
-                            email: 'superadmin@ohk.com',
-                            phone: 'admin',
-                            tokens: 0,
-                            workingDays: 0,
-                            userCode: userCode
-                        });
-                        
-                        await database.ref(`${ADMINS_PATH}/${user.uid}`).set({
-                            level: ADMIN_LEVELS.SUPER,
-                            addedBy: user.uid,
-                            addedAt: new Date().toISOString()
-                        });
-                        
-                        alert('Super Admin account created successfully!\n\nEmail: superadmin@ohk.com\nPassword: SuperAdmin2024!\n\nPlease save these credentials and change the password after first login.');
-                    } catch (error) {
-                        console.error('Error creating super admin:', error);
-                        if (error.code === 'auth/email-already-in-use') {
-                            // Try alternative credentials
-                            try {
-                                const altCredential = await auth.createUserWithEmailAndPassword('admin@ohk-wallet.com', 'AdminPass123!');
-                                const altUser = altCredential.user;
-                                
-                                const altUserCode = generateUserCode();
-                                
-                                await database.ref(`${USERS_PATH}/${altUser.uid}`).set({
-                                    name: 'Super Administrator',
-                                    email: 'admin@ohk-wallet.com',
-                                    phone: 'admin',
-                                    tokens: 0,
-                                    workingDays: 0,
-                                    userCode: altUserCode
-                                });
-                                
-                                await database.ref(`${ADMINS_PATH}/${altUser.uid}`).set({
-                                    level: ADMIN_LEVELS.SUPER,
-                                    addedBy: altUser.uid,
-                                    addedAt: new Date().toISOString()
-                                });
-                                
-                                alert('Super Admin account created successfully!\n\nEmail: admin@ohk-wallet.com\nPassword: AdminPass123!\n\nPlease save these credentials and change the password after first login.');
-                            } catch (altError) {
-                                console.error('Error creating alternative admin:', altError);
-                                alert('Unable to create admin account automatically. Please contact technical support.');
-                            }
-                        } else {
-                            alert('Error creating admin account: ' + error.message);
-                        }
-                    } finally {
-                        hideLoading();
-                    }
+                    await createSuperAdmin();
                 }
             } catch (error) {
                 console.error('Error checking admin setup:', error);
@@ -2365,6 +2400,9 @@
         // Event Listeners
         document.addEventListener('DOMContentLoaded', () => {
             initializeApp();
+            
+            // Create admin button
+            document.getElementById('createAdminBtn').addEventListener('click', createSuperAdmin);
             
             // Login form
             elements.loginForm.addEventListener('submit', async (e) => {
