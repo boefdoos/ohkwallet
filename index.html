@@ -178,7 +178,6 @@
 
     <script>
         console.log('🚀 Script started');
-        alert('DEBUG: Script is loading!');
         
         // Simple functions
         function showAdminLogin() {
@@ -200,7 +199,6 @@
         // Wait for DOM to load
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🔥 DOM loaded!');
-            alert('DEBUG: DOM is ready!');
             
             // Find buttons
             const showAdminBtn = document.getElementById('showAdminLoginBtn');
@@ -215,13 +213,11 @@
                 showAdminBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     console.log('🎯 ADMIN BUTTON CLICKED!');
-                    alert('DEBUG: Admin button works!');
                     showAdminLogin();
                 });
                 console.log('✅ Admin button listener added');
             } else {
                 console.error('❌ Admin button not found!');
-                alert('ERROR: Admin button not found!');
             }
             
             if (backToUserBtn) {
@@ -229,14 +225,56 @@
                 backToUserBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     console.log('🎯 BACK BUTTON CLICKED!');
-                    alert('DEBUG: Back button works!');
                     showUserAccess();
                 });
                 console.log('✅ Back button listener added');
             }
             
+            // Add user code input formatting
+            const codeInput = document.getElementById('userCodeInput');
+            if (codeInput) {
+                codeInput.addEventListener('input', function(e) {
+                    // Only allow numbers
+                    e.target.value = e.target.value.replace(/\D/g, '');
+                    // Limit to 10 digits
+                    if (e.target.value.length > 10) {
+                        e.target.value = e.target.value.slice(0, 10);
+                    }
+                });
+                console.log('✅ Code input formatting added');
+            }
+            
+            // Add form submissions (basic for now)
+            const userForm = document.getElementById('userAccessForm');
+            if (userForm) {
+                userForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const code = document.getElementById('userCodeInput').value;
+                    if (code.length === 10) {
+                        alert('User login would happen with code: ' + code);
+                    } else {
+                        alert('Voer een geldige 10-cijferige code in');
+                    }
+                });
+                console.log('✅ User form handler added');
+            }
+            
+            const adminForm = document.getElementById('loginForm');
+            if (adminForm) {
+                adminForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = document.getElementById('loginEmail').value;
+                    const password = document.getElementById('loginPassword').value;
+                    if (email && password) {
+                        alert('Admin login would happen with: ' + email);
+                    } else {
+                        alert('Vul alle velden in');
+                    }
+                });
+                console.log('✅ Admin form handler added');
+            }
+            
             console.log('🎉 Setup complete!');
-            alert('DEBUG: All setup complete - try the admin button!');
         });
     </script>
 </body>
