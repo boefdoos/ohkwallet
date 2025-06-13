@@ -16,10 +16,10 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" crossorigin="anonymous">
     
-    <!-- Firebase Scripts - Temporarily disabled due to CDN issues -->
-    <!-- <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" crossorigin="anonymous"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" crossorigin="anonymous"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js" crossorigin="anonymous"></script> -->
+    <!-- Firebase Scripts - Using official Firebase CDN -->
+    <script src="https://firebase.googleapis.com/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://firebase.googleapis.com/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://firebase.googleapis.com/9.23.0/firebase-database-compat.js"></script>
     
     <style>
         /* === ROOT VARIABLES === */
@@ -537,10 +537,75 @@
     </div>
 
     <script>
-        console.log('🚀 OHK Wallet - Demo Mode (Firebase Disabled)');
+        console.log('🚀 OHK Wallet - Starting with Firebase');
         
-        // Demo mode - No Firebase needed
+        // Firebase variables
+        let auth, database;
+        let firebaseReady = false;
         let demoUser = null;
+        
+        // Wait for scripts to load then initialize Firebase
+        function initializeFirebase() {
+            console.log('🔥 Attempting Firebase initialization...');
+            console.log('Firebase available:', typeof firebase !== 'undefined');
+            
+            if (typeof firebase === 'undefined') {
+                console.warn('⚠️ Firebase not loaded yet');
+                return false;
+            }
+            
+            try {
+                const firebaseConfig = {
+                    apiKey: "AIzaSyAev2VvDz3FCxdZmZo2W2jpgACFh9Q_YlA",
+                    authDomain: "ohk-volunteers.firebaseapp.com",
+                    databaseURL: "https://ohk-volunteers-default-rtdb.europe-west1.firebasedatabase.app",
+                    projectId: "ohk-volunteers",
+                    storageBucket: "ohk-volunteers.firebasestorage.app",
+                    messagingSenderId: "637356396673",
+                    appId: "1:637356396673:web:e9cbfcf21dc509cadb7d80",
+                    measurementId: "G-R4KV130GN8"
+                };
+                
+                // Initialize Firebase
+                firebase.initializeApp(firebaseConfig);
+                auth = firebase.auth();
+                database = firebase.database();
+                firebaseReady = true;
+                console.log('✅ Firebase initialized successfully');
+                return true;
+            } catch (error) {
+                console.error('❌ Firebase initialization failed:', error);
+                return false;
+            }
+        }
+        
+        // Try Firebase initialization with retries
+        function waitForFirebase() {
+            if (initializeFirebase()) {
+                return;
+            }
+            
+            let attempts = 0;
+            const maxAttempts = 30; // Reduced from 50 to 30
+            
+            const retryInterval = setInterval(() => {
+                attempts++;
+                console.log(`🔄 Firebase retry ${attempts}/${maxAttempts}`);
+                
+                if (initializeFirebase()) {
+                    clearInterval(retryInterval);
+                    console.log('✅ Firebase loaded successfully');
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(retryInterval);
+                    console.warn('⚠️ Firebase failed to load - using demo mode');
+                    console.log('🔍 Possible causes: Ad-blocker, firewall, or regional blocking');
+                    console.log('🛠️ Try: Disable ad-blocker, use VPN, or try different browser');
+                }
+            }, 200); // Check every 200ms instead of 100ms
+        }
+        
+        // Start Firebase initialization
+        waitForFirebase();
 
         // Simple functions
         function showAdminLogin() {
@@ -581,8 +646,13 @@
         }
 
         function logout() {
-            console.log('👋 Demo logout');
-            demoUser = null;
+            if (firebaseReady && auth && auth.currentUser) {
+                console.log('👋 Firebase logout');
+                auth.signOut();
+            } else {
+                console.log('👋 Demo logout');
+                demoUser = null;
+            }
             showContainer('auth');
         }
 
@@ -664,7 +734,7 @@
             if (loginForm) {
                 loginForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
-                    console.log('🎯 Admin form submitted (Demo Mode)');
+                    console.log('🎯 Admin form submitted');
                     
                     const email = document.getElementById('loginEmail').value;
                     const password = document.getElementById('loginPassword').value;
@@ -676,20 +746,42 @@
                     
                     showLoading('Inloggen als beheerder...');
                     
-                    // Demo delay
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    hideLoading();
-                    
-                    // Demo admin credentials
-                    if (email === 'admin@ohk.be' && password === 'demo123') {
-                        demoUser = { type: 'admin', email: email };
-                        showContainer('admin');
-                        console.log('✅ Demo admin login successful');
-                    } else {
-                        showAlert(document.getElementById('loginAlert'), 'Demo mode: gebruik admin@ohk.be / demo123');
+                    try {
+                        if (firebaseReady && auth) {
+                            console.log('🔥 Using Firebase authentication');
+                            await auth.signInWithEmailAndPassword(email, password);
+                            hideLoading();
+                            showContainer('admin');
+                            console.log('✅ Firebase admin login successful');
+                        } else {
+                            console.log('🎮 Using demo mode authentication');
+                            // Demo delay
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+                            hideLoading();
+                            
+                            if (email === 'admin@ohk.be' && password === 'demo123') {
+                                demoUser = { type: 'admin', email: email };
+                                showContainer('admin');
+                                console.log('✅ Demo admin login successful');
+                            } else {
+                                throw new Error('Demo credentials: admin@ohk.be / demo123');
+                            }
+                        }
+                    } catch (error) {
+                        console.error('❌ Admin login error:', error);
+                        hideLoading();
+                        
+                        let errorMessage;
+                        if (!firebaseReady) {
+                            errorMessage = `Firebase unavailable. Demo: admin@ohk.be / demo123`;
+                        } else {
+                            errorMessage = `Login failed: ${error.message}`;
+                        }
+                        
+                        showAlert(document.getElementById('loginAlert'), errorMessage);
                     }
                 });
-                console.log('✅ Admin form listener added (Demo Mode)');
+                console.log('✅ Admin form listener added');
             }
 
             // Format code input
@@ -704,17 +796,21 @@
             }
             
             console.log('🎉 OHK Wallet setup complete!');
-            console.log('💡 Demo codes:');
+            console.log('💡 Demo credentials:');
             console.log('- User: 1234567890');
-            console.log('- Admin: admin@ohk.be / demo123 (if Firebase unavailable)');
+            console.log('- Admin: admin@ohk.be / demo123 (fallback if Firebase unavailable)');
             
-            // Show Firebase status after a delay
+            // Show Firebase status after setup
             setTimeout(() => {
-                const statusMsg = firebaseReady ? 
-                    '✅ Firebase Connected - Full functionality available' : 
-                    '⚠️ Firebase Unavailable - Running in demo mode';
-                console.log(statusMsg);
-            }, 2000);
+                if (firebaseReady) {
+                    console.log('✅ Firebase Connected - Full functionality available');
+                    console.log('🔥 Real admin credentials can be used');
+                } else {
+                    console.log('⚠️ Firebase Unavailable - Running in demo mode');
+                    console.log('🔍 Check console for Firebase loading errors');
+                    console.log('🛠️ Try: Different browser, disable ad-blocker, or check network');
+                }
+            }, 3000);
         });
     </script>
 </body>
