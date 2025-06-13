@@ -2969,15 +2969,167 @@
                 }
             });
             
-            // Click outside modal to close
-            window.addEventListener('click', (e) => {
-                const modals = document.querySelectorAll('.modal');
-                modals.forEach(modal => {
-                    if (e.target === modal) {
-                        modal.style.display = 'none';
+            // Token form
+            const addTokensForm = document.getElementById('addTokensForm');
+            if (addTokensForm) {
+                addTokensForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const amount = parseInt(document.getElementById('tokenAmount').value);
+                    const reason = document.getElementById('tokenReason').value;
+                    
+                    if (!amount || !reason) {
+                        alert('Vul alle velden in');
+                        return;
+                    }
+                    
+                    await addTokensToUser(selectedUserId, amount, reason);
+                    document.getElementById('addTokensForm').reset();
+                });
+            }
+
+            const removeTokensBtn = document.getElementById('removeTokensBtn');
+            if (removeTokensBtn) {
+                removeTokensBtn.addEventListener('click', async () => {
+                    const amount = parseInt(document.getElementById('tokenAmount').value);
+                    const reason = document.getElementById('tokenReason').value;
+                    
+                    if (!amount || !reason) {
+                        alert('Vul alle velden in');
+                        return;
+                    }
+                    
+                    await addTokensToUser(selectedUserId, -amount, reason);
+                    document.getElementById('addTokensForm').reset();
+                });
+            }
+
+            const addWorkDayBtn = document.getElementById('addWorkDayBtn');
+            if (addWorkDayBtn) {
+                addWorkDayBtn.addEventListener('click', async () => {
+                    await addWorkDayToUser(selectedUserId);
+                });
+            }
+
+            // Delete user button
+            const deleteUserBtn = document.getElementById('deleteUserBtn');
+            if (deleteUserBtn) {
+                deleteUserBtn.addEventListener('click', async () => {
+                    if (confirm('Wat wil je doen met dit gebruikersaccount?\n\n- Klik OK om het account te deactiveren (gegevens bewaard, kan worden hersteld)\n- Klik Annuleren om permanent te verwijderen')) {
+                        await deleteUser(selectedUserId, false);
+                        alert('Gebruikersaccount is gedeactiveerd en kan worden hersteld vanuit het beheerderspaneel.');
+                    } else {
+                        if (confirm('Wil je deze gebruiker en al hun gegevens PERMANENT verwijderen?\n\nDit zal:\n- Alle gebruikersgegevens en transacties verwijderen\n- Verwijderen uit actieve gebruikers\n- KAN NIET ongedaan worden gemaakt\n\nOpmerking: Gebruiker moet mogelijk contact met je opnemen als ze zich opnieuw willen registreren met hetzelfde e-mailadres.\n\nDoorgaan?')) {
+                            if (confirm('LAATSTE WAARSCHUWING: Dit zal alle gebruikersgegevens permanent wissen en kan niet worden hersteld. Doorgaan?')) {
+                                await deleteUser(selectedUserId, true);
+                                alert('Gebruikersaccount en alle bijbehorende gegevens zijn permanent verwijderd.');
+                            }
+                        }
                     }
                 });
-            });
+            }
+
+            // Delete account button (for users)
+            const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+            if (deleteAccountBtn) {
+                deleteAccountBtn.addEventListener('click', async () => {
+                    if (confirm('Weet je zeker dat je jouw account permanent wilt verwijderen?\n\nDit zal:\n- Al jouw gegevens en transactiegeschiedenis verwijderen\n- Je later toestaan om je opnieuw te registreren met hetzelfde e-mailadres\n- Niet ongedaan gemaakt kunnen worden\n\nDoorgaan?')) {
+                        await deleteUserAccount();
+                    }
+                });
+            }
+
+            // Add user form
+            const addUserForm = document.getElementById('addUserForm');
+            if (addUserForm) {
+                addUserForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const name = document.getElementById('addUserName').value;
+                    
+                    if (!name) {
+                        showAlert(document.getElementById('addUserAlert'), 'Voer een naam in');
+                        return;
+                    }
+                    
+                    try {
+                        await addNewUser(name);
+                    } catch (error) {
+                        showAlert(document.getElementById('addUserAlert'), `Kon gebruiker niet toevoegen: ${error.message}`);
+                    }
+                });
+            }
+
+            // Add admin form
+            const addAdminForm = document.getElementById('addAdminForm');
+            if (addAdminForm) {
+                addAdminForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const email = document.getElementById('addAdminEmail').value;
+                    const level = document.getElementById('addAdminLevel').value;
+                    
+                    if (!email || !level) {
+                        showAlert(document.getElementById('addAdminAlert'), 'Vul alle velden in');
+                        return;
+                    }
+                    
+                    try {
+                        await addNewAdmin(email, level);
+                    } catch (error) {
+                        showAlert(document.getElementById('addAdminAlert'), error.message);
+                    }
+                });
+            }
+
+            // Password reset link
+            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+            if (forgotPasswordLink) {
+                forgotPasswordLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    const loginEmail = document.getElementById('loginEmail').value;
+                    document.getElementById('resetEmail').value = loginEmail || '';
+                    
+                    document.getElementById('passwordResetAlert').style.display = 'none';
+                    document.getElementById('passwordResetSuccessAlert').style.display = 'none';
+                    
+                    elements.passwordResetModal.style.display = 'block';
+                });
+            }
+
+            // Password reset form
+            const passwordResetForm = document.getElementById('passwordResetForm');
+            if (passwordResetForm) {
+                passwordResetForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const email = document.getElementById('resetEmail').value;
+                    
+                    if (!email) {
+                        showAlert(document.getElementById('passwordResetAlert'), 'Voer jouw e-mailadres in');
+                        return;
+                    }
+                    
+                    showLoading('Wachtwoord herstel e-mail versturen...');
+                    
+                    try {
+                        await auth.sendPasswordResetEmail(email);
+                        hideLoading();
+                        showSuccessAlert(document.getElementById('passwordResetSuccessAlert'), 'Wachtwoord herstel e-mail verzonden! Controleer je inbox.');
+                        document.getElementById('resetEmail').value = '';
+                    } catch (error) {
+                        console.error('Password reset error:', error);
+                        hideLoading();
+                        
+                        if (error.code === 'auth/user-not-found') {
+                            showAlert(document.getElementById('passwordResetAlert'), 'Geen account gevonden met dit e-mailadres');
+                        } else {
+                            showAlert(document.getElementById('passwordResetAlert'), `Fout bij versturen herstel e-mail: ${error.message}`);
+                        }
+                    }
+                });
+            }
         });
     </script>
 </body>
