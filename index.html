@@ -105,46 +105,6 @@
             line-height: 1.4;
         }
 
-        /* === TABS === */
-        .tabs {
-            display: flex;
-            margin-bottom: 24px;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-
-        .tab {
-            flex: 1;
-            padding: 16px 12px;
-            text-align: center;
-            background: var(--light-gray);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text);
-            font-weight: 500;
-            font-size: 14px;
-            min-height: var(--min-touch-target);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .tab:hover {
-            background: var(--border);
-        }
-
-        .tab:active {
-            transform: scale(0.98);
-        }
-
-        .tab.active {
-            background: var(--primary);
-            color: white;
-        }
-
         /* === FORMS === */
         .form-group {
             margin-bottom: 20px;
@@ -273,6 +233,107 @@
             padding: 8px 16px;
             font-size: 14px;
             min-height: 36px;
+        }
+
+        /* === CODE INPUT STYLING === */
+        .code-input {
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            letter-spacing: 4px;
+            font-weight: 600;
+            padding: 20px 16px;
+        }
+
+        .code-input::placeholder {
+            letter-spacing: 2px;
+            opacity: 0.5;
+        }
+
+        /* === LOGIN DIVIDER === */
+        .login-divider {
+            text-align: center;
+            margin: 24px 0;
+            position: relative;
+        }
+
+        .login-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .login-divider span {
+            background: var(--background);
+            padding: 0 16px;
+            color: var(--gray);
+            font-size: 14px;
+            position: relative;
+        }
+
+        /* === FORM LINKS === */
+        .form-links {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .form-links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .form-links a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* === AUTH FOOTER === */
+        .auth-footer {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .admin-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: transparent;
+            color: var(--gray);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-height: var(--min-touch-target);
+            margin-bottom: 16px;
+        }
+
+        .admin-toggle:hover {
+            background: var(--light-gray);
+            color: var(--text);
+            border-color: var(--gray);
+        }
+
+        .help-text {
+            color: var(--gray);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            opacity: 0.8;
         }
 
         /* === DASHBOARD === */
@@ -891,7 +952,7 @@
         }
 
         /* === IMPROVEMENTS FOR TOUCH === */
-        .btn, .tab, .form-control, input[type="text"], input[type="email"], input[type="password"], input[type="tel"], input[type="number"] {
+        .btn, .form-control, input[type="text"], input[type="email"], input[type="password"], input[type="tel"], input[type="number"] {
             -webkit-appearance: none;
             -webkit-tap-highlight-color: transparent;
         }
@@ -949,57 +1010,74 @@
             <p>Rewards voor de beste vrijwilligers ♥️</p>
         </div>
         
-        <div class="tabs">
-            <div class="tab active" id="userTab" onclick="switchToUserTab()">Toegang Gebruiker</div>
-            <div class="tab" id="adminTab" onclick="switchToAdminTab()">Toegang Beheerder</div>
-        </div>
-        
-        <!-- User Access Form -->
+        <!-- User Access Form (Now Default) -->
         <form id="userAccessForm">
             <div class="alert alert-danger" id="userAccessAlert"></div>
+            
             <div class="form-group">
                 <label for="userCode">Jouw 10-Cijferige Code</label>
-                <input type="text" id="userCodeInput" class="form-control" placeholder="Voer jouw 10-cijferige code in" required maxlength="10" pattern="[0-9]{10}" style="text-align: center; font-family: 'Courier New', monospace; font-size: 18px; letter-spacing: 2px;">
+                <input type="text" id="userCodeInput" class="form-control code-input" placeholder="0000000000" required maxlength="10" pattern="[0-9]{10}">
             </div>
+            
             <div class="form-group">
-                <button type="submit" class="btn btn-full">Bekijk mijn wallet</button>
-            </div>
-            <div class="form-group" style="margin-top: 12px;">
                 <label class="checkbox-label">
                     <input type="checkbox" id="stayLoggedIn">
-                    Blijf ingelogd (onthoud mijn code)
+                    Blijf ingelogd op dit apparaat
                 </label>
             </div>
-            <div class="text-center" style="margin-top: 16px;">
-                <p style="color: var(--gray); font-size: 14px;">
-                    <i class="fas fa-qrcode"></i> Of scan jouw QR-code voor directe toegang tot je wallet
-                </p>
+            
+            <div class="form-group">
+                <button type="submit" class="btn btn-full">
+                    <i class="fas fa-wallet"></i> Bekijk mijn wallet
+                </button>
+            </div>
+            
+            <div class="login-divider">
+                <span>Of scan je QR-code</span>
             </div>
         </form>
         
-        <!-- Admin Login Form -->
+        <!-- Admin Login Form (Hidden by default) -->
         <form id="loginForm" style="display: none;">
             <div class="alert alert-danger" id="loginAlert"></div>
+            
             <div class="form-group">
                 <label for="loginEmail">E-mailadres</label>
-                <input type="email" id="loginEmail" class="form-control" placeholder="Voer jouw e-mailadres in" required autocomplete="email">
+                <input type="email" id="loginEmail" class="form-control" placeholder="naam@voorbeeld.nl" required autocomplete="email">
             </div>
+            
             <div class="form-group">
                 <label for="loginPassword">Wachtwoord</label>
-                <input type="password" id="loginPassword" class="form-control" placeholder="Voer jouw wachtwoord in" required autocomplete="current-password">
+                <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required autocomplete="current-password">
             </div>
+            
             <div class="form-group">
-                <button type="submit" class="btn btn-full">Inloggen als Beheerder</button>
+                <button type="submit" class="btn btn-full">
+                    <i class="fas fa-sign-in-alt"></i> Inloggen als Beheerder
+                </button>
             </div>
-            <div class="text-center" style="margin-top: 16px;">
-                <a href="#" id="forgotPasswordLink" style="color: var(--primary); text-decoration: none;">Wachtwoord Vergeten?</a>
+            
+            <div class="form-links">
+                <a href="#" id="forgotPasswordLink">Wachtwoord vergeten?</a>
+            </div>
+            
+            <div class="form-group" style="margin-top: 24px;">
+                <button type="button" class="btn btn-secondary btn-full" id="backToUserAccessBtn">
+                    <i class="fas fa-arrow-left"></i> Terug naar gebruiker toegang
+                </button>
             </div>
         </form>
         
-        <div class="text-center" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
-            <p style="color: var(--gray); font-size: 14px;">
-                <i class="fas fa-info-circle"></i> Nieuw in het systeem? Neem contact op met een beheerder om jouw account aan te maken.
-            </p>
+        <!-- Footer Section -->
+        <div class="auth-footer">
+            <button type="button" class="admin-toggle" id="showAdminLoginBtn">
+                <i class="fas fa-user-shield"></i> Beheerder inloggen
+            </button>
+            
+            <div class="help-text">
+                <i class="fas fa-info-circle"></i>
+                Nieuw in het systeem? Neem contact op met een beheerder.
+            </div>
         </div>
     </div>
     
@@ -1426,12 +1504,13 @@
             dashboardContainer: document.getElementById('dashboardContainer'),
             adminContainer: document.getElementById('adminContainer'),
             
-            userTab: document.getElementById('userTab'),
-            adminTab: document.getElementById('adminTab'),
             loginForm: document.getElementById('loginForm'),
             userAccessForm: document.getElementById('userAccessForm'),
             loginAlert: document.getElementById('loginAlert'),
             userAccessAlert: document.getElementById('userAccessAlert'),
+            
+            showAdminLoginBtn: document.getElementById('showAdminLoginBtn'),
+            backToUserAccessBtn: document.getElementById('backToUserAccessBtn'),
             
             userName: document.getElementById('userName'),
             userCode: document.getElementById('userCode'),
@@ -1475,6 +1554,41 @@
         let selectedUserId = null;
         let currentAdminLevel = null;
         let isInitialized = false;
+        
+        // Function to show admin login form
+        function showAdminLogin() {
+            elements.userAccessForm.style.display = 'none';
+            elements.loginForm.style.display = 'block';
+            
+            // Clear any alerts
+            elements.loginAlert.style.display = 'none';
+            elements.userAccessAlert.style.display = 'none';
+        }
+        
+        // Function to show user access form
+        function showUserAccess() {
+            elements.loginForm.style.display = 'none';
+            elements.userAccessForm.style.display = 'block';
+            
+            // Clear any alerts
+            elements.loginAlert.style.display = 'none';
+            elements.userAccessAlert.style.display = 'none';
+        }
+
+        // Function to forget device (clear stored login)
+        function forgetDevice() {
+            if (confirm('Dit zal jouw opgeslagen login gegevens van dit apparaat verwijderen. Je moet opnieuw inloggen met jouw code. Doorgaan?')) {
+                clearStoredLogin();
+                
+                // Sign out and redirect to login
+                sessionStorage.removeItem('currentUserId');
+                sessionStorage.removeItem('currentUserData');
+                sessionStorage.removeItem('loginMethod');
+                
+                showContainer('auth');
+                alert('Apparaat login vergeten. Je moet opnieuw inloggen met jouw code.');
+            }
+        }
         
         // Utility Functions
         function showLoading(message = 'Laden...') {
@@ -1552,6 +1666,24 @@
         function initializeApp() {
             showLoading('Applicatie initialiseren...');
             
+            // Check for QR code parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const codeParam = urlParams.get('code');
+            
+            if (codeParam && /^\d{10}$/.test(codeParam)) {
+                // Auto-fill the code input
+                document.getElementById('userCodeInput').value = codeParam;
+                
+                // Auto-submit if it's a valid 10-digit code
+                setTimeout(() => {
+                    loginWithUserCode(codeParam, false).catch(error => {
+                        showAlert(elements.userAccessAlert, error.message);
+                        hideLoading();
+                    });
+                }, 500);
+                return;
+            }
+            
             // Connection status
             const connectedRef = database.ref('.info/connected');
             connectedRef.on('value', (snap) => {
@@ -1564,57 +1696,65 @@
                 }
             });
             
-            // Auth state listener
-            auth.onAuthStateChanged(async (user) => {
-                hideLoading();
+            // Check for auto-login first
+            checkAutoLogin().then((autoLoggedIn) => {
+                if (autoLoggedIn) {
+                    hideLoading();
+                    return;
+                }
                 
-                // Only handle Firebase Auth users (admins)
-                if (user) {
-                    try {
-                        const userSnapshot = await database.ref(`${USERS_PATH}/${user.uid}`).once('value');
-                        
-                        if (!userSnapshot.exists()) {
-                            const deactivatedSnapshot = await database.ref(`${DEACTIVATED_USERS_PATH}/${user.uid}`).once('value');
+                // Auth state listener
+                auth.onAuthStateChanged(async (user) => {
+                    hideLoading();
+                    
+                    // Only handle Firebase Auth users (admins)
+                    if (user) {
+                        try {
+                            const userSnapshot = await database.ref(`${USERS_PATH}/${user.uid}`).once('value');
                             
-                            if (deactivatedSnapshot.exists()) {
-                                alert('This account has been deactivated. Please contact an administrator.');
-                                await auth.signOut();
-                                showContainer('auth');
-                                return;
+                            if (!userSnapshot.exists()) {
+                                const deactivatedSnapshot = await database.ref(`${DEACTIVATED_USERS_PATH}/${user.uid}`).once('value');
+                                
+                                if (deactivatedSnapshot.exists()) {
+                                    alert('This account has been deactivated. Please contact an administrator.');
+                                    await auth.signOut();
+                                    showContainer('auth');
+                                    return;
+                                }
+                                
+                                showLoading('Setting up your profile...');
+                                await createUserProfile(user);
+                                hideLoading();
                             }
                             
-                            showLoading('Setting up your profile...');
-                            await createUserProfile(user);
-                            hideLoading();
+                            const adminLevel = await checkAdminLevel(user.uid);
+                            currentAdminLevel = adminLevel;
+                            
+                            if (adminLevel) {
+                                await showAdminPanel(adminLevel);
+                            } else {
+                                // This is a Firebase user but not an admin - show user dashboard
+                                sessionStorage.removeItem('loginMethod'); // Clear any code-based login
+                                await showUserDashboard();
+                            }
+                        } catch (error) {
+                            console.error('Error in auth state change:', error);
+                            showContainer('auth');
+                            alert('Error loading user data: ' + error.message);
                         }
-                        
-                        const adminLevel = await checkAdminLevel(user.uid);
-                        currentAdminLevel = adminLevel;
-                        
-                        if (adminLevel) {
-                            await showAdminPanel(adminLevel);
-                        } else {
-                            // This is a Firebase user but not an admin - show user dashboard
-                            sessionStorage.removeItem('loginMethod'); // Clear any code-based login
-                            await showUserDashboard();
+                    } else {
+                        // No Firebase Auth user - check if there's a code-based session
+                        const loginMethod = sessionStorage.getItem('loginMethod');
+                        if (loginMethod !== 'userCode') {
+                            showContainer('auth');
                         }
-                    } catch (error) {
-                        console.error('Error in auth state change:', error);
-                        showContainer('auth');
-                        alert('Error loading user data: ' + error.message);
                     }
-                } else {
-                    // No Firebase Auth user - check if there's a code-based session
-                    const loginMethod = sessionStorage.getItem('loginMethod');
-                    if (loginMethod !== 'userCode') {
-                        showContainer('auth');
+                    
+                    if (!isInitialized) {
+                        isInitialized = true;
+                        setupAdminIfNeeded();
                     }
-                }
-                
-                if (!isInitialized) {
-                    isInitialized = true;
-                    setupAdminIfNeeded();
-                }
+                });
             });
         }
         
@@ -2154,1018 +2294,4 @@
                 }
                 
                 hideLoading();
-            } catch (error) {
-                console.error('Error adding work day:', error);
-                hideLoading();
-                alert('Failed to record work day: ' + error.message);
-            }
-        }
-
-        async function addNewUser(name) {
-            showLoading('Gebruikersaccount aanmaken...');
-            
-            try {
-                const userCode = generateUserCode();
-                
-                // Check if user code already exists
-                const existingUserSnapshot = await database.ref(USERS_PATH)
-                    .orderByChild('userCode')
-                    .equalTo(userCode)
-                    .once('value');
-                
-                if (existingUserSnapshot.exists()) {
-                    // Generate a new code if duplicate found
-                    return await addNewUser(name);
-                }
-                
-                // Create user in database without Firebase Auth account
-                const userId = generateId();
-                await database.ref(`${USERS_PATH}/${userId}`).set({
-                    name: name,
-                    tokens: 0,
-                    workingDays: 0,
-                    userCode: userCode,
-                    isRegularUser: true, // Flag to identify regular users
-                    createdAt: new Date().toISOString()
-                });
-                
-                elements.addUserModal.style.display = 'none';
-                await loadUsers(elements.searchInput.value);
-                
-                hideLoading();
-                
-                // Show QR code modal with the generated code
-                await showNewUserQRCode(name, userCode);
-                
-                return { userCode };
-            } catch (error) {
-                console.error('Add user error:', error);
-                hideLoading();
-                throw error;
-            }
-        }
-
-        async function showNewUserQRCode(name, userCode) {
-            // Create and show a modal with the QR code
-            const qrModal = document.createElement('div');
-            qrModal.className = 'modal';
-            qrModal.style.display = 'block';
-            qrModal.innerHTML = `
-                <div class="modal-content" style="max-width: 500px; text-align: center;">
-                    <div class="modal-header">
-                        <h2>Gebruiker Succesvol Aangemaakt!</h2>
-                        <button class="close" onclick="this.closest('.modal').remove()">×</button>
-                    </div>
-                    
-                    <div style="margin: 20px 0;">
-                        <h3 style="color: var(--primary); margin-bottom: 8px;">${name}</h3>
-                        <p style="color: var(--gray); margin-bottom: 20px;">Gebruiker Code: <span class="user-code" style="font-size: 20px; font-weight: bold;">${userCode}</span></p>
-                    </div>
-
-                    <div class="qr-container">
-                        <h4><i class="fas fa-qrcode"></i> Gebruiker's Wallet QR-Code</h4>
-                        <canvas id="newUserQRCode" class="qr-code"></canvas>
-                        <p style="color: var(--gray); font-size: 14px;">Deel deze QR-code met de gebruiker voor directe wallet toegang</p>
-                    </div>
-
-                    <div style="margin: 24px 0;">
-                        <p style="color: var(--text); font-size: 16px; line-height: 1.5;">
-                            <strong>De gebruiker kan toegang krijgen tot hun wallet door:</strong><br>
-                            1. Code <strong>${userCode}</strong> in te voeren op de inlogpagina<br>
-                            2. Deze QR-code te scannen<br><br>
-                            <em>Geen andere gegevens nodig!</em>
-                        </p>
-                    </div>
-
-                    <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px;">
-                        <button class="btn btn-secondary" onclick="downloadQRCode('${name}', '${userCode}')">
-                            <i class="fas fa-download"></i> QR-Code Downloaden
-                        </button>
-                        <button class="btn" onclick="this.closest('.modal').remove()">
-                            <i class="fas fa-check"></i> Klaar
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(qrModal);
-            
-            // Generate the QR code
-            const qrCanvas = document.getElementById('newUserQRCode');
-            const qrData = `${window.location.origin}?code=${userCode}`;
-            await generateQRCode(qrCanvas, qrData);
-            
-            // Close modal when clicking outside
-            qrModal.addEventListener('click', (e) => {
-                if (e.target === qrModal) {
-                    qrModal.remove();
-                }
-            });
-        }
-
-        // Function to download QR code as image
-        window.downloadQRCode = function(name, userCode) {
-            const canvas = document.getElementById('newUserQRCode');
-            const link = document.createElement('a');
-            link.download = `${name.replace(/[^a-zA-Z0-9]/g, '_')}_QR_Code_${userCode}.png`;
-            link.href = canvas.toDataURL();
-            link.click();
-        };
-
-        async function addNewAdmin(email, level) {
-            showLoading('Adding admin privileges...');
-            
-            try {
-                // Find user by email
-                const usersSnapshot = await database.ref(USERS_PATH).once('value');
-                let targetUserId = null;
-                
-                usersSnapshot.forEach((userSnapshot) => {
-                    const userData = userSnapshot.val();
-                    if (userData.email === email && !userData.isRegularUser) {
-                        targetUserId = userSnapshot.key;
-                    }
-                });
-                
-                if (!targetUserId) {
-                    throw new Error('Admin user not found with this email address. Please create the admin user account first via Firebase Auth.');
-                }
-                
-                // Check if already admin
-                const existingAdminSnapshot = await database.ref(`${ADMINS_PATH}/${targetUserId}`).once('value');
-                if (existingAdminSnapshot.exists()) {
-                    throw new Error('User is already an admin');
-                }
-                
-                // Add admin privileges
-                await database.ref(`${ADMINS_PATH}/${targetUserId}`).set({
-                    level: level,
-                    addedBy: auth.currentUser.uid,
-                    addedAt: new Date().toISOString()
-                });
-                
-                elements.addAdminModal.style.display = 'none';
-                
-                hideLoading();
-                
-                const levelText = level === ADMIN_LEVELS.SUPER ? 'Super Admin' : 'Regular Admin';
-                alert(`Successfully added ${levelText} privileges to ${email}`);
-                
-            } catch (error) {
-                console.error('Add admin error:', error);
-                hideLoading();
-                throw error;
-            }
-        }
-
-        async function loginWithUserCode(userCode, stayLoggedIn = false) {
-            showLoading('Toegang tot jouw wallet...');
-            
-            try {
-                // Find user by code
-                const usersSnapshot = await database.ref(USERS_PATH)
-                    .orderByChild('userCode')
-                    .equalTo(parseInt(userCode))
-                    .once('value');
-                
-                if (!usersSnapshot.exists()) {
-                    throw new Error('Ongeldige gebruikerscode. Controleer jouw 10-cijferige code en probeer opnieuw.');
-                }
-                
-                let userData = null;
-                let userId = null;
-                
-                usersSnapshot.forEach((userSnapshot) => {
-                    userData = userSnapshot.val();
-                    userId = userSnapshot.key;
-                });
-                
-                if (!userData.isRegularUser) {
-                    throw new Error('Deze code behoort tot een beheerder account. Gebruik het Toegang Beheerder tabblad.');
-                }
-                
-                // Create a temporary session for this user
-                sessionStorage.setItem('currentUserId', userId);
-                sessionStorage.setItem('currentUserData', JSON.stringify(userData));
-                sessionStorage.setItem('loginMethod', 'userCode');
-                
-                // Store login data permanently if requested
-                if (stayLoggedIn) {
-                    localStorage.setItem('ohk_user_code', userCode);
-                    localStorage.setItem('ohk_user_id', userId);
-                    localStorage.setItem('ohk_user_data', JSON.stringify(userData));
-                    localStorage.setItem('ohk_stay_logged_in', 'true');
-                }
-                
-                await showUserDashboard();
-                
-                hideLoading();
-            } catch (error) {
-                console.error('User code login error:', error);
-                hideLoading();
-                throw error;
-            }
-        }
-
-        async function checkAutoLogin() {
-            const stayLoggedIn = localStorage.getItem('ohk_stay_logged_in');
-            const storedCode = localStorage.getItem('ohk_user_code');
-            const storedUserId = localStorage.getItem('ohk_user_id');
-            const storedUserData = localStorage.getItem('ohk_user_data');
-            
-            if (stayLoggedIn === 'true' && storedCode && storedUserId && storedUserData) {
-                try {
-                    showLoading('Automatisch inloggen...');
-                    
-                    // Initialize connection status first
-                    const connectedRef = database.ref('.info/connected');
-                    connectedRef.on('value', (snap) => {
-                        if (snap.val() === true) {
-                            elements.connectionStatus.textContent = 'Verbonden';
-                            elements.connectionStatus.className = 'status-connected';
-                        } else {
-                            elements.connectionStatus.textContent = 'Offline';
-                            elements.connectionStatus.className = 'status-disconnected';
-                        }
-                    });
-                    
-                    // Verify the stored data is still valid by checking the database
-                    const userSnapshot = await database.ref(`${USERS_PATH}/${storedUserId}`).once('value');
-                    
-                    if (userSnapshot.exists()) {
-                        const currentUserData = userSnapshot.val();
-                        
-                        // Check if the code still matches
-                        if (currentUserData.userCode.toString() === storedCode) {
-                            // Auto-login the user
-                            sessionStorage.setItem('currentUserId', storedUserId);
-                            sessionStorage.setItem('currentUserData', JSON.stringify(currentUserData));
-                            sessionStorage.setItem('loginMethod', 'userCode');
-                            
-                            await showUserDashboard();
-                            return true;
-                        }
-                    }
-                } catch (error) {
-                    console.error('Auto-login failed:', error);
-                    hideLoading();
-                }
-                
-                // Clear invalid stored data
-                clearStoredLogin();
-            }
-            
-            return false;
-        }
-
-        function clearStoredLogin() {
-            localStorage.removeItem('ohk_user_code');
-            localStorage.removeItem('ohk_user_id');
-            localStorage.removeItem('ohk_user_data');
-            localStorage.removeItem('ohk_stay_logged_in');
-        }
-        
-        async function logout() {
-            showLoading('Signing out...');
-            
-            try {
-                // Clear session storage for code-based logins
-                sessionStorage.removeItem('currentUserId');
-                sessionStorage.removeItem('currentUserData');
-                sessionStorage.removeItem('loginMethod');
-                
-                // Sign out from Firebase Auth if applicable
-                if (auth.currentUser) {
-                    await auth.signOut();
-                } else {
-                    // For code-based users, just redirect to login
-                    hideLoading();
-                    showContainer('auth');
-                }
-            } catch (error) {
-                console.error('Logout error:', error);
-                hideLoading();
-                alert('Failed to sign out: ' + error.message);
-            }
-        }
-        
-        async function exportUserData() {
-            showLoading('Exporting data...');
-            
-            try {
-                const currentUser = auth.currentUser;
-                const usersSnapshot = await database.ref(USERS_PATH).once('value');
-                const users = [];
-                const userMap = {};
-                
-                usersSnapshot.forEach((userSnapshot) => {
-                    const userId = userSnapshot.key;
-                    const userData = userSnapshot.val();
-                    
-                    if (userId !== currentUser?.uid) {
-                        users.push(userData);
-                        userMap[userId] = {
-                            name: userData.name || 'Unknown',
-                            phone: userData.phone || 'N/A',
-                            email: userData.email || 'N/A',
-                            userCode: userData.userCode || 'No Code',
-                            isRegularUser: userData.isRegularUser || false
-                        };
-                    }
-                });
-                
-                const transactionsSnapshot = await database.ref(TRANSACTIONS_PATH).once('value');
-                const transactions = [];
-                
-                transactionsSnapshot.forEach((transactionSnapshot) => {
-                    const transaction = transactionSnapshot.val();
-                    const userInfo = userMap[transaction.userId] || { name: 'Unknown', phone: 'Unknown', email: 'Unknown', userCode: 'Unknown' };
-                    transaction.userName = userInfo.name;
-                    transaction.userPhone = userInfo.phone;
-                    transaction.userEmail = userInfo.email;
-                    transaction.userCode = userInfo.userCode;
-                    transaction.userType = userInfo.isRegularUser ? 'Regular User' : 'Admin/Staff';
-                    transactions.push(transaction);
-                });
-                
-                let userCsv = 'Name,Email,Phone,User Code,User Type,Tokens,Working Days\n';
-                users.forEach(user => {
-                    const userType = user.isRegularUser ? 'Regular User' : 'Admin/Staff';
-                    const email = user.email || 'N/A';
-                    const phone = user.phone || 'N/A';
-                    userCsv += `"${user.name || ''}","${email}","${phone}","${user.userCode || ''}","${userType}",${user.tokens || 0},${user.workingDays || 0}\n`;
-                });
-                
-                let transactionCsv = 'Transaction ID,Volunteer Name,Phone Number,Email,User Code,User Type,Amount,Description,Date\n';
-                transactions.forEach(transaction => {
-                    transactionCsv += `"${transaction.id || ''}","${transaction.userName}","${transaction.userPhone}","${transaction.userEmail}","${transaction.userCode}","${transaction.userType}",${transaction.amount || 0},"${transaction.description || ''}","${transaction.date || ''}"\n`;
-                });
-                
-                const userBlob = new Blob([userCsv], { type: 'text/csv' });
-                const transactionBlob = new Blob([transactionCsv], { type: 'text/csv' });
-                
-                const userLink = document.createElement('a');
-                userLink.href = URL.createObjectURL(userBlob);
-                userLink.download = 'volunteer_users.csv';
-                
-                const transactionLink = document.createElement('a');
-                transactionLink.href = URL.createObjectURL(transactionBlob);
-                transactionLink.download = 'volunteer_transactions.csv';
-                
-                userLink.click();
-                setTimeout(() => {
-                    transactionLink.click();
-                }, 100);
-                
-                hideLoading();
-            } catch (error) {
-                console.error('Error exporting data:', error);
-                hideLoading();
-                alert('Failed to export data: ' + error.message);
-            }
-        }
-        
-        async function deleteUser(userId, permanent = false) {
-            showLoading(permanent ? 'Permanently deleting user...' : 'Deactivating user account...');
-            
-            try {
-                const userSnapshot = await database.ref(`${USERS_PATH}/${userId}`).once('value');
-                
-                if (!userSnapshot.exists()) {
-                    throw new Error('User not found');
-                }
-                
-                const userData = userSnapshot.val();
-                
-                const transactionsSnapshot = await database.ref(TRANSACTIONS_PATH)
-                    .orderByChild('userId')
-                    .equalTo(userId)
-                    .once('value');
-                
-                const transactions = {};
-                if (transactionsSnapshot.exists()) {
-                    transactionsSnapshot.forEach((transactionSnapshot) => {
-                        transactions[transactionSnapshot.key] = transactionSnapshot.val();
-                    });
-                }
-                
-                if (permanent) {
-                    // PERMANENT DELETION - Remove all data
-                    const updates = {};
-                    updates[`${USERS_PATH}/${userId}`] = null;
-                    updates[`${ADMINS_PATH}/${userId}`] = null;
-                    updates[`${DEACTIVATED_USERS_PATH}/${userId}`] = null;
-                    
-                    // Add transaction deletions to updates
-                    if (transactionsSnapshot.exists()) {
-                        transactionsSnapshot.forEach((transactionSnapshot) => {
-                            updates[`${TRANSACTIONS_PATH}/${transactionSnapshot.key}`] = null;
-                        });
-                    }
-                    
-                    // Execute the database update
-                    await database.ref().update(updates);
-                    
-                    // Delete Firebase Auth account if it's the current user
-                    const currentUser = auth.currentUser;
-                    if (currentUser && currentUser.uid === userId) {
-                        await currentUser.delete();
-                    }
-                } else {
-                    // SOFT DELETION - Move to deactivated users
-                    const deactivatedData = {
-                        userData: userData,
-                        transactions: transactions,
-                        deactivatedAt: new Date().toISOString(),
-                        isAdmin: false
-                    };
-                    
-                    // Check if user is admin
-                    const adminSnapshot = await database.ref(`${ADMINS_PATH}/${userId}`).once('value');
-                    if (adminSnapshot.exists()) {
-                        deactivatedData.isAdmin = true;
-                        deactivatedData.adminData = adminSnapshot.val();
-                    }
-                    
-                    const updates = {};
-                    updates[`${DEACTIVATED_USERS_PATH}/${userId}`] = deactivatedData;
-                    updates[`${USERS_PATH}/${userId}`] = null;
-                    updates[`${ADMINS_PATH}/${userId}`] = null;
-                    
-                    await database.ref().update(updates);
-                }
-                
-                // Refresh user list and close modal
-                if (elements.adminContainer.style.display === 'block') {
-                    await loadUsers(elements.searchInput.value);
-                    elements.tokenModal.style.display = 'none';
-                }
-                
-                hideLoading();
-                return true;
-            } catch (error) {
-                console.error('Delete user error:', error);
-                hideLoading();
-                alert('Failed to process user account: ' + error.message);
-                return false;
-            }
-        }
-        
-        async function deleteUserAccount() {
-            showLoading('Deleting your account...');
-            
-            try {
-                const user = auth.currentUser;
-                
-                // First delete the database records
-                const success = await deleteUser(user.uid, true); // Use permanent delete for user's own account
-                
-                if (success) {
-                    // The auth account is already deleted in deleteUser function
-                    alert('Your account has been permanently deleted. You can now register again with the same email if desired.');
-                }
-            } catch (error) {
-                console.error('Delete account error:', error);
-                hideLoading();
-                
-                if (error.code === 'auth/requires-recent-login') {
-                    alert('Please login again before deleting your account for security reasons.');
-                    logout();
-                } else {
-                    alert('Failed to delete account: ' + error.message);
-                }
-            }
-        }
-        
-        // Immediate tab setup on script load
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM Content Loaded - Setting up tabs immediately');
-            
-            // Set up tabs immediately, even before other initialization
-            setTimeout(() => {
-                const userTab = document.getElementById('userTab');
-                const adminTab = document.getElementById('adminTab');
-                
-                if (userTab && adminTab) {
-                    console.log('Tabs found, adding click listeners immediately');
-                    
-                    userTab.onclick = function() {
-                        console.log('User tab clicked (direct onclick)');
-                        window.switchToUserTab();
-                    };
-                    
-                    adminTab.onclick = function() {
-                        console.log('Admin tab clicked (direct onclick)');
-                        window.switchToAdminTab();
-                    };
-                    
-                    console.log('Direct onclick handlers set up');
-                } else {
-                    console.error('Tabs not found on immediate setup');
-                }
-            }, 100);
-        });
-
-        // Event Listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeApp();
-            
-            // Create admin button
-            document.getElementById('createAdminBtn').addEventListener('click', createSuperAdmin);
-            
-            // Login form
-            elements.loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-                
-                if (!email || !password) {
-                    showAlert(elements.loginAlert, 'Vul alle velden in');
-                    return;
-                }
-                
-                showLoading('Inloggen...');
-                
-                try {
-                    await auth.signInWithEmailAndPassword(email, password);
-                } catch (error) {
-                    console.error('Login error:', error);
-                    hideLoading();
-                    
-                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                        showAlert(elements.loginAlert, 'Ongeldig e-mailadres of wachtwoord');
-                    } else {
-                        showAlert(elements.loginAlert, `Inloggen mislukt: ${error.message}`);
-                    }
-                }
-            });
-            
-            // Search functionality
-            elements.searchInput.addEventListener('input', async () => {
-                const searchTerm = elements.searchInput.value.toLowerCase();
-                await loadUsers(searchTerm);
-            });
-            
-            // Modal close buttons
-            document.getElementById('closeTokenModal').addEventListener('click', () => {
-                elements.tokenModal.style.display = 'none';
-            });
-            
-            document.getElementById('closeAddUserModal').addEventListener('click', () => {
-                elements.addUserModal.style.display = 'none';
-            });
-
-            document.getElementById('closeAddAdminModal').addEventListener('click', () => {
-                elements.addAdminModal.style.display = 'none';
-            });
-            
-            document.getElementById('closePasswordResetModal').addEventListener('click', () => {
-                elements.passwordResetModal.style.display = 'none';
-            });
-            
-            document.getElementById('closeAccountSettingsModal').addEventListener('click', () => {
-                elements.accountSettingsModal.style.display = 'none';
-            });
-            
-            document.getElementById('closeAdminPasswordModal').addEventListener('click', () => {
-                elements.adminPasswordModal.style.display = 'none';
-            });
-            
-            // User dashboard buttons
-            document.getElementById('accountSettingsBtn').addEventListener('click', () => {
-                document.getElementById('changePasswordForm').reset();
-                document.getElementById('accountSettingsAlert').style.display = 'none';
-                document.getElementById('accountSettingsSuccessAlert').style.display = 'none';
-                elements.accountSettingsModal.style.display = 'block';
-            });
-
-            document.getElementById('logoutBtn').addEventListener('click', logout);
-
-            // Forget device button
-            document.getElementById('forgetDeviceBtn').addEventListener('click', forgetDevice);
-            
-            // Quick token buttons
-            document.getElementById('quickAddBtn').addEventListener('click', async () => {
-                await addTokensToUser(selectedUserId, 1, "Quick token addition");
-            });
-            
-            document.getElementById('quickRemoveBtn').addEventListener('click', async () => {
-                await addTokensToUser(selectedUserId, -1, "Quick token removal");
-            });
-            
-            // Token form
-            document.getElementById('addTokensForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const amount = parseInt(document.getElementById('tokenAmount').value);
-                const reason = document.getElementById('tokenReason').value;
-                
-                if (!amount || !reason) {
-                    alert('Please fill in all fields');
-                    return;
-                }
-                
-                await addTokensToUser(selectedUserId, amount, reason);
-                document.getElementById('addTokensForm').reset();
-            });
-            
-            document.getElementById('removeTokensBtn').addEventListener('click', async () => {
-                const amount = parseInt(document.getElementById('tokenAmount').value);
-                const reason = document.getElementById('tokenReason').value;
-                
-                if (!amount || !reason) {
-                    alert('Please fill in all fields');
-                    return;
-                }
-                
-                await addTokensToUser(selectedUserId, -amount, reason);
-                document.getElementById('addTokensForm').reset();
-            });
-            
-            document.getElementById('addWorkDayBtn').addEventListener('click', async () => {
-                await addWorkDayToUser(selectedUserId);
-            });
-            
-            // Delete user button
-            document.getElementById('deleteUserBtn').addEventListener('click', async () => {
-                if (confirm('What would you like to do with this user account?\n\n- Click OK to deactivate the account (data preserved, can be restored)\n- Click Cancel to permanently delete')) {
-                    await deleteUser(selectedUserId, false);
-                    alert('User account has been deactivated and can be restored from admin panel.');
-                } else {
-                    if (confirm('Do you want to PERMANENTLY delete this user and all their data?\n\nThis will:\n- Delete all user data and transactions\n- Remove from active users\n- CANNOT be undone\n\nNote: User may need to contact you if they want to register again with the same email.\n\nProceed?')) {
-                        if (confirm('FINAL WARNING: This will permanently erase all user data and cannot be recovered. Continue?')) {
-                            await deleteUser(selectedUserId, true);
-                            alert('User account and all associated data has been permanently deleted.');
-                        }
-                    }
-                }
-            });
-            
-            // Delete account button (for users)
-            document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
-                if (confirm('Are you sure you want to permanently delete your account?\n\nThis will:\n- Delete all your data and transaction history\n- Allow you to register again with the same email later\n- Cannot be undone\n\nProceed?')) {
-                    await deleteUserAccount();
-                }
-            });
-            
-            // Add user form
-            document.getElementById('addUserForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const name = document.getElementById('addUserName').value;
-                
-                if (!name) {
-                    showAlert(document.getElementById('addUserAlert'), 'Voer een naam in');
-                    return;
-                }
-                
-                try {
-                    await addNewUser(name);
-                } catch (error) {
-                    showAlert(document.getElementById('addUserAlert'), `Kon gebruiker niet toevoegen: ${error.message}`);
-                }
-            });
-
-            // Add admin form
-            document.getElementById('addAdminForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const email = document.getElementById('addAdminEmail').value;
-                const level = document.getElementById('addAdminLevel').value;
-                
-                if (!email || !level) {
-                    showAlert(document.getElementById('addAdminAlert'), 'Please fill in all fields');
-                    return;
-                }
-                
-                try {
-                    await addNewAdmin(email, level);
-                } catch (error) {
-                    showAlert(document.getElementById('addAdminAlert'), error.message);
-                }
-            });
-            
-            // Admin password change form
-            document.getElementById('adminPasswordForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const currentPassword = document.getElementById('adminCurrentPassword').value;
-                const newPassword = document.getElementById('adminNewPassword').value;
-                
-                if (!currentPassword || !newPassword) {
-                    showAlert(document.getElementById('adminPasswordAlert'), 'Please fill in all fields');
-                    return;
-                }
-                
-                if (newPassword.length < 6) {
-                    showAlert(document.getElementById('adminPasswordAlert'), 'New password must be at least 6 characters');
-                    return;
-                }
-                
-                showLoading('Changing password...');
-                
-                try {
-                    const user = auth.currentUser;
-                    const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
-                    await user.reauthenticateWithCredential(credential);
-                    await user.updatePassword(newPassword);
-                    
-                    showSuccessAlert(document.getElementById('adminPasswordSuccessAlert'), 'Password changed successfully');
-                    document.getElementById('adminPasswordForm').reset();
-                    
-                    hideLoading();
-                } catch (error) {
-                    console.error('Change admin password error:', error);
-                    hideLoading();
-                    
-                    if (error.code === 'auth/wrong-password') {
-                        showAlert(document.getElementById('adminPasswordAlert'), 'Current password is incorrect');
-                    } else {
-                        showAlert(document.getElementById('adminPasswordAlert'), `Failed to change password: ${error.message}`);
-                    }
-                }
-            });
-            
-            // Account settings forms
-            document.getElementById('changeUsernameForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const username = document.getElementById('newUsername').value;
-                
-                if (!username) {
-                    showAlert(document.getElementById('accountSettingsAlert'), 'Please enter a username');
-                    return;
-                }
-                
-                showLoading('Updating username...');
-                
-                try {
-                    const user = auth.currentUser;
-                    
-                    await user.updateProfile({
-                        displayName: username
-                    });
-                    
-                    await database.ref(`${USERS_PATH}/${user.uid}/name`).set(username);
-                    
-                    elements.userName.textContent = username;
-                    
-                    showSuccessAlert(document.getElementById('accountSettingsSuccessAlert'), 'Username updated successfully');
-                    document.getElementById('newUsername').value = '';
-                    
-                    hideLoading();
-                } catch (error) {
-                    console.error('Change username error:', error);
-                    hideLoading();
-                    showAlert(document.getElementById('accountSettingsAlert'), `Failed to update username: ${error.message}`);
-                }
-            });
-            
-            document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const currentPassword = document.getElementById('currentPassword').value;
-                const newPassword = document.getElementById('newPassword').value;
-                
-                if (!currentPassword || !newPassword) {
-                    showAlert(document.getElementById('accountSettingsAlert'), 'Please fill in all fields');
-                    return;
-                }
-                
-                if (newPassword.length < 6) {
-                    showAlert(document.getElementById('accountSettingsAlert'), 'New password must be at least 6 characters');
-                    return;
-                }
-                
-                showLoading('Changing password...');
-                
-                try {
-                    const user = auth.currentUser;
-                    const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
-                    await user.reauthenticateWithCredential(credential);
-                    await user.updatePassword(newPassword);
-                    
-                    showSuccessAlert(document.getElementById('accountSettingsSuccessAlert'), 'Password changed successfully');
-                    document.getElementById('changePasswordForm').reset();
-                    
-                    hideLoading();
-                } catch (error) {
-                    console.error('Change password error:', error);
-                    hideLoading();
-                    
-                    if (error.code === 'auth/wrong-password') {
-                        showAlert(document.getElementById('accountSettingsAlert'), 'Current password is incorrect');
-                    } else {
-                        showAlert(document.getElementById('accountSettingsAlert'), `Failed to change password: ${error.message}`);
-                    }
-                }
-            });
-            
-            // Password reset
-            document.getElementById('forgotPasswordLink').addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                const loginEmail = document.getElementById('loginEmail').value;
-                document.getElementById('resetEmail').value = loginEmail || '';
-                
-                document.getElementById('passwordResetAlert').style.display = 'none';
-                document.getElementById('passwordResetSuccessAlert').style.display = 'none';
-                
-                elements.passwordResetModal.style.display = 'block';
-            });
-            
-            document.getElementById('passwordResetForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const email = document.getElementById('resetEmail').value;
-                
-                if (!email) {
-                    showAlert(document.getElementById('passwordResetAlert'), 'Please enter your email address');
-                    return;
-                }
-                
-                showLoading('Sending password reset email...');
-                
-                try {
-                    await auth.sendPasswordResetEmail(email);
-                    hideLoading();
-                    showSuccessAlert(document.getElementById('passwordResetSuccessAlert'), 'Password reset email sent! Check your inbox.');
-                    document.getElementById('resetEmail').value = '';
-                } catch (error) {
-                    console.error('Password reset error:', error);
-                    hideLoading();
-                    
-                    if (error.code === 'auth/user-not-found') {
-                        showAlert(document.getElementById('passwordResetAlert'), 'No account found with this email address');
-                    } else {
-                        showAlert(document.getElementById('passwordResetAlert'), `Error sending reset email: ${error.message}`);
-                    }
-                }
-            });
-            
-            // Token form
-            const addTokensForm = document.getElementById('addTokensForm');
-            if (addTokensForm) {
-                addTokensForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    
-                    const amount = parseInt(document.getElementById('tokenAmount').value);
-                    const reason = document.getElementById('tokenReason').value;
-                    
-                    if (!amount || !reason) {
-                        alert('Vul alle velden in');
-                        return;
-                    }
-                    
-                    await addTokensToUser(selectedUserId, amount, reason);
-                    document.getElementById('addTokensForm').reset();
-                });
-            }
-
-            const removeTokensBtn = document.getElementById('removeTokensBtn');
-            if (removeTokensBtn) {
-                removeTokensBtn.addEventListener('click', async () => {
-                    const amount = parseInt(document.getElementById('tokenAmount').value);
-                    const reason = document.getElementById('tokenReason').value;
-                    
-                    if (!amount || !reason) {
-                        alert('Vul alle velden in');
-                        return;
-                    }
-                    
-                    await addTokensToUser(selectedUserId, -amount, reason);
-                    document.getElementById('addTokensForm').reset();
-                });
-            }
-
-            const addWorkDayBtn = document.getElementById('addWorkDayBtn');
-            if (addWorkDayBtn) {
-                addWorkDayBtn.addEventListener('click', async () => {
-                    await addWorkDayToUser(selectedUserId);
-                });
-            }
-
-            // Delete user button
-            const deleteUserBtn = document.getElementById('deleteUserBtn');
-            if (deleteUserBtn) {
-                deleteUserBtn.addEventListener('click', async () => {
-                    if (confirm('Wat wil je doen met dit gebruikersaccount?\n\n- Klik OK om het account te deactiveren (gegevens bewaard, kan worden hersteld)\n- Klik Annuleren om permanent te verwijderen')) {
-                        await deleteUser(selectedUserId, false);
-                        alert('Gebruikersaccount is gedeactiveerd en kan worden hersteld vanuit het beheerderspaneel.');
-                    } else {
-                        if (confirm('Wil je deze gebruiker en al hun gegevens PERMANENT verwijderen?\n\nDit zal:\n- Alle gebruikersgegevens en transacties verwijderen\n- Verwijderen uit actieve gebruikers\n- KAN NIET ongedaan worden gemaakt\n\nOpmerking: Gebruiker moet mogelijk contact met je opnemen als ze zich opnieuw willen registreren met hetzelfde e-mailadres.\n\nDoorgaan?')) {
-                            if (confirm('LAATSTE WAARSCHUWING: Dit zal alle gebruikersgegevens permanent wissen en kan niet worden hersteld. Doorgaan?')) {
-                                await deleteUser(selectedUserId, true);
-                                alert('Gebruikersaccount en alle bijbehorende gegevens zijn permanent verwijderd.');
-                            }
-                        }
-                    }
-                });
-            }
-
-            // Delete account button (for users)
-            const deleteAccountBtn = document.getElementById('deleteAccountBtn');
-            if (deleteAccountBtn) {
-                deleteAccountBtn.addEventListener('click', async () => {
-                    if (confirm('Weet je zeker dat je jouw account permanent wilt verwijderen?\n\nDit zal:\n- Al jouw gegevens en transactiegeschiedenis verwijderen\n- Je later toestaan om je opnieuw te registreren met hetzelfde e-mailadres\n- Niet ongedaan gemaakt kunnen worden\n\nDoorgaan?')) {
-                        await deleteUserAccount();
-                    }
-                });
-            }
-
-            // Add user form
-            const addUserForm = document.getElementById('addUserForm');
-            if (addUserForm) {
-                addUserForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    
-                    const name = document.getElementById('addUserName').value;
-                    
-                    if (!name) {
-                        showAlert(document.getElementById('addUserAlert'), 'Voer een naam in');
-                        return;
-                    }
-                    
-                    try {
-                        await addNewUser(name);
-                    } catch (error) {
-                        showAlert(document.getElementById('addUserAlert'), `Kon gebruiker niet toevoegen: ${error.message}`);
-                    }
-                });
-            }
-
-            // Add admin form
-            const addAdminForm = document.getElementById('addAdminForm');
-            if (addAdminForm) {
-                addAdminForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    
-                    const email = document.getElementById('addAdminEmail').value;
-                    const level = document.getElementById('addAdminLevel').value;
-                    
-                    if (!email || !level) {
-                        showAlert(document.getElementById('addAdminAlert'), 'Vul alle velden in');
-                        return;
-                    }
-                    
-                    try {
-                        await addNewAdmin(email, level);
-                    } catch (error) {
-                        showAlert(document.getElementById('addAdminAlert'), error.message);
-                    }
-                });
-            }
-
-            // Password reset link
-            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-            if (forgotPasswordLink) {
-                forgotPasswordLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    
-                    const loginEmail = document.getElementById('loginEmail').value;
-                    document.getElementById('resetEmail').value = loginEmail || '';
-                    
-                    document.getElementById('passwordResetAlert').style.display = 'none';
-                    document.getElementById('passwordResetSuccessAlert').style.display = 'none';
-                    
-                    elements.passwordResetModal.style.display = 'block';
-                });
-            }
-
-            // Password reset form
-            const passwordResetForm = document.getElementById('passwordResetForm');
-            if (passwordResetForm) {
-                passwordResetForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    
-                    const email = document.getElementById('resetEmail').value;
-                    
-                    if (!email) {
-                        showAlert(document.getElementById('passwordResetAlert'), 'Voer jouw e-mailadres in');
-                        return;
-                    }
-                    
-                    showLoading('Wachtwoord herstel e-mail versturen...');
-                    
-                    try {
-                        await auth.sendPasswordResetEmail(email);
-                        hideLoading();
-                        showSuccessAlert(document.getElementById('passwordResetSuccessAlert'), 'Wachtwoord herstel e-mail verzonden! Controleer je inbox.');
-                        document.getElementById('resetEmail').value = '';
-                    } catch (error) {
-                        console.error('Password reset error:', error);
-                        hideLoading();
-                        
-                        if (error.code === 'auth/user-not-found') {
-                            showAlert(document.getElementById('passwordResetAlert'), 'Geen account gevonden met dit e-mailadres');
-                        } else {
-                            showAlert(document.getElementById('passwordResetAlert'), `Fout bij versturen herstel e-mail: ${error.message}`);
-                        }
-                    }
-                });
-            }
-        });
-    </script>
-</body>
-</html>
+            } catch (
