@@ -105,6 +105,40 @@
             line-height: 1.4;
         }
 
+        /* === TABS === */
+        .tabs {
+            display: flex;
+            margin-bottom: 24px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 16px 12px;
+            text-align: center;
+            background: var(--light-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text);
+            font-weight: 500;
+            font-size: 14px;
+            min-height: var(--min-touch-target);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tab:hover {
+            background: var(--border);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
         /* === FORMS === */
         .form-group {
             margin-bottom: 20px;
@@ -888,7 +922,12 @@
             <p>Your creative community reward system</p>
         </div>
         
-        <!-- Login Form -->
+        <div class="tabs">
+            <div class="tab active" id="adminTab">Admin Login</div>
+            <div class="tab" id="userTab">User Access</div>
+        </div>
+        
+        <!-- Admin Login Form -->
         <form id="loginForm">
             <div class="alert alert-danger" id="loginAlert"></div>
             <div class="form-group">
@@ -900,10 +939,27 @@
                 <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-full">Login</button>
+                <button type="submit" class="btn btn-full">Login as Admin</button>
             </div>
             <div class="text-center" style="margin-top: 16px;">
                 <a href="#" id="forgotPasswordLink" style="color: var(--primary); text-decoration: none;">Forgot Password?</a>
+            </div>
+        </form>
+        
+        <!-- User Access Form -->
+        <form id="userAccessForm" style="display: none;">
+            <div class="alert alert-danger" id="userAccessAlert"></div>
+            <div class="form-group">
+                <label for="userCode">Your 10-Digit Code</label>
+                <input type="text" id="userCodeInput" class="form-control" placeholder="Enter your 10-digit code" required maxlength="10" pattern="[0-9]{10}" style="text-align: center; font-family: 'Courier New', monospace; font-size: 18px; letter-spacing: 2px;">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-full">Access My Wallet</button>
+            </div>
+            <div class="text-center" style="margin-top: 16px;">
+                <p style="color: var(--gray); font-size: 14px;">
+                    <i class="fas fa-qrcode"></i> Or scan your QR code to access your wallet instantly
+                </p>
             </div>
         </form>
         
@@ -1177,7 +1233,7 @@
                     <button type="submit" class="btn btn-full">Add User</button>
                 </div>
                 <p style="color: var(--gray); font-size: 14px; text-align: center; margin-top: 16px;">
-                    A random 10-digit code and password will be automatically generated
+                    A random 10-digit code will be automatically generated. No password required - users access via code or QR scan.
                 </p>
             </form>
         </div>
@@ -1308,7 +1364,7 @@
                     <button type="submit" class="btn btn-full">Add Admin</button>
                 </div>
                 <p style="color: var(--gray); font-size: 14px; text-align: center; margin-top: 16px;">
-                    The user must already exist in the system
+                    The user must already exist in the system and have a Firebase Auth account (created manually for admin purposes)
                 </p>
             </form>
         </div>
@@ -1350,8 +1406,12 @@
             dashboardContainer: document.getElementById('dashboardContainer'),
             adminContainer: document.getElementById('adminContainer'),
             
+            adminTab: document.getElementById('adminTab'),
+            userTab: document.getElementById('userTab'),
             loginForm: document.getElementById('loginForm'),
+            userAccessForm: document.getElementById('userAccessForm'),
             loginAlert: document.getElementById('loginAlert'),
+            userAccessAlert: document.getElementById('userAccessAlert'),
             
             userName: document.getElementById('userName'),
             userCode: document.getElementById('userCode'),
@@ -1488,6 +1548,7 @@
             auth.onAuthStateChanged(async (user) => {
                 hideLoading();
                 
+                // Only handle Firebase Auth users (admins)
                 if (user) {
                     try {
                         const userSnapshot = await database.ref(`${USERS_PATH}/${user.uid}`).once('value');
@@ -1513,6 +1574,8 @@
                         if (adminLevel) {
                             await showAdminPanel(adminLevel);
                         } else {
+                            // This is a Firebase user but not an admin - show user dashboard
+                            sessionStorage.removeItem('loginMethod'); // Clear any code-based login
                             await showUserDashboard();
                         }
                     } catch (error) {
@@ -1521,7 +1584,11 @@
                         alert('Error loading user data: ' + error.message);
                     }
                 } else {
-                    showContainer('auth');
+                    // No Firebase Auth user - check if there's a code-based session
+                    const loginMethod = sessionStorage.getItem('loginMethod');
+                    if (loginMethod !== 'userCode') {
+                        showContainer('auth');
+                    }
                 }
                 
                 if (!isInitialized) {
@@ -1661,30 +1728,47 @@
             showLoading('Loading your dashboard...');
             
             try {
-                const user = auth.currentUser;
-                const userSnapshot = await database.ref(`${USERS_PATH}/${user.uid}`).once('value');
+                let userData, userId;
                 
-                if (!userSnapshot.exists()) {
-                    throw new Error('User profile not found');
+                // Check if this is a code-based login or Firebase Auth login
+                const loginMethod = sessionStorage.getItem('loginMethod');
+                
+                if (loginMethod === 'userCode') {
+                    // Code-based login
+                    userId = sessionStorage.getItem('currentUserId');
+                    userData = JSON.parse(sessionStorage.getItem('currentUserData'));
+                } else {
+                    // Firebase Auth login
+                    const user = auth.currentUser;
+                    if (!user) {
+                        throw new Error('No authenticated user found');
+                    }
+                    
+                    const userSnapshot = await database.ref(`${USERS_PATH}/${user.uid}`).once('value');
+                    
+                    if (!userSnapshot.exists()) {
+                        throw new Error('User profile not found');
+                    }
+                    
+                    userData = userSnapshot.val();
+                    userId = user.uid;
                 }
-                
-                const userData = userSnapshot.val();
                 
                 showContainer('dashboard');
                 
-                elements.userName.textContent = userData.name || user.displayName || 'Volunteer';
+                elements.userName.textContent = userData.name || 'Volunteer';
                 elements.userCode.textContent = userData.userCode || 'Not assigned';
                 elements.availableTokens.textContent = userData.tokens || 0;
                 elements.workingDays.textContent = userData.workingDays || 0;
 
-                // Generate QR code for user
-                const qrData = `${window.location.origin}/wallet/${userData.userCode}?tokens=${userData.tokens}`;
+                // Generate QR code for user - direct wallet access link
+                const qrData = `${window.location.origin}?code=${userData.userCode}`;
                 await generateQRCode(elements.userQRCode, qrData);
                 
                 // Calculate total earned tokens
                 const transactionsSnapshot = await database.ref(TRANSACTIONS_PATH)
                     .orderByChild('userId')
-                    .equalTo(user.uid)
+                    .equalTo(userId)
                     .once('value');
                 
                 let totalEarnedTokens = 0;
@@ -1702,7 +1786,7 @@
                 elements.historyLoading.style.display = 'block';
                 elements.historyTableBody.innerHTML = '';
                 
-                await loadTransactionHistory(user.uid);
+                await loadTransactionHistory(userId);
                 elements.historyLoading.style.display = 'none';
                 
                 hideLoading();
@@ -1998,8 +2082,8 @@
                 elements.modalWorkingDays.textContent = user.workingDays || 0;
                 elements.modalUserCode.textContent = user.userCode || 'Not assigned';
 
-                // Generate QR code for this user
-                const qrData = `${window.location.origin}/wallet/${user.userCode}?tokens=${user.tokens}`;
+                // Generate QR code for this user - direct wallet access
+                const qrData = `${window.location.origin}?code=${user.userCode}`;
                 await generateQRCode(elements.modalQRCode, qrData);
 
                 // Show/hide super admin actions
@@ -2052,9 +2136,8 @@
                 
                 elements.modalCurrentTokens.textContent = newTokens;
 
-                // Update QR code with new balance
-                const qrData = `${window.location.origin}/wallet/${user.userCode}?tokens=${newTokens}`;
-                await generateQRCode(elements.modalQRCode, qrData);
+                // Update QR code (QR code doesn't need to change since it's direct access)
+                // The balance will be shown when the QR code is scanned
 
                 await loadModalTransactionHistory(userId);
                 
@@ -2106,9 +2189,7 @@
                 elements.modalCurrentTokens.textContent = newTokens;
                 elements.modalWorkingDays.textContent = newWorkingDays;
 
-                // Update QR code with new balance
-                const qrData = `${window.location.origin}/wallet/${user.userCode}?tokens=${newTokens}`;
-                await generateQRCode(elements.modalQRCode, qrData);
+                // QR code doesn't need updating since it's direct access
 
                 await loadModalTransactionHistory(userId);
                 
@@ -2128,19 +2209,30 @@
             showLoading('Creating user account...');
             
             try {
-                const password = generateRandomPassword();
                 const userCode = generateUserCode();
                 
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                const user = userCredential.user;
+                // Check if user code already exists
+                const existingUserSnapshot = await database.ref(USERS_PATH)
+                    .orderByChild('userCode')
+                    .equalTo(userCode)
+                    .once('value');
                 
-                await database.ref(`${USERS_PATH}/${user.uid}`).set({
+                if (existingUserSnapshot.exists()) {
+                    // Generate a new code if duplicate found
+                    return await addNewUser(name, phone, email);
+                }
+                
+                // Create user in database without Firebase Auth account
+                const userId = generateId();
+                await database.ref(`${USERS_PATH}/${userId}`).set({
                     name: name,
                     email: email,
                     phone: phone,
                     tokens: 0,
                     workingDays: 0,
-                    userCode: userCode
+                    userCode: userCode,
+                    isRegularUser: true, // Flag to identify regular users
+                    createdAt: new Date().toISOString()
                 });
                 
                 elements.addUserModal.style.display = 'none';
@@ -2148,9 +2240,9 @@
                 
                 hideLoading();
                 
-                alert(`User created successfully!\n\nName: ${name}\nEmail: ${email}\nCode: ${userCode}\nPassword: ${password}\n\nPlease provide these credentials to the user.`);
+                alert(`User created successfully!\n\nName: ${name}\nEmail: ${email}\nUser Code: ${userCode}\n\nThe user can access their wallet by:\n1. Entering their code on the login page\n2. Scanning their QR code\n\nNo password required!`);
                 
-                return { userCode, password };
+                return { userCode };
             } catch (error) {
                 console.error('Add user error:', error);
                 hideLoading();
@@ -2168,13 +2260,13 @@
                 
                 usersSnapshot.forEach((userSnapshot) => {
                     const userData = userSnapshot.val();
-                    if (userData.email === email) {
+                    if (userData.email === email && !userData.isRegularUser) {
                         targetUserId = userSnapshot.key;
                     }
                 });
                 
                 if (!targetUserId) {
-                    throw new Error('User not found with this email address');
+                    throw new Error('Admin user not found with this email address. Please create the admin user account first via Firebase Auth.');
                 }
                 
                 // Check if already admin
@@ -2203,12 +2295,65 @@
                 throw error;
             }
         }
+
+        async function loginWithUserCode(userCode) {
+            showLoading('Accessing your wallet...');
+            
+            try {
+                // Find user by code
+                const usersSnapshot = await database.ref(USERS_PATH)
+                    .orderByChild('userCode')
+                    .equalTo(parseInt(userCode))
+                    .once('value');
+                
+                if (!usersSnapshot.exists()) {
+                    throw new Error('Invalid user code. Please check your 10-digit code and try again.');
+                }
+                
+                let userData = null;
+                let userId = null;
+                
+                usersSnapshot.forEach((userSnapshot) => {
+                    userData = userSnapshot.val();
+                    userId = userSnapshot.key;
+                });
+                
+                if (!userData.isRegularUser) {
+                    throw new Error('This code belongs to an admin account. Please use the Admin Login tab.');
+                }
+                
+                // Create a temporary session for this user
+                sessionStorage.setItem('currentUserId', userId);
+                sessionStorage.setItem('currentUserData', JSON.stringify(userData));
+                sessionStorage.setItem('loginMethod', 'userCode');
+                
+                await showUserDashboard();
+                
+                hideLoading();
+            } catch (error) {
+                console.error('User code login error:', error);
+                hideLoading();
+                throw error;
+            }
+        }
         
         async function logout() {
             showLoading('Signing out...');
             
             try {
-                await auth.signOut();
+                // Clear session storage for code-based logins
+                sessionStorage.removeItem('currentUserId');
+                sessionStorage.removeItem('currentUserData');
+                sessionStorage.removeItem('loginMethod');
+                
+                // Sign out from Firebase Auth if applicable
+                if (auth.currentUser) {
+                    await auth.signOut();
+                } else {
+                    // For code-based users, just redirect to login
+                    hideLoading();
+                    showContainer('auth');
+                }
             } catch (error) {
                 console.error('Logout error:', error);
                 hideLoading();
