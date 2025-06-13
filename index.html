@@ -19,11 +19,11 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" crossorigin="anonymous">
     
-    <!-- QR Code Library -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js" crossorigin="anonymous"></script>
+    <!-- QR Code Library - Temporarily disabled to fix admin login -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js" crossorigin="anonymous"></script> -->
     
-    <!-- QR Code Scanner Library -->
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" crossorigin="anonymous"></script>
+    <!-- QR Code Scanner Library - Temporarily disabled to fix admin login -->
+    <!-- <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" crossorigin="anonymous"></script> -->
     
     <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" crossorigin="anonymous"></script>
@@ -1173,12 +1173,13 @@
             </div>
             
             <div class="login-divider">
-                <span>Of scan je QR-code</span>
+                <span>Voer je code hierboven in</span>
             </div>
             
-            <button type="button" class="qr-scanner-btn" id="openQRScannerBtn">
+            <!-- QR Scanner temporarily disabled to fix admin login -->
+            <!-- <button type="button" class="qr-scanner-btn" id="openQRScannerBtn">
                 <i class="fas fa-camera"></i> Open camera om QR-code te scannen
-            </button>
+            </button> -->
         </form>
         
         <!-- Admin Login Form (Hidden by default) -->
@@ -1809,6 +1810,24 @@
         }
 
         async function generateQRCode(canvas, data) {
+            // QR Code generation temporarily disabled to fix admin login
+            try {
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#f0f0f0';
+                ctx.fillRect(0, 0, 200, 200);
+                ctx.fillStyle = '#333';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('QR Code', 100, 90);
+                ctx.fillText('Tijdelijk uitgeschakeld', 100, 110);
+                ctx.fillText('Gebruik code input', 100, 130);
+                canvas.width = 200;
+                canvas.height = 200;
+            } catch (error) {
+                console.error('Error creating QR placeholder:', error);
+            }
+            
+            /* Original QR code generation - disabled temporarily
             try {
                 // Check if QRCode library is available
                 if (typeof QRCode === 'undefined') {
@@ -1848,6 +1867,7 @@
                 canvas.width = 200;
                 canvas.height = 200;
             }
+            */
         }
         
         function formatDate(dateString) {
