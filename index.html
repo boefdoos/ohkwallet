@@ -1138,7 +1138,7 @@
         <div class="qr-container">
             <h4><i class="fas fa-qrcode"></i> Jouw Wallet QR-Code</h4>
             <canvas id="userQRCode" class="qr-code"></canvas>
-            <p style="color: var(--gray); font-size: 14px;">Scan deze code om jouw wallet saldo te bekijken</p>
+            <p style="color: var(--gray); font-size: 14px;">Scan deze code om jouw wallet saldo te bekijken (bevat jouw unieke ID)</p>
         </div>
         
         <h2 style="margin-bottom: 16px; color: var(--primary);">Transactie Geschiedenis</h2>
@@ -1263,7 +1263,7 @@
             <div class="qr-container">
                 <h4><i class="fas fa-qrcode"></i> Gebruiker's Wallet QR-Code</h4>
                 <canvas id="modalQRCode" class="qr-code"></canvas>
-                <p style="color: var(--gray); font-size: 14px;">Scan deze code om wallet saldo te bekijken</p>
+                <p style="color: var(--gray); font-size: 14px;">Scan deze code om wallet saldo te bekijken (bevat unieke user ID)</p>
             </div>
             
             <!-- Quick Actions -->
@@ -1613,8 +1613,8 @@
             document.getElementById('totalEarned').textContent = userData.totalEarned || 0;
             document.getElementById('workingDays').textContent = userData.workingDays || 0;
             
-            // Generate QR code for user
-            const qrData = `OHK:${userData.userCode}`;
+            // Generate QR code for user - using user ID instead of user code
+            const qrData = `OHK:${userData.id}`;
             const qrCanvas = document.getElementById('userQRCode');
             await generateQRCode(qrCanvas, qrData);
             
@@ -1797,9 +1797,15 @@
             const userList = document.getElementById('userList');
             userList.innerHTML = '';
             
+            if (users.length === 0) {
+                userList.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--gray);">Geen gebruikers gevonden</div>';
+                return;
+            }
+            
             users.forEach(user => {
                 const userItem = document.createElement('div');
                 userItem.className = 'user-item';
+                userItem.setAttribute('data-user-id', user.id);
                 userItem.innerHTML = `
                     <div class="user-info">
                         <h3>${user.name || 'Onbekende Gebruiker'}</h3>
@@ -1814,6 +1820,77 @@
                 `;
                 userList.appendChild(userItem);
             });
+        }
+
+        async function removeUserFromUI(userId) {
+            // Remove from allUsers array
+            allUsers = allUsers.filter(user => user.id !== userId);
+            
+            // Remove from current display
+            const userElement = document.querySelector(`[data-user-id="${userId}"]`);
+            if (userElement) {
+                userElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                userElement.style.opacity = '0';
+                userElement.style.transform = 'translateX(-20px)';
+                
+                setTimeout(() => {
+                    if (userElement.parentNode) {
+                        userElement.parentNode.removeChild(userElement);
+                    }
+                    
+                    // Update display based on current search
+                    const searchTerm = document.getElementById('searchInput').value;
+                    if (searchTerm) {
+                        searchUsers();
+                    } else {
+                        displayUsers(allUsers);
+                    }
+                }, 300);
+            }
+        }
+
+        async function updateUserInUI(userId) {
+            try {
+                // Get updated user data
+                const userSnapshot = await database.ref(`users/${userId}`).once('value');
+                if (!userSnapshot.exists()) {
+                    // User was deleted, remove from UI
+                    await removeUserFromUI(userId);
+                    return;
+                }
+                
+                const userData = userSnapshot.val();
+                userData.id = userId;
+                
+                // Update in allUsers array
+                const userIndex = allUsers.findIndex(user => user.id === userId);
+                if (userIndex !== -1) {
+                    allUsers[userIndex] = userData;
+                } else {
+                    allUsers.push(userData);
+                }
+                
+                // Update the specific user element in UI
+                const userElement = document.querySelector(`[data-user-id="${userId}"]`);
+                if (userElement) {
+                    const userInfo = userElement.querySelector('.user-info');
+                    userInfo.innerHTML = `
+                        <h3>${userData.name || 'Onbekende Gebruiker'}</h3>
+                        <p>Code: <span class="user-code">${userData.userCode || 'Geen code'}</span></p>
+                        <p>Tokens: ${userData.tokens || 0} | Werkdagen: ${userData.workingDays || 0} | Totaal verdiend: ${userData.totalEarned || 0}</p>
+                    `;
+                    
+                    // Add a subtle highlight effect
+                    userElement.style.transition = 'background-color 0.5s ease';
+                    userElement.style.backgroundColor = 'rgba(0, 118, 255, 0.1)';
+                    setTimeout(() => {
+                        userElement.style.backgroundColor = '';
+                    }, 1000);
+                }
+                
+            } catch (error) {
+                console.error('Error updating user in UI:', error);
+            }
         }
 
         function searchUsers() {
@@ -1851,8 +1928,8 @@
                 document.getElementById('modalWorkingDays').textContent = userData.workingDays || 0;
                 document.getElementById('modalUserCode').textContent = userData.userCode || 'Geen code';
                 
-                // Generate QR code
-                const qrData = `OHK:${userData.userCode}`;
+                // Generate QR code using user ID instead of user code
+                const qrData = `OHK:${userId}`;
                 const qrCanvas = document.getElementById('modalQRCode');
                 await generateQRCode(qrCanvas, qrData);
                 
@@ -1944,6 +2021,9 @@
                 // Add transaction
                 await database.ref(`users/${userId}/transactions`).push(transaction);
                 
+                // Update UI immediately
+                await updateUserInUI(userId);
+                
                 console.log('✅ Tokens updated successfully');
                 return { success: true, newTokens };
                 
@@ -1987,6 +2067,9 @@
                 
                 // Add transaction
                 await database.ref(`users/${userId}/transactions`).push(transaction);
+                
+                // Update UI immediately
+                await updateUserInUI(userId);
                 
                 console.log('✅ Work day added successfully');
                 return { success: true, newTokens, newWorkingDays };
@@ -2041,10 +2124,23 @@
                     createdBy: auth.currentUser?.uid || 'system'
                 };
                 
-                await database.ref('users').push(userData);
+                const newUserRef = await database.ref('users').push(userData);
+                const userId = newUserRef.key;
+                
+                // Add to UI immediately
+                userData.id = userId;
+                allUsers.push(userData);
+                
+                // If no search is active, show all users, otherwise respect search
+                const searchTerm = document.getElementById('searchInput').value;
+                if (!searchTerm) {
+                    displayUsers(allUsers);
+                } else {
+                    searchUsers(); // This will include the new user if it matches search
+                }
                 
                 console.log('✅ User added successfully:', name, userCode);
-                return { success: true, userCode };
+                return { success: true, userCode, userId };
                 
             } catch (error) {
                 console.error('❌ Error adding user:', error);
@@ -2060,6 +2156,10 @@
             try {
                 await database.ref(`users/${userId}`).remove();
                 console.log('✅ User deleted successfully');
+                
+                // Remove from UI immediately without refresh
+                await removeUserFromUI(userId);
+                
                 return { success: true };
                 
             } catch (error) {
@@ -2281,9 +2381,8 @@
                         await addTokens(currentModalUserId, 1, 'Snelle toevoeging (+1)');
                         hideLoading();
                         
-                        // Refresh modal and user list
+                        // Refresh modal content only
                         await openTokenModal(currentModalUserId);
-                        await loadUsersList();
                         
                     } catch (error) {
                         hideLoading();
@@ -2302,9 +2401,8 @@
                         await addTokens(currentModalUserId, -1, 'Snelle verwijdering (-1)');
                         hideLoading();
                         
-                        // Refresh modal and user list
+                        // Refresh modal content only
                         await openTokenModal(currentModalUserId);
-                        await loadUsersList();
                         
                     } catch (error) {
                         hideLoading();
@@ -2337,9 +2435,8 @@
                         document.getElementById('tokenAmount').value = '';
                         document.getElementById('tokenReason').value = '';
                         
-                        // Refresh modal and user list
+                        // Refresh modal content only
                         await openTokenModal(currentModalUserId);
-                        await loadUsersList();
                         
                     } catch (error) {
                         hideLoading();
@@ -2371,9 +2468,8 @@
                         document.getElementById('tokenAmount').value = '';
                         document.getElementById('tokenReason').value = '';
                         
-                        // Refresh modal and user list
+                        // Refresh modal content only
                         await openTokenModal(currentModalUserId);
-                        await loadUsersList();
                         
                     } catch (error) {
                         hideLoading();
@@ -2393,9 +2489,8 @@
                         await addWorkDay(currentModalUserId);
                         hideLoading();
                         
-                        // Refresh modal and user list
+                        // Refresh modal content only
                         await openTokenModal(currentModalUserId);
-                        await loadUsersList();
                         
                     } catch (error) {
                         hideLoading();
@@ -2416,7 +2511,7 @@
                         hideLoading();
                         
                         hideModal('tokenModal');
-                        await loadUsersList();
+                        // No need to reload user list - removeUserFromUI handles it
                         
                     } catch (error) {
                         hideLoading();
@@ -2451,7 +2546,7 @@
                         hideModal('addUserModal');
                         document.getElementById('addUserName').value = '';
                         
-                        await loadUsersList();
+                        // No need to reload entire user list - addNewUser handles UI update
                         
                         alert(`Gebruiker ${name} toegevoegd!\nCode: ${result.userCode}`);
                         
