@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0076FF">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title>OHK Wallet - Debug Test</title>
+    <title>OHK Wallet - Beloningssysteem</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +16,13 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" crossorigin="anonymous">
     
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js" crossorigin="anonymous"></script>
+    
     <style>
+        /* === ROOT VARIABLES === */
         :root {
             --primary: #0076FF;
             --primary-dark: #0062D6;
@@ -25,10 +31,16 @@
             --gray: #777777;
             --light-gray: #F5F5F5;
             --border: #E0E0E0;
+            --success: #43A047;
+            --danger: #E53935;
+            --danger-dark: #C62828;
+            --warning: #FF9800;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             --border-radius: 8px;
             --min-touch-target: 44px;
         }
 
+        /* === GLOBAL RESET === */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -40,16 +52,26 @@
             background: var(--background);
             color: var(--text);
             line-height: 1.6;
-            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
+        /* === LAYOUT === */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px;
+            width: 100%;
+        }
+
+        /* === AUTHENTICATION CONTAINER === */
         .auth-container {
             max-width: 500px;
             margin: 40px auto;
             padding: 32px 24px;
             background: var(--background);
             border-radius: var(--border-radius);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow);
             border: 1px solid var(--border);
         }
 
@@ -62,11 +84,34 @@
             font-weight: 700;
             margin-bottom: 8px;
             color: var(--primary);
-            font-size: 24px;
+            font-size: clamp(20px, 4vw, 24px);
+            line-height: 1.2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
+        .header h1 svg {
+            flex-shrink: 0;
+        }
+
+        .header p {
+            color: var(--gray);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        /* === FORMS === */
         .form-group {
             margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+            font-size: 14px;
         }
 
         .form-control {
@@ -78,8 +123,57 @@
             background: var(--background);
             color: var(--text);
             min-height: var(--min-touch-target);
+            -webkit-appearance: none;
+            transition: border-color 0.3s ease;
         }
 
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 118, 255, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: #999;
+        }
+
+        /* === CODE INPUT STYLING === */
+        .code-input {
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            letter-spacing: 4px;
+            font-weight: 600;
+            padding: 20px 16px;
+        }
+
+        .code-input::placeholder {
+            letter-spacing: 2px;
+            opacity: 0.5;
+        }
+
+        /* === CHECKBOX STYLING === */
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: var(--gray);
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        /* === BUTTONS === */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -95,11 +189,96 @@
             text-decoration: none;
             transition: all 0.3s ease;
             min-height: var(--min-touch-target);
-            width: 100%;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            line-height: 1;
         }
 
         .btn:hover {
             background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 118, 255, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--light-gray) !important;
+            color: var(--text) !important;
+            border: 1px solid var(--border) !important;
+        }
+
+        .btn-secondary:hover {
+            background: var(--border) !important;
+            color: var(--text) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .btn-danger {
+            background: var(--danger) !important;
+            color: white !important;
+        }
+
+        .btn-danger:hover {
+            background: var(--danger-dark) !important;
+            box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3) !important;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* === LOGIN DIVIDER === */
+        .login-divider {
+            text-align: center;
+            margin: 24px 0;
+            position: relative;
+        }
+
+        .login-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .login-divider span {
+            background: var(--background);
+            padding: 0 16px;
+            color: var(--gray);
+            font-size: 14px;
+            position: relative;
+        }
+
+        /* === FORM LINKS === */
+        .form-links {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .form-links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .form-links a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* === AUTH FOOTER === */
+        .auth-footer {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            text-align: center;
         }
 
         .admin-toggle {
@@ -115,166 +294,443 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: 500;
-            margin-top: 24px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-height: var(--min-touch-target);
+            margin-bottom: 16px;
         }
 
         .admin-toggle:hover {
             background: var(--light-gray);
             color: var(--text);
+            border-color: var(--gray);
         }
 
-        .hidden {
+        .help-text {
+            color: var(--gray);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            opacity: 0.8;
+        }
+
+        /* === DASHBOARD === */
+        .dashboard {
             display: none;
+        }
+
+        .admin-panel {
+            display: none;
+        }
+
+        /* === ALERTS === */
+        .alert {
+            padding: 16px;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius);
+            color: white;
+            display: none;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: var(--success);
+        }
+
+        .alert-danger {
+            background: var(--danger);
+        }
+
+        /* === LOADING === */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+        }
+
+        .loading-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--background);
+            padding: 32px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            min-width: 200px;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .spinner {
+            border: 4px solid var(--border);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border-left-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* === UTILITY CLASSES === */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* === MOBILE OPTIMIZATIONS === */
+        @media (max-width: 768px) {
+            .auth-container {
+                margin: 20px auto;
+                padding: 24px 20px;
+            }
+
+            .header h1 svg {
+                width: 36px;
+                height: 36px;
+                margin-right: 6px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p id="loadingMessage">Laden...</p>
+        </div>
+    </div>
+    
     <!-- Auth Container -->
-    <div class="auth-container">
+    <div class="auth-container" id="authContainer">
         <div class="header">
-            <h1>OHK Wallet - Debug Test</h1>
-            <p>Testing admin login functionality</p>
+            <h1>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="40" height="40" style="vertical-align: middle; margin-right: 8px;">
+                    <defs>
+                        <radialGradient id="background" cx="30%" cy="30%">
+                            <stop offset="0%" style="stop-color:#FFED33;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#FFB800;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#009DFF;stop-opacity:1" />
+                        </radialGradient>
+                        <radialGradient id="goldOval" cx="40%" cy="30%">
+                            <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.9" />
+                            <stop offset="30%" style="stop-color:#FFED33;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#FFB800;stop-opacity:1" />
+                        </radialGradient>
+                    </defs>
+                    <!-- Outer circle with gradient -->
+                    <circle cx="16" cy="16" r="15.5" fill="url(#background)" stroke="#FFB800" stroke-width="1"/>
+                    <!-- Inner black circle -->
+                    <circle cx="16" cy="16" r="11" fill="#000000" stroke="#333333" stroke-width="0.5"/>
+                    <!-- Golden oval in center -->
+                    <ellipse cx="16" cy="16" rx="4" ry="6" fill="url(#goldOval)" stroke="#FFB800" stroke-width="0.3"/>
+                    <!-- Highlight on oval -->
+                    <ellipse cx="14.5" cy="13.5" rx="1.5" ry="2.5" fill="#FFFFFF" opacity="0.6"/>
+                </svg>
+                OHK Wallet
+            </h1>
+            <p>Rewards voor de beste vrijwilligers ♥️</p>
         </div>
         
         <!-- User Access Form -->
         <form id="userAccessForm">
+            <div class="alert alert-danger" id="userAccessAlert"></div>
+            
             <div class="form-group">
-                <input type="text" id="userCodeInput" class="form-control" placeholder="Voer jouw 10-cijferige code in" maxlength="10">
+                <label for="userCode">Jouw 10-Cijferige Code</label>
+                <input type="text" id="userCodeInput" class="form-control code-input" placeholder="0000000000" required maxlength="10" pattern="[0-9]{10}">
             </div>
+            
             <div class="form-group">
-                <button type="submit" class="btn">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="stayLoggedIn">
+                    Blijf ingelogd op dit apparaat
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn btn-full">
                     <i class="fas fa-wallet"></i> Bekijk mijn wallet
                 </button>
+            </div>
+            
+            <div class="login-divider">
+                <span>Voer je code hierboven in</span>
             </div>
         </form>
         
         <!-- Admin Login Form -->
         <form id="loginForm" class="hidden">
+            <div class="alert alert-danger" id="loginAlert"></div>
+            
             <div class="form-group">
-                <input type="email" id="loginEmail" class="form-control" placeholder="naam@voorbeeld.nl" required>
+                <label for="loginEmail">E-mailadres</label>
+                <input type="email" id="loginEmail" class="form-control" placeholder="naam@voorbeeld.nl" required autocomplete="email">
             </div>
+            
             <div class="form-group">
-                <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+                <label for="loginPassword">Wachtwoord</label>
+                <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required autocomplete="current-password">
             </div>
+            
             <div class="form-group">
-                <button type="submit" class="btn">
+                <button type="submit" class="btn btn-full">
                     <i class="fas fa-sign-in-alt"></i> Inloggen als Beheerder
                 </button>
             </div>
-            <div style="text-align: center; margin-top: 16px;">
-                <button type="button" class="admin-toggle" id="backToUserAccessBtn">
+            
+            <div class="form-links">
+                <a href="#" id="forgotPasswordLink">Wachtwoord vergeten?</a>
+            </div>
+            
+            <div class="form-group" style="margin-top: 24px;">
+                <button type="button" class="btn btn-secondary btn-full" id="backToUserAccessBtn">
                     <i class="fas fa-arrow-left"></i> Terug naar gebruiker toegang
                 </button>
             </div>
         </form>
         
-        <!-- Admin Login Button -->
-        <div style="text-align: center;">
+        <!-- Footer Section -->
+        <div class="auth-footer">
             <button type="button" class="admin-toggle" id="showAdminLoginBtn">
                 <i class="fas fa-user-shield"></i> Beheerder inloggen
             </button>
+            
+            <div class="help-text">
+                <i class="fas fa-info-circle"></i>
+                Nieuw in het systeem? Neem contact op met een beheerder.
+            </div>
+        </div>
+    </div>
+    
+    <!-- User Dashboard -->
+    <div class="container dashboard" id="dashboardContainer">
+        <div style="text-align: center; padding: 40px;">
+            <h1>🎉 Wallet Dashboard</h1>
+            <p>Je bent succesvol ingelogd met je code!</p>
+            <button class="btn" onclick="logout()">Uitloggen</button>
+        </div>
+    </div>
+    
+    <!-- Admin Panel -->
+    <div class="container admin-panel" id="adminContainer">
+        <div style="text-align: center; padding: 40px;">
+            <h1>🛡️ Admin Panel</h1>
+            <p>Je bent succesvol ingelogd als beheerder!</p>
+            <button class="btn btn-danger" onclick="logout()">Uitloggen</button>
         </div>
     </div>
 
     <script>
-        console.log('🚀 Script started');
+        console.log('🚀 OHK Wallet - Script started');
         
+        // Firebase Configuration
+        let firebase, auth, database;
+        
+        try {
+            const firebaseConfig = {
+                apiKey: "AIzaSyAev2VvDz3FCxdZmZo2W2jpgACFh9Q_YlA",
+                authDomain: "ohk-volunteers.firebaseapp.com",
+                databaseURL: "https://ohk-volunteers-default-rtdb.europe-west1.firebasedatabase.app",
+                projectId: "ohk-volunteers",
+                storageBucket: "ohk-volunteers.firebasestorage.app",
+                messagingSenderId: "637356396673",
+                appId: "1:637356396673:web:e9cbfcf21dc509cadb7d80",
+                measurementId: "G-R4KV130GN8"
+            };
+            
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            auth = firebase.auth();
+            database = firebase.database();
+            console.log('✅ Firebase initialized successfully');
+        } catch (error) {
+            console.error('❌ Firebase initialization failed:', error);
+            alert('Firebase connection failed. Some features may not work.');
+        }
+
         // Simple functions
         function showAdminLogin() {
             console.log('📋 Showing admin login form');
-            document.getElementById('userAccessForm').style.display = 'none';
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('showAdminLoginBtn').style.display = 'none';
-            console.log('✅ Admin login form should now be visible');
+            document.getElementById('userAccessForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+            console.log('✅ Admin login form visible');
         }
         
         function showUserAccess() {
             console.log('📋 Showing user access form');
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('userAccessForm').style.display = 'block';
-            document.getElementById('showAdminLoginBtn').style.display = 'block';
-            console.log('✅ User access form should now be visible');
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('userAccessForm').classList.remove('hidden');
+            console.log('✅ User access form visible');
+        }
+
+        function showContainer(containerName) {
+            document.getElementById('authContainer').style.display = containerName === 'auth' ? 'block' : 'none';
+            document.getElementById('dashboardContainer').style.display = containerName === 'dashboard' ? 'block' : 'none';
+            document.getElementById('adminContainer').style.display = containerName === 'admin' ? 'block' : 'none';
+        }
+
+        function showLoading(message = 'Laden...') {
+            document.getElementById('loadingMessage').textContent = message;
+            document.getElementById('loadingOverlay').style.display = 'block';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        function showAlert(alertElement, message) {
+            alertElement.textContent = message;
+            alertElement.style.display = 'block';
+            setTimeout(() => {
+                alertElement.style.display = 'none';
+            }, 5000);
+        }
+
+        function logout() {
+            if (auth && auth.currentUser) {
+                auth.signOut();
+            }
+            showContainer('auth');
+            console.log('👋 Logged out');
+        }
+
+        // Mock login function for testing
+        async function loginWithUserCode(userCode, stayLoggedIn) {
+            console.log('🔐 Attempting user login with code:', userCode);
+            showLoading('Inloggen...');
+            
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            if (userCode === '1234567890') {
+                hideLoading();
+                showContainer('dashboard');
+                console.log('✅ User login successful');
+            } else {
+                hideLoading();
+                throw new Error('Ongeldige code. Probeer 1234567890 voor demo.');
+            }
         }
 
         // Wait for DOM to load
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🔥 DOM loaded!');
+            console.log('🔥 DOM loaded - Setting up OHK Wallet');
             
             // Find buttons
             const showAdminBtn = document.getElementById('showAdminLoginBtn');
             const backToUserBtn = document.getElementById('backToUserAccessBtn');
+            const userAccessForm = document.getElementById('userAccessForm');
+            const loginForm = document.getElementById('loginForm');
             
-            console.log('🔍 Admin button found:', !!showAdminBtn);
-            console.log('🔍 Back button found:', !!backToUserBtn);
+            console.log('🔍 Elements found:');
+            console.log('- Admin button:', !!showAdminBtn);
+            console.log('- Back button:', !!backToUserBtn);
+            console.log('- User form:', !!userAccessForm);
+            console.log('- Login form:', !!loginForm);
             
             // Add event listeners
             if (showAdminBtn) {
-                console.log('✅ Adding click listener to admin button');
                 showAdminBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    console.log('🎯 ADMIN BUTTON CLICKED!');
+                    console.log('🎯 Admin button clicked');
                     showAdminLogin();
                 });
                 console.log('✅ Admin button listener added');
-            } else {
-                console.error('❌ Admin button not found!');
             }
             
             if (backToUserBtn) {
-                console.log('✅ Adding click listener to back button');
                 backToUserBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    console.log('🎯 BACK BUTTON CLICKED!');
+                    console.log('🎯 Back button clicked');
                     showUserAccess();
                 });
                 console.log('✅ Back button listener added');
             }
-            
-            // Add user code input formatting
+
+            if (userAccessForm) {
+                userAccessForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    console.log('🎯 User form submitted');
+                    
+                    const userCode = document.getElementById('userCodeInput').value;
+                    const stayLoggedIn = document.getElementById('stayLoggedIn').checked;
+                    
+                    if (!userCode || userCode.length !== 10) {
+                        showAlert(document.getElementById('userAccessAlert'), 'Voer een geldige 10-cijferige code in');
+                        return;
+                    }
+                    
+                    try {
+                        await loginWithUserCode(userCode, stayLoggedIn);
+                    } catch (error) {
+                        showAlert(document.getElementById('userAccessAlert'), error.message);
+                    }
+                });
+                console.log('✅ User form listener added');
+            }
+
+            if (loginForm) {
+                loginForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    console.log('🎯 Admin form submitted');
+                    
+                    const email = document.getElementById('loginEmail').value;
+                    const password = document.getElementById('loginPassword').value;
+                    
+                    if (!email || !password) {
+                        showAlert(document.getElementById('loginAlert'), 'Vul alle velden in');
+                        return;
+                    }
+                    
+                    showLoading('Inloggen als beheerder...');
+                    
+                    try {
+                        if (auth) {
+                            await auth.signInWithEmailAndPassword(email, password);
+                            hideLoading();
+                            showContainer('admin');
+                            console.log('✅ Admin login successful');
+                        } else {
+                            throw new Error('Firebase niet beschikbaar');
+                        }
+                    } catch (error) {
+                        console.error('❌ Admin login error:', error);
+                        hideLoading();
+                        showAlert(document.getElementById('loginAlert'), 'Inloggen mislukt: ' + error.message);
+                    }
+                });
+                console.log('✅ Admin form listener added');
+            }
+
+            // Format code input
             const codeInput = document.getElementById('userCodeInput');
             if (codeInput) {
                 codeInput.addEventListener('input', function(e) {
-                    // Only allow numbers
                     e.target.value = e.target.value.replace(/\D/g, '');
-                    // Limit to 10 digits
                     if (e.target.value.length > 10) {
                         e.target.value = e.target.value.slice(0, 10);
                     }
                 });
-                console.log('✅ Code input formatting added');
             }
             
-            // Add form submissions (basic for now)
-            const userForm = document.getElementById('userAccessForm');
-            if (userForm) {
-                userForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const code = document.getElementById('userCodeInput').value;
-                    if (code.length === 10) {
-                        alert('User login would happen with code: ' + code);
-                    } else {
-                        alert('Voer een geldige 10-cijferige code in');
-                    }
-                });
-                console.log('✅ User form handler added');
-            }
-            
-            const adminForm = document.getElementById('loginForm');
-            if (adminForm) {
-                adminForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const email = document.getElementById('loginEmail').value;
-                    const password = document.getElementById('loginPassword').value;
-                    if (email && password) {
-                        alert('Admin login would happen with: ' + email);
-                    } else {
-                        alert('Vul alle velden in');
-                    }
-                });
-                console.log('✅ Admin form handler added');
-            }
-            
-            console.log('🎉 Setup complete!');
+            console.log('🎉 OHK Wallet setup complete!');
+            console.log('💡 Demo: Use code "1234567890" to test user login');
         });
     </script>
 </body>
