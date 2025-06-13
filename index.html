@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0076FF">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title>My OHK Wallet - Reward System</title>
+    <title>OHK Wallet - Beloningssysteem</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIj4KICA8IS0tIEJhY2tncm91bmQgLS0+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0idXJsKCNiZ0dyYWRpZW50KSIvPgogIAogIDwhLS0gR3JhZGllbnRzIC0tPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ0dyYWRpZW50IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzNBNDBBRiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMyQTMyODAiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9ImNvaW5HcmFkaWVudCIgY3g9IjQ1JSIgY3k9IjM1JSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGRkVENEEiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSI3MCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGRkM4MDAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojRkY5NTAwIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogIDwvZGVmcz4KICA8IS0tIEdvbGRlbiBjb2luIC0tPgogIDxjaXJjbGUgY3g9IjE2IiBjeT0iMTQiIHI9IjEwIiBmaWxsPSJ1cmwoI2NvaW5HcmFkaWVudCkiIHN0cm9rZT0iI0ZGQzgwMCIgc3Ryb2tlLXdpZHRoPSIwLjUiLz4KICA8IS0tIElubmVyIGNpcmNsZSAtLT4KICA8Y2lyY2xlIGN4PSIxNiIgY3k9IjE0IiByPSI4IiBmaWxsPSJub25lIiBzdHJva2U9IiNGRjk1MDAiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjMiLz4KICA8IS0tIE11c2ljIG5vdGUgLS0+CiAgPHBhdGggZD0iTTEyIDExdjZjMCAxLjEuOSAyIDIgMnMyLTAuOSAyLTJzLTAuOS0yLTItMnYtNGw0LTF2M2MwIDEuMS45IDIgMiAyczItMC45IDItMnMtMC45LTItMi0ydi02bC02IDJaIiBmaWxsPSIjMkEzMjgwIi8+CiAgPCEtLSBIaWdobGlnaHQgLS0+CiAgPGVsbGlwc2UgY3g9IjEzIiBjeT0iMTAiIHJ4PSIyIiByeT0iMSIgZmlsbD0iI0ZGRkZGRiIgb3BhY2l0eT0iMC40Ii8+CiAgPCEtLSBPSEsgdGV4dCAtLT4KICA8dGV4dCB4PSIxNiIgeT0iMzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNGRkVENEEiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1IiBmb250LXdlaWdodD0iYm9sZCI+T0hLPC90ZXh0Pgo8L3N2Zz4=">
@@ -880,14 +880,14 @@
 <body>
     <!-- Connection Status Bar -->
     <div class="status-bar" id="statusBar">
-        <span id="connectionStatus">Connecting...</span>
+        <span id="connectionStatus">Verbinden...</span>
     </div>
     
     <!-- Loading Overlay -->
     <div id="loading-overlay">
         <div class="loading-content">
             <div class="spinner"></div>
-            <p id="loadingMessage">Loading...</p>
+            <p id="loadingMessage">Laden...</p>
         </div>
     </div>
     
@@ -917,63 +917,55 @@
                     <!-- Highlight on oval -->
                     <ellipse cx="14.5" cy="13.5" rx="1.5" ry="2.5" fill="#FFFFFF" opacity="0.6"/>
                 </svg>
-                My OHK Wallet
+                OHK Wallet
             </h1>
-            <p>Your creative community reward system</p>
+            <p>Rewards voor de beste vrijwilligers ♥️</p>
         </div>
         
         <div class="tabs">
-            <div class="tab active" id="adminTab">Admin Login</div>
-            <div class="tab" id="userTab">User Access</div>
+            <div class="tab active" id="userTab">Toegang Gebruiker</div>
+            <div class="tab" id="adminTab">Beheerder Inloggen</div>
         </div>
         
-        <!-- Admin Login Form -->
-        <form id="loginForm">
-            <div class="alert alert-danger" id="loginAlert"></div>
-            <div class="form-group">
-                <label for="loginEmail">Email</label>
-                <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required autocomplete="email">
-            </div>
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-full">Login as Admin</button>
-            </div>
-            <div class="text-center" style="margin-top: 16px;">
-                <a href="#" id="forgotPasswordLink" style="color: var(--primary); text-decoration: none;">Forgot Password?</a>
-            </div>
-        </form>
-        
         <!-- User Access Form -->
-        <form id="userAccessForm" style="display: none;">
+        <form id="userAccessForm">
             <div class="alert alert-danger" id="userAccessAlert"></div>
             <div class="form-group">
-                <label for="userCode">Your 10-Digit Code</label>
-                <input type="text" id="userCodeInput" class="form-control" placeholder="Enter your 10-digit code" required maxlength="10" pattern="[0-9]{10}" style="text-align: center; font-family: 'Courier New', monospace; font-size: 18px; letter-spacing: 2px;">
+                <label for="userCode">Jouw 10-Cijferige Code</label>
+                <input type="text" id="userCodeInput" class="form-control" placeholder="Voer jouw 10-cijferige code in" required maxlength="10" pattern="[0-9]{10}" style="text-align: center; font-family: 'Courier New', monospace; font-size: 18px; letter-spacing: 2px;">
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-full">Access My Wallet</button>
+                <button type="submit" class="btn btn-full">Toegang Tot Mijn Wallet</button>
             </div>
             <div class="text-center" style="margin-top: 16px;">
                 <p style="color: var(--gray); font-size: 14px;">
-                    <i class="fas fa-qrcode"></i> Or scan your QR code to access your wallet instantly
+                    <i class="fas fa-qrcode"></i> Of scan jouw QR-code voor directe toegang tot je wallet
                 </p>
             </div>
         </form>
         
-        <div class="text-center" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
-            <p style="color: var(--gray); font-size: 14px; margin-bottom: 12px;">
-                <i class="fas fa-info-circle"></i> New to the system? Contact an administrator to create your account.
-            </p>
-            <div style="margin-top: 16px;">
-                <button id="createAdminBtn" class="btn btn-secondary btn-small" style="font-size: 12px; padding: 8px 16px;">
-                    <i class="fas fa-user-shield"></i> Create Super Admin Account
-                </button>
+        <!-- Admin Login Form -->
+        <form id="loginForm" style="display: none;">
+            <div class="alert alert-danger" id="loginAlert"></div>
+            <div class="form-group">
+                <label for="loginEmail">E-mailadres</label>
+                <input type="email" id="loginEmail" class="form-control" placeholder="Voer jouw e-mailadres in" required autocomplete="email">
             </div>
-            <p style="color: var(--gray); font-size: 11px; margin-top: 8px; font-style: italic;">
-                Only use if you don't have admin access
+            <div class="form-group">
+                <label for="loginPassword">Wachtwoord</label>
+                <input type="password" id="loginPassword" class="form-control" placeholder="Voer jouw wachtwoord in" required autocomplete="current-password">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-full">Inloggen als Beheerder</button>
+            </div>
+            <div class="text-center" style="margin-top: 16px;">
+                <a href="#" id="forgotPasswordLink" style="color: var(--primary); text-decoration: none;">Wachtwoord Vergeten?</a>
+            </div>
+        </form>
+        
+        <div class="text-center" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);">
+            <p style="color: var(--gray); font-size: 14px;">
+                <i class="fas fa-info-circle"></i> Nieuw in het systeem? Neem contact op met een beheerder om jouw account aan te maken.
             </p>
         </div>
     </div>
@@ -1005,50 +997,50 @@
                         <!-- Highlight on oval -->
                         <ellipse cx="14.5" cy="13.5" rx="1.5" ry="2.5" fill="#FFFFFF" opacity="0.6"/>
                     </svg>
-                    Welcome, <span id="userName">Artist</span>!
+                    Welkom, <span id="userName">Kunstenaar</span>!
                 </h1>
-                <p>Your creative contribution dashboard - Code: <span class="user-code" id="userCode">Loading...</span></p>
+                <p>Jouw creatieve bijdrage overzicht - Code: <span class="user-code" id="userCode">Laden...</span></p>
             </div>
         </div>
         
         <div class="token-display">
             <div class="token-card">
                 <i class="fas fa-coins"></i>
-                <p>Available Tokens</p>
+                <p>Beschikbare Tokens</p>
                 <h3 id="availableTokens">0</h3>
             </div>
             <div class="token-card">
                 <i class="fas fa-star"></i>
-                <p>Total Earned</p>
+                <p>Totaal Verdiend</p>
                 <h3 id="totalEarned">0</h3>
             </div>
             <div class="token-card">
                 <i class="fas fa-calendar-check"></i>
-                <p>Activities</p>
+                <p>Activiteiten</p>
                 <h3 id="workingDays">0</h3>
             </div>
         </div>
 
         <!-- QR Code Display -->
         <div class="qr-container">
-            <h4><i class="fas fa-qrcode"></i> Your Wallet QR Code</h4>
+            <h4><i class="fas fa-qrcode"></i> Jouw Wallet QR-Code</h4>
             <canvas id="userQRCode" class="qr-code"></canvas>
-            <p style="color: var(--gray); font-size: 14px;">Scan this code to view your wallet balance</p>
+            <p style="color: var(--gray); font-size: 14px;">Scan deze code om jouw wallet saldo te bekijken</p>
         </div>
         
-        <h2 style="margin-bottom: 16px; color: var(--primary);">Transaction History</h2>
+        <h2 style="margin-bottom: 16px; color: var(--primary);">Transactie Geschiedenis</h2>
         <div class="loading" id="historyLoading">
             <div class="spinner"></div>
-            <p>Loading transaction history...</p>
+            <p>Transactie geschiedenis laden...</p>
         </div>
         <div class="table-container">
             <table class="history-table" id="historyTable">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Description</th>
+                        <th>Datum</th>
+                        <th>Beschrijving</th>
                         <th>Tokens</th>
-                        <th>Balance</th>
+                        <th>Saldo</th>
                     </tr>
                 </thead>
                 <tbody id="historyTableBody">
@@ -1059,13 +1051,13 @@
 
         <!-- Account Section at Bottom -->
         <div class="account-section">
-            <h3>Account Settings</h3>
+            <h3>Account Instellingen</h3>
             <div class="account-actions">
                 <button class="btn btn-secondary" id="accountSettingsBtn">
-                    <i class="fas fa-cog"></i> Settings
+                    <i class="fas fa-cog"></i> Instellingen
                 </button>
                 <button class="btn btn-danger" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                    <i class="fas fa-sign-out-alt"></i> Uitloggen
                 </button>
             </div>
         </div>
@@ -1098,10 +1090,10 @@
                         <!-- Highlight on oval -->
                         <ellipse cx="14.5" cy="13.5" rx="1.5" ry="2.5" fill="#FFFFFF" opacity="0.6"/>
                     </svg>
-                    Admin Dashboard
-                    <span class="admin-level-badge" id="adminLevelBadge">Loading...</span>
+                    Beheerder Overzicht
+                    <span class="admin-level-badge" id="adminLevelBadge">Laden...</span>
                 </h1>
-                <p>Manage community rewards</p>
+                <p>Beheer gemeenschap beloningen</p>
             </div>
             <div class="dashboard-actions" id="adminActions">
                 <!-- Actions will be populated based on admin level -->
@@ -1109,19 +1101,19 @@
         </div>
         
         <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search volunteers by name or code..." autocomplete="off">
+            <input type="text" id="searchInput" placeholder="Zoek vrijwilligers op naam of code..." autocomplete="off">
         </div>
         
         <div class="user-list" id="userList">
             <div class="loading" id="usersLoading">
                 <div class="spinner"></div>
-                <p>Loading volunteers...</p>
+                <p>Vrijwilligers laden...</p>
             </div>
         </div>
 
         <!-- Account Section at Bottom -->
         <div class="account-section">
-            <h3>Admin Settings</h3>
+            <h3>Beheerder Instellingen</h3>
             <div class="account-actions" id="adminAccountActions">
                 <!-- Actions will be populated based on admin level -->
             </div>
@@ -1134,30 +1126,30 @@
     <div class="modal" id="tokenModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Manage Tokens for <span id="modalUserName"></span></h2>
+                <h2>Beheer Tokens voor <span id="modalUserName"></span></h2>
                 <button class="close" id="closeTokenModal">×</button>
             </div>
             
             <div class="token-display mb-20">
                 <div class="token-card">
-                    <p>Current Balance</p>
+                    <p>Huidig Saldo</p>
                     <h3 id="modalCurrentTokens">0</h3>
                 </div>
                 <div class="token-card">
-                    <p>Working Days</p>
+                    <p>Werkdagen</p>
                     <h3 id="modalWorkingDays">0</h3>
                 </div>
                 <div class="token-card">
-                    <p>User Code</p>
+                    <p>Gebruiker Code</p>
                     <h3 id="modalUserCode" class="user-code" style="font-size: 16px;">-</h3>
                 </div>
             </div>
 
             <!-- QR Code Display -->
             <div class="qr-container">
-                <h4><i class="fas fa-qrcode"></i> User's Wallet QR Code</h4>
+                <h4><i class="fas fa-qrcode"></i> Gebruiker's Wallet QR-Code</h4>
                 <canvas id="modalQRCode" class="qr-code"></canvas>
-                <p style="color: var(--gray); font-size: 14px;">Scan this code to view wallet balance</p>
+                <p style="color: var(--gray); font-size: 14px;">Scan deze code om wallet saldo te bekijken</p>
             </div>
             
             <!-- Quick Actions -->
@@ -1168,31 +1160,31 @@
             
             <form id="addTokensForm">
                 <div class="form-group">
-                    <label for="tokenAmount">Token Amount</label>
-                    <input type="number" id="tokenAmount" class="form-control" placeholder="Enter token amount" required>
+                    <label for="tokenAmount">Token Aantal</label>
+                    <input type="number" id="tokenAmount" class="form-control" placeholder="Voer token aantal in" required>
                 </div>
                 <div class="form-group">
-                    <label for="tokenReason">Reason</label>
-                    <input type="text" id="tokenReason" class="form-control" placeholder="Reason for adding/removing tokens" required>
+                    <label for="tokenReason">Reden</label>
+                    <input type="text" id="tokenReason" class="form-control" placeholder="Reden voor toevoegen/verwijderen tokens" required>
                 </div>
                 
                 <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
-                    <button type="submit" class="btn" style="flex: 1; min-width: 120px;">Add Tokens</button>
-                    <button type="button" class="btn btn-danger" id="removeTokensBtn" style="flex: 1; min-width: 120px;">Remove Tokens</button>
+                    <button type="submit" class="btn" style="flex: 1; min-width: 120px;">Tokens Toevoegen</button>
+                    <button type="button" class="btn btn-danger" id="removeTokensBtn" style="flex: 1; min-width: 120px;">Tokens Verwijderen</button>
                 </div>
                 
                 <div class="form-group">
-                    <button type="button" class="btn btn-secondary btn-full" id="addWorkDayBtn">Record one shift (+3 tokens)</button>
+                    <button type="button" class="btn btn-secondary btn-full" id="addWorkDayBtn">Werkdag registreren (+3 tokens)</button>
                 </div>
             </form>
             
-            <h3 style="margin: 24px 0 12px 0; color: var(--primary);">Transaction History</h3>
+            <h3 style="margin: 24px 0 12px 0; color: var(--primary);">Transactie Geschiedenis</h3>
             <div class="table-container" style="max-height: 250px; overflow-y: auto;">
                 <table class="history-table">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Description</th>
+                            <th>Datum</th>
+                            <th>Beschrijving</th>
                             <th>Tokens</th>
                         </tr>
                     </thead>
@@ -1202,7 +1194,7 @@
             
             <!-- Super Admin Only Actions -->
             <div id="superAdminActions" style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); text-align: center;">
-                <button class="btn btn-danger" id="deleteUserBtn" style="max-width: 200px;">Delete User</button>
+                <button class="btn btn-danger" id="deleteUserBtn" style="max-width: 200px;">Gebruiker Verwijderen</button>
             </div>
         </div>
     </div>
@@ -1211,21 +1203,21 @@
     <div class="modal" id="addUserModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Add New User</h2>
+                <h2>Nieuwe Gebruiker Toevoegen</h2>
                 <button class="close" id="closeAddUserModal">×</button>
             </div>
             
             <form id="addUserForm">
                 <div class="alert alert-danger" id="addUserAlert"></div>
                 <div class="form-group">
-                    <label for="addUserName">Full Name</label>
-                    <input type="text" id="addUserName" class="form-control" placeholder="Enter full name" required autocomplete="name">
+                    <label for="addUserName">Volledige Naam</label>
+                    <input type="text" id="addUserName" class="form-control" placeholder="Voer volledige naam in" required autocomplete="name">
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-full">Add User</button>
+                    <button type="submit" class="btn btn-full">Gebruiker Toevoegen</button>
                 </div>
                 <p style="color: var(--gray); font-size: 14px; text-align: center; margin-top: 16px;">
-                    A random 10-digit code will be automatically generated. No password required - users access via code or QR scan.
+                    Een willekeurige 10-cijferige code wordt automatisch gegenereerd. Geen wachtwoord nodig - gebruikers krijgen toegang via code of QR-scan.
                 </p>
             </form>
         </div>
@@ -1235,22 +1227,22 @@
     <div class="modal" id="passwordResetModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Reset Password</h2>
+                <h2>Wachtwoord Herstellen</h2>
                 <button class="close" id="closePasswordResetModal">×</button>
             </div>
             
             <div class="alert alert-success" id="passwordResetSuccessAlert"></div>
             <div class="alert alert-danger" id="passwordResetAlert"></div>
             
-            <p style="margin-bottom: 20px; color: var(--gray);">Enter your email address and we'll send you a link to reset your password.</p>
+            <p style="margin-bottom: 20px; color: var(--gray);">Voer jouw e-mailadres in en we sturen je een link om jouw wachtwoord te herstellen.</p>
             
             <form id="passwordResetForm">
                 <div class="form-group">
-                    <label for="resetEmail">Email</label>
-                    <input type="email" id="resetEmail" class="form-control" placeholder="Enter your email" required autocomplete="email">
+                    <label for="resetEmail">E-mailadres</label>
+                    <input type="email" id="resetEmail" class="form-control" placeholder="Voer jouw e-mailadres in" required autocomplete="email">
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-full">Send Reset Email</button>
+                    <button type="submit" class="btn btn-full">Herstel E-mail Versturen</button>
                 </div>
             </form>
         </div>
@@ -1260,7 +1252,7 @@
     <div class="modal" id="accountSettingsModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Account Settings</h2>
+                <h2>Account Instellingen</h2>
                 <button class="close" id="closeAccountSettingsModal">×</button>
             </div>
             
@@ -1268,36 +1260,36 @@
             <div class="alert alert-danger" id="accountSettingsAlert"></div>
             
             <form id="changeUsernameForm">
-                <h3 style="margin: 20px 0 10px 0; color: var(--primary);">Change Username</h3>
+                <h3 style="margin: 20px 0 10px 0; color: var(--primary);">Gebruikersnaam Wijzigen</h3>
                 <div class="form-group">
-                    <label for="newUsername">New Username</label>
-                    <input type="text" id="newUsername" class="form-control" placeholder="Enter new username" required autocomplete="name">
+                    <label for="newUsername">Nieuwe Gebruikersnaam</label>
+                    <input type="text" id="newUsername" class="form-control" placeholder="Voer nieuwe gebruikersnaam in" required autocomplete="name">
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-secondary btn-full">Update Username</button>
+                    <button type="submit" class="btn btn-secondary btn-full">Gebruikersnaam Bijwerken</button>
                 </div>
             </form>
             
             <form id="changePasswordForm">
-                <h3 style="margin: 20px 0 10px 0; color: var(--primary);">Change Password</h3>
+                <h3 style="margin: 20px 0 10px 0; color: var(--primary);">Wachtwoord Wijzigen</h3>
                 <div class="form-group">
-                    <label for="currentPassword">Current Password</label>
-                    <input type="password" id="currentPassword" class="form-control" placeholder="Enter current password" required autocomplete="current-password">
+                    <label for="currentPassword">Huidige Wachtwoord</label>
+                    <input type="password" id="currentPassword" class="form-control" placeholder="Voer huidig wachtwoord in" required autocomplete="current-password">
                 </div>
                 <div class="form-group">
-                    <label for="newPassword">New Password</label>
-                    <input type="password" id="newPassword" class="form-control" placeholder="Enter new password (min 6 characters)" required autocomplete="new-password">
+                    <label for="newPassword">Nieuw Wachtwoord</label>
+                    <input type="password" id="newPassword" class="form-control" placeholder="Voer nieuw wachtwoord in (min. 6 tekens)" required autocomplete="new-password">
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-full">Change Password</button>
+                    <button type="submit" class="btn btn-full">Wachtwoord Wijzigen</button>
                 </div>
             </form>
             
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
-                <h3 style="margin-bottom: 10px; color: var(--danger);">Delete Account</h3>
-                <p style="margin-bottom: 15px; color: var(--gray);">This will permanently delete your account and all data. You can register again later with the same email if desired.</p>
+                <h3 style="margin-bottom: 10px; color: var(--danger);">Account Verwijderen</h3>
+                <p style="margin-bottom: 15px; color: var(--gray);">Dit zal jouw account en alle gegevens permanent verwijderen. Je kunt later opnieuw registreren met hetzelfde e-mailadres indien gewenst.</p>
                 <div class="form-group">
-                    <button id="deleteAccountBtn" class="btn btn-danger btn-full">Delete My Account</button>
+                    <button id="deleteAccountBtn" class="btn btn-danger btn-full">Mijn Account Verwijderen</button>
                 </div>
             </div>
         </div>
@@ -1307,7 +1299,7 @@
     <div class="modal" id="adminPasswordModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Change Admin Password</h2>
+                <h2>Beheerder Wachtwoord Wijzigen</h2>
                 <button class="close" id="closeAdminPasswordModal">×</button>
             </div>
             
@@ -1316,15 +1308,15 @@
             
             <form id="adminPasswordForm">
                 <div class="form-group">
-                    <label for="adminCurrentPassword">Current Password</label>
-                    <input type="password" id="adminCurrentPassword" class="form-control" placeholder="Enter current password" required autocomplete="current-password">
+                    <label for="adminCurrentPassword">Huidig Wachtwoord</label>
+                    <input type="password" id="adminCurrentPassword" class="form-control" placeholder="Voer huidig wachtwoord in" required autocomplete="current-password">
                 </div>
                 <div class="form-group">
-                    <label for="adminNewPassword">New Password</label>
-                    <input type="password" id="adminNewPassword" class="form-control" placeholder="Enter new password (min 6 characters)" required autocomplete="new-password">
+                    <label for="adminNewPassword">Nieuw Wachtwoord</label>
+                    <input type="password" id="adminNewPassword" class="form-control" placeholder="Voer nieuw wachtwoord in (min. 6 tekens)" required autocomplete="new-password">
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-full">Change Password</button>
+                    <button type="submit" class="btn btn-full">Wachtwoord Wijzigen</button>
                 </div>
             </form>
         </div>
@@ -1334,29 +1326,29 @@
     <div class="modal" id="addAdminModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Add New Admin</h2>
+                <h2>Nieuwe Beheerder Toevoegen</h2>
                 <button class="close" id="closeAddAdminModal">×</button>
             </div>
             
             <form id="addAdminForm">
                 <div class="alert alert-danger" id="addAdminAlert"></div>
                 <div class="form-group">
-                    <label for="addAdminEmail">Email</label>
-                    <input type="email" id="addAdminEmail" class="form-control" placeholder="Enter admin email" required autocomplete="email">
+                    <label for="addAdminEmail">E-mailadres</label>
+                    <input type="email" id="addAdminEmail" class="form-control" placeholder="Voer beheerder e-mailadres in" required autocomplete="email">
                 </div>
                 <div class="form-group">
-                    <label for="addAdminLevel">Admin Level</label>
+                    <label for="addAdminLevel">Beheerder Niveau</label>
                     <select id="addAdminLevel" class="form-control" required>
-                        <option value="">Select admin level</option>
-                        <option value="super">Super Admin (Full Access)</option>
-                        <option value="regular">Regular Admin (Token Management Only)</option>
+                        <option value="">Selecteer beheerder niveau</option>
+                        <option value="super">Super Beheerder (Volledige Toegang)</option>
+                        <option value="regular">Gewone Beheerder (Alleen Token Beheer)</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-full">Add Admin</button>
+                    <button type="submit" class="btn btn-full">Beheerder Toevoegen</button>
                 </div>
                 <p style="color: var(--gray); font-size: 14px; text-align: center; margin-top: 16px;">
-                    The user must already exist in the system and have a Firebase Auth account (created manually for admin purposes)
+                    De gebruiker moet al bestaan in het systeem en een Firebase Auth account hebben (handmatig aangemaakt voor beheerder doeleinden)
                 </p>
             </form>
         </div>
@@ -1398,8 +1390,8 @@
             dashboardContainer: document.getElementById('dashboardContainer'),
             adminContainer: document.getElementById('adminContainer'),
             
-            adminTab: document.getElementById('adminTab'),
             userTab: document.getElementById('userTab'),
+            adminTab: document.getElementById('adminTab'),
             loginForm: document.getElementById('loginForm'),
             userAccessForm: document.getElementById('userAccessForm'),
             loginAlert: document.getElementById('loginAlert'),
@@ -1449,7 +1441,7 @@
         let isInitialized = false;
         
         // Utility Functions
-        function showLoading(message = 'Loading...') {
+        function showLoading(message = 'Laden...') {
             elements.loadingMessage.textContent = message;
             elements.loadingOverlay.style.display = 'block';
         }
@@ -1522,13 +1514,13 @@
         
         // Initialize Application
         function initializeApp() {
-            showLoading('Initializing application...');
+            showLoading('Applicatie initialiseren...');
             
             // Connection status
             const connectedRef = database.ref('.info/connected');
             connectedRef.on('value', (snap) => {
                 if (snap.val() === true) {
-                    elements.connectionStatus.textContent = 'Connected';
+                    elements.connectionStatus.textContent = 'Verbonden';
                     elements.connectionStatus.className = 'status-connected';
                 } else {
                     elements.connectionStatus.textContent = 'Offline';
@@ -1590,102 +1582,13 @@
             });
         }
         
-        // Manual admin creation function
-        async function createSuperAdmin() {
-            if (!confirm('This will create a new Super Admin account. Continue?')) {
-                return;
-            }
-
-            showLoading('Creating Super Admin account...');
-            
-            try {
-                // Try to create the super admin account
-                const email = 'superadmin@ohk.com';
-                const password = 'SuperAdmin2024!';
-                
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-                
-                const userCode = generateUserCode();
-                
-                await database.ref(`${USERS_PATH}/${user.uid}`).set({
-                    name: 'Super Administrator',
-                    email: email,
-                    phone: 'admin',
-                    tokens: 0,
-                    workingDays: 0,
-                    userCode: userCode,
-                    isRegularUser: false // This is an admin account
-                });
-                
-                await database.ref(`${ADMINS_PATH}/${user.uid}`).set({
-                    level: ADMIN_LEVELS.SUPER,
-                    addedBy: user.uid,
-                    addedAt: new Date().toISOString()
-                });
-                
-                hideLoading();
-                alert(`Super Admin account created successfully!\n\nEmail: ${email}\nPassword: ${password}\n\nUser Code: ${userCode}\n\nYou can now log in with these credentials. Please change the password after first login.`);
-                
-            } catch (error) {
-                console.error('Error creating super admin:', error);
-                hideLoading();
-                
-                if (error.code === 'auth/email-already-in-use') {
-                    // Try alternative email
-                    try {
-                        const altEmail = 'admin@ohk-wallet.com';
-                        const altPassword = 'AdminPass123!';
-                        
-                        showLoading('Trying alternative email...');
-                        
-                        const altCredential = await auth.createUserWithEmailAndPassword(altEmail, altPassword);
-                        const altUser = altCredential.user;
-                        
-                        const altUserCode = generateUserCode();
-                        
-                        await database.ref(`${USERS_PATH}/${altUser.uid}`).set({
-                            name: 'Super Administrator',
-                            email: altEmail,
-                            phone: 'admin',
-                            tokens: 0,
-                            workingDays: 0,
-                            userCode: altUserCode,
-                            isRegularUser: false // This is an admin account
-                        });
-                        
-                        await database.ref(`${ADMINS_PATH}/${altUser.uid}`).set({
-                            level: ADMIN_LEVELS.SUPER,
-                            addedBy: altUser.uid,
-                            addedAt: new Date().toISOString()
-                        });
-                        
-                        hideLoading();
-                        alert(`Super Admin account created with alternative email!\n\nEmail: ${altEmail}\nPassword: ${altPassword}\n\nUser Code: ${altUserCode}\n\nYou can now log in with these credentials.`);
-                        
-                    } catch (altError) {
-                        console.error('Error creating alternative admin:', altError);
-                        hideLoading();
-                        
-                        if (altError.code === 'auth/email-already-in-use') {
-                            alert('Both admin emails already exist. Try logging in with:\n\n1. superadmin@ohk.com / SuperAdmin2024!\n2. admin@ohk-wallet.com / AdminPass123!\n\nIf neither works, contact technical support.');
-                        } else {
-                            alert('Error creating admin account: ' + altError.message);
-                        }
-                    }
-                } else {
-                    alert('Error creating admin account: ' + error.message);
-                }
-            }
-        }
-
         // Setup admin account if needed
         async function setupAdminIfNeeded() {
             try {
                 const adminsSnapshot = await database.ref(ADMINS_PATH).once('value');
                 
                 if (!adminsSnapshot.exists() || adminsSnapshot.numChildren() === 0) {
-                    await createSuperAdmin();
+                    console.log('No admin accounts found. Super admin must be created manually.');
                 }
             } catch (error) {
                 console.error('Error checking admin setup:', error);
@@ -1720,7 +1623,7 @@
         
         // Dashboard Functions
         async function showUserDashboard() {
-            showLoading('Loading your dashboard...');
+            showLoading('Jouw overzicht laden...');
             
             try {
                 let userData, userId;
@@ -1736,13 +1639,13 @@
                     // Firebase Auth login
                     const user = auth.currentUser;
                     if (!user) {
-                        throw new Error('No authenticated user found');
+                        throw new Error('Geen geverifieerde gebruiker gevonden');
                     }
                     
                     const userSnapshot = await database.ref(`${USERS_PATH}/${user.uid}`).once('value');
                     
                     if (!userSnapshot.exists()) {
-                        throw new Error('User profile not found');
+                        throw new Error('Gebruikersprofiel niet gevonden');
                     }
                     
                     userData = userSnapshot.val();
@@ -1751,8 +1654,8 @@
                 
                 showContainer('dashboard');
                 
-                elements.userName.textContent = userData.name || 'Volunteer';
-                elements.userCode.textContent = userData.userCode || 'Not assigned';
+                elements.userName.textContent = userData.name || 'Vrijwilliger';
+                elements.userCode.textContent = userData.userCode || 'Niet toegewezen';
                 elements.availableTokens.textContent = userData.tokens || 0;
                 elements.workingDays.textContent = userData.workingDays || 0;
 
@@ -1788,13 +1691,13 @@
             } catch (error) {
                 console.error('Error showing dashboard:', error);
                 hideLoading();
-                alert('Failed to load dashboard: ' + error.message);
+                alert('Kon overzicht niet laden: ' + error.message);
                 showContainer('auth');
             }
         }
         
         async function showAdminPanel(adminLevel) {
-            showLoading('Loading admin panel...');
+            showLoading('Beheerder paneel laden...');
             
             try {
                 showContainer('admin');
@@ -1802,10 +1705,10 @@
                 // Set admin level badge
                 const badge = elements.adminLevelBadge;
                 if (adminLevel === ADMIN_LEVELS.SUPER) {
-                    badge.textContent = 'Super Admin';
+                    badge.textContent = 'Super Beheerder';
                     badge.className = 'admin-level-badge admin-level-super';
                 } else {
-                    badge.textContent = 'Admin';
+                    badge.textContent = 'Beheerder';
                     badge.className = 'admin-level-badge admin-level-regular';
                 }
                 
@@ -1821,7 +1724,7 @@
             } catch (error) {
                 console.error('Error showing admin panel:', error);
                 hideLoading();
-                alert('Failed to load admin panel: ' + error.message);
+                alert('Kon beheerder paneel niet laden: ' + error.message);
                 showContainer('auth');
             }
         }
@@ -1833,13 +1736,13 @@
             if (adminLevel === ADMIN_LEVELS.SUPER) {
                 actions.innerHTML = `
                     <button class="btn btn-secondary" id="exportDataBtn">
-                        <i class="fas fa-download"></i> Export Data
+                        <i class="fas fa-download"></i> Gegevens Exporteren
                     </button>
                     <button class="btn btn-secondary" id="addUserBtn">
-                        <i class="fas fa-user-plus"></i> Add User
+                        <i class="fas fa-user-plus"></i> Gebruiker Toevoegen
                     </button>
                     <button class="btn btn-warning" id="addAdminBtn">
-                        <i class="fas fa-user-shield"></i> Add Admin
+                        <i class="fas fa-user-shield"></i> Beheerder Toevoegen
                     </button>
                 `;
             }
@@ -1869,21 +1772,21 @@
 
             let actionsHTML = `
                 <button class="btn btn-secondary" id="adminAccountSettingsBtn">
-                    <i class="fas fa-cog"></i> Settings
+                    <i class="fas fa-cog"></i> Instellingen
                 </button>
             `;
 
             if (adminLevel === ADMIN_LEVELS.SUPER) {
                 actionsHTML += `
                     <button class="btn btn-warning" id="adminPasswordBtn">
-                        <i class="fas fa-key"></i> Change Password
+                        <i class="fas fa-key"></i> Wachtwoord Wijzigen
                     </button>
                 `;
             }
 
             actionsHTML += `
                 <button class="btn btn-danger" id="adminLogoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                    <i class="fas fa-sign-out-alt"></i> Uitloggen
                 </button>
             `;
 
@@ -1922,7 +1825,7 @@
                 
                 if (!transactionsSnapshot.exists()) {
                     const row = document.createElement('tr');
-                    row.innerHTML = '<td colspan="4" style="text-align: center;">No transactions found</td>';
+                    row.innerHTML = '<td colspan="4" style="text-align: center;">Geen transacties gevonden</td>';
                     elements.historyTableBody.appendChild(row);
                     return;
                 }
@@ -1951,7 +1854,7 @@
                 });
             } catch (error) {
                 console.error('Error loading transaction history:', error);
-                elements.historyTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--danger);">Error loading transaction history</td></tr>';
+                elements.historyTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--danger);">Fout bij laden transactie geschiedenis</td></tr>';
             }
         }
         
@@ -2210,7 +2113,7 @@
         }
 
         async function addNewUser(name) {
-            showLoading('Creating user account...');
+            showLoading('Gebruikersaccount aanmaken...');
             
             try {
                 const userCode = generateUserCode();
@@ -2242,7 +2145,8 @@
                 
                 hideLoading();
                 
-                alert(`User created successfully!\n\nName: ${name}\nUser Code: ${userCode}\n\nThe user can access their wallet by:\n1. Entering their code on the login page\n2. Scanning their QR code\n\nNo other credentials needed!`);
+                // Show QR code modal with the generated code
+                await showNewUserQRCode(name, userCode);
                 
                 return { userCode };
             } catch (error) {
@@ -2251,6 +2155,73 @@
                 throw error;
             }
         }
+
+        async function showNewUserQRCode(name, userCode) {
+            // Create and show a modal with the QR code
+            const qrModal = document.createElement('div');
+            qrModal.className = 'modal';
+            qrModal.style.display = 'block';
+            qrModal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px; text-align: center;">
+                    <div class="modal-header">
+                        <h2>Gebruiker Succesvol Aangemaakt!</h2>
+                        <button class="close" onclick="this.closest('.modal').remove()">×</button>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h3 style="color: var(--primary); margin-bottom: 8px;">${name}</h3>
+                        <p style="color: var(--gray); margin-bottom: 20px;">Gebruiker Code: <span class="user-code" style="font-size: 20px; font-weight: bold;">${userCode}</span></p>
+                    </div>
+
+                    <div class="qr-container">
+                        <h4><i class="fas fa-qrcode"></i> Gebruiker's Wallet QR-Code</h4>
+                        <canvas id="newUserQRCode" class="qr-code"></canvas>
+                        <p style="color: var(--gray); font-size: 14px;">Deel deze QR-code met de gebruiker voor directe wallet toegang</p>
+                    </div>
+
+                    <div style="margin: 24px 0;">
+                        <p style="color: var(--text); font-size: 16px; line-height: 1.5;">
+                            <strong>De gebruiker kan toegang krijgen tot hun wallet door:</strong><br>
+                            1. Code <strong>${userCode}</strong> in te voeren op de inlogpagina<br>
+                            2. Deze QR-code te scannen<br><br>
+                            <em>Geen andere gegevens nodig!</em>
+                        </p>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px;">
+                        <button class="btn btn-secondary" onclick="downloadQRCode('${name}', '${userCode}')">
+                            <i class="fas fa-download"></i> QR-Code Downloaden
+                        </button>
+                        <button class="btn" onclick="this.closest('.modal').remove()">
+                            <i class="fas fa-check"></i> Klaar
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(qrModal);
+            
+            // Generate the QR code
+            const qrCanvas = document.getElementById('newUserQRCode');
+            const qrData = `${window.location.origin}?code=${userCode}`;
+            await generateQRCode(qrCanvas, qrData);
+            
+            // Close modal when clicking outside
+            qrModal.addEventListener('click', (e) => {
+                if (e.target === qrModal) {
+                    qrModal.remove();
+                }
+            });
+        }
+
+        // Function to download QR code as image
+        window.downloadQRCode = function(name, userCode) {
+            const canvas = document.getElementById('newUserQRCode');
+            const link = document.createElement('a');
+            link.download = `${name.replace(/[^a-zA-Z0-9]/g, '_')}_QR_Code_${userCode}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        };
 
         async function addNewAdmin(email, level) {
             showLoading('Adding admin privileges...');
@@ -2299,7 +2270,7 @@
         }
 
         async function loginWithUserCode(userCode) {
-            showLoading('Accessing your wallet...');
+            showLoading('Toegang tot jouw wallet...');
             
             try {
                 // Find user by code
@@ -2309,7 +2280,7 @@
                     .once('value');
                 
                 if (!usersSnapshot.exists()) {
-                    throw new Error('Invalid user code. Please check your 10-digit code and try again.');
+                    throw new Error('Ongeldige gebruikerscode. Controleer jouw 10-cijferige code en probeer opnieuw.');
                 }
                 
                 let userData = null;
@@ -2321,7 +2292,7 @@
                 });
                 
                 if (!userData.isRegularUser) {
-                    throw new Error('This code belongs to an admin account. Please use the Admin Login tab.');
+                    throw new Error('Deze code behoort tot een beheerder account. Gebruik het Beheerder Inloggen tabblad.');
                 }
                 
                 // Create a temporary session for this user
@@ -2566,11 +2537,11 @@
                 const password = document.getElementById('loginPassword').value;
                 
                 if (!email || !password) {
-                    showAlert(elements.loginAlert, 'Please fill in all fields');
+                    showAlert(elements.loginAlert, 'Vul alle velden in');
                     return;
                 }
                 
-                showLoading('Signing in...');
+                showLoading('Inloggen...');
                 
                 try {
                     await auth.signInWithEmailAndPassword(email, password);
@@ -2579,9 +2550,9 @@
                     hideLoading();
                     
                     if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                        showAlert(elements.loginAlert, 'Invalid email or password');
+                        showAlert(elements.loginAlert, 'Ongeldig e-mailadres of wachtwoord');
                     } else {
-                        showAlert(elements.loginAlert, `Login failed: ${error.message}`);
+                        showAlert(elements.loginAlert, `Inloggen mislukt: ${error.message}`);
                     }
                 }
             });
@@ -2698,14 +2669,14 @@
                 const name = document.getElementById('addUserName').value;
                 
                 if (!name) {
-                    showAlert(document.getElementById('addUserAlert'), 'Please enter a name');
+                    showAlert(document.getElementById('addUserAlert'), 'Voer een naam in');
                     return;
                 }
                 
                 try {
                     await addNewUser(name);
                 } catch (error) {
-                    showAlert(document.getElementById('addUserAlert'), `Failed to add user: ${error.message}`);
+                    showAlert(document.getElementById('addUserAlert'), `Kon gebruiker niet toevoegen: ${error.message}`);
                 }
             });
 
