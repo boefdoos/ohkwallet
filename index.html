@@ -2,21 +2,242 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OHK Wallet - Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0076FF">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>OHK Wallet - Debug Test</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" crossorigin="anonymous">
+    
+    <style>
+        :root {
+            --primary: #0076FF;
+            --primary-dark: #0062D6;
+            --background: #FFFFFF;
+            --text: #333333;
+            --gray: #777777;
+            --light-gray: #F5F5F5;
+            --border: #E0E0E0;
+            --border-radius: 8px;
+            --min-touch-target: 44px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .auth-container {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 32px 24px;
+            background: var(--background);
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            background: var(--background);
+            color: var(--text);
+            min-height: var(--min-touch-target);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-height: var(--min-touch-target);
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .admin-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: transparent;
+            color: var(--gray);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 24px;
+        }
+
+        .admin-toggle:hover {
+            background: var(--light-gray);
+            color: var(--text);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>JavaScript Test</h1>
-    <button id="testBtn">TEST KNOP - KLIK HIER</button>
-    
-    <script>
-        alert('PAGINA GELADEN - JAVASCRIPT WERKT!');
-        console.log('JavaScript is actief');
+    <!-- Auth Container -->
+    <div class="auth-container">
+        <div class="header">
+            <h1>OHK Wallet - Debug Test</h1>
+            <p>Testing admin login functionality</p>
+        </div>
         
-        document.getElementById('testBtn').onclick = function() {
-            alert('KNOP WERKT!');
-            console.log('Knop geklikt');
-        };
+        <!-- User Access Form -->
+        <form id="userAccessForm">
+            <div class="form-group">
+                <input type="text" id="userCodeInput" class="form-control" placeholder="Voer jouw 10-cijferige code in" maxlength="10">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn">
+                    <i class="fas fa-wallet"></i> Bekijk mijn wallet
+                </button>
+            </div>
+        </form>
+        
+        <!-- Admin Login Form -->
+        <form id="loginForm" class="hidden">
+            <div class="form-group">
+                <input type="email" id="loginEmail" class="form-control" placeholder="naam@voorbeeld.nl" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn">
+                    <i class="fas fa-sign-in-alt"></i> Inloggen als Beheerder
+                </button>
+            </div>
+            <div style="text-align: center; margin-top: 16px;">
+                <button type="button" class="admin-toggle" id="backToUserAccessBtn">
+                    <i class="fas fa-arrow-left"></i> Terug naar gebruiker toegang
+                </button>
+            </div>
+        </form>
+        
+        <!-- Admin Login Button -->
+        <div style="text-align: center;">
+            <button type="button" class="admin-toggle" id="showAdminLoginBtn">
+                <i class="fas fa-user-shield"></i> Beheerder inloggen
+            </button>
+        </div>
+    </div>
+
+    <script>
+        console.log('🚀 Script started');
+        alert('DEBUG: Script is loading!');
+        
+        // Simple functions
+        function showAdminLogin() {
+            console.log('📋 Showing admin login form');
+            document.getElementById('userAccessForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('showAdminLoginBtn').style.display = 'none';
+            console.log('✅ Admin login form should now be visible');
+        }
+        
+        function showUserAccess() {
+            console.log('📋 Showing user access form');
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('userAccessForm').style.display = 'block';
+            document.getElementById('showAdminLoginBtn').style.display = 'block';
+            console.log('✅ User access form should now be visible');
+        }
+
+        // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔥 DOM loaded!');
+            alert('DEBUG: DOM is ready!');
+            
+            // Find buttons
+            const showAdminBtn = document.getElementById('showAdminLoginBtn');
+            const backToUserBtn = document.getElementById('backToUserAccessBtn');
+            
+            console.log('🔍 Admin button found:', !!showAdminBtn);
+            console.log('🔍 Back button found:', !!backToUserBtn);
+            
+            // Add event listeners
+            if (showAdminBtn) {
+                console.log('✅ Adding click listener to admin button');
+                showAdminBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🎯 ADMIN BUTTON CLICKED!');
+                    alert('DEBUG: Admin button works!');
+                    showAdminLogin();
+                });
+                console.log('✅ Admin button listener added');
+            } else {
+                console.error('❌ Admin button not found!');
+                alert('ERROR: Admin button not found!');
+            }
+            
+            if (backToUserBtn) {
+                console.log('✅ Adding click listener to back button');
+                backToUserBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🎯 BACK BUTTON CLICKED!');
+                    alert('DEBUG: Back button works!');
+                    showUserAccess();
+                });
+                console.log('✅ Back button listener added');
+            }
+            
+            console.log('🎉 Setup complete!');
+            alert('DEBUG: All setup complete - try the admin button!');
+        });
     </script>
 </body>
 </html>
