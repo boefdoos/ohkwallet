@@ -1354,75 +1354,133 @@
                         return;
                     }
                     
-                    showLoading('Inloggen als beheerder...');
+                    showLoading('Stap 1: Firebase authentication...');
                     
                     try {
-                        // Firebase admin login
-                        console.log('🔐 Attempting Firebase admin login...');
+                        // Step 1: Firebase authentication only
+                        console.log('🔐 Step 1: Attempting Firebase authentication...');
                         const userCredential = await auth.signInWithEmailAndPassword(email, password);
                         const user = userCredential.user;
                         
-                        console.log('✅ Firebase login successful for:', user.email);
+                        console.log('✅ Step 1 SUCCESS: Firebase authentication completed');
+                        console.log('User ID:', user.uid);
+                        console.log('User Email:', user.email);
+                        console.log('User Email Verified:', user.emailVerified);
                         
-                        // Check if user is admin
-                        const adminSnapshot = await database.ref(`admins/${user.uid}`).once('value');
+                        showLoading('Stap 2: Wachten op auth state...');
                         
-                        if (adminSnapshot.exists()) {
-                            const adminData = adminSnapshot.val();
-                            console.log('✅ Admin privileges confirmed:', adminData);
+                        // Step 2: Wait for auth state to be fully set
+                        await new Promise(resolve => {
+                            const unsubscribe = auth.onAuthStateChanged((authUser) => {
+                                if (authUser && authUser.uid === user.uid) {
+                                    console.log('✅ Step 2 SUCCESS: Auth state confirmed');
+                                    unsubscribe();
+                                    resolve();
+                                }
+                            });
+                        });
+                        
+                        showLoading('Stap 3: Database connection test...');
+                        
+                        // Step 3: Test basic database access
+                        console.log('🔥 Step 3: Testing database connection...');
+                        console.log('Database URL:', database.ref().toString());
+                        
+                        try {
+                            // Test with a simple read that should always work
+                            const testRef = database.ref('.info/serverTimeOffset');
+                            const testSnapshot = await testRef.once('value');
+                            console.log('✅ Step 3 SUCCESS: Database connection working');
+                            console.log('Server time offset:', testSnapshot.val());
+                        } catch (dbError) {
+                            console.error('❌ Step 3 FAILED: Database connection error:', dbError);
+                            throw new Error('Database connection failed: ' + dbError.message);
+                        }
+                        
+                        showLoading('Stap 4: Admin check...');
+                        
+                        // Step 4: Check admin status (simplified approach)
+                        console.log('🛡️ Step 4: Checking admin status...');
+                        
+                        try {
+                            // First check if admins table exists at all
+                            const adminsTableRef = database.ref('admins');
+                            const adminsTableSnapshot = await adminsTableRef.once('value');
                             
-                            hideLoading();
-                            showContainer('admin');
+                            console.log('Admins table exists:', adminsTableSnapshot.exists());
+                            console.log('Admins table data:', adminsTableSnapshot.val());
                             
-                            // Initialize admin interface
-                            await initializeAdminPanel(adminData);
-                            
-                        } else {
-                            // User is not an admin - create admin entry for first superadmin
-                            console.log('⚠️ User not in admins table, checking if first admin...');
-                            
-                            const allAdminsSnapshot = await database.ref('admins').once('value');
-                            
-                            if (!allAdminsSnapshot.exists() || allAdminsSnapshot.numChildren() === 0) {
-                                // This is the first admin - make them superadmin
-                                console.log('🎉 Creating first superadmin...');
+                            if (!adminsTableSnapshot.exists()) {
+                                // No admins table - create first superadmin
+                                console.log('🎉 No admins exist - creating first superadmin');
                                 
-                                await database.ref(`admins/${user.uid}`).set({
+                                const adminData = {
                                     level: 'super',
                                     email: user.email,
                                     createdAt: new Date().toISOString(),
                                     isFirstAdmin: true
-                                });
+                                };
+                                
+                                await database.ref(`admins/${user.uid}`).set(adminData);
+                                console.log('✅ Step 4 SUCCESS: First superadmin created');
                                 
                                 hideLoading();
                                 showContainer('admin');
+                                await initializeAdminPanel(adminData);
+                                alert('🎉 Welkom! Je bent de eerste superadmin van OHK Wallet!');
+                                return;
+                            }
+                            
+                            // Check if current user is admin
+                            const userAdminRef = database.ref(`admins/${user.uid}`);
+                            const userAdminSnapshot = await userAdminRef.once('value');
+                            
+                            if (userAdminSnapshot.exists()) {
+                                const adminData = userAdminSnapshot.val();
+                                console.log('✅ Step 4 SUCCESS: User is admin:', adminData);
                                 
-                                const adminData = { level: 'super', email: user.email };
+                                hideLoading();
+                                showContainer('admin');
                                 await initializeAdminPanel(adminData);
                                 
-                                alert('🎉 Welkom! Je bent de eerste superadmin. Volledige toegang verleend.');
-                                
                             } else {
-                                // User exists but is not admin
+                                console.log('❌ Step 4: User exists but is not admin');
                                 hideLoading();
                                 await auth.signOut();
                                 showAlert(document.getElementById('loginAlert'), 'Geen admin rechten. Neem contact op met een beheerder.');
                             }
+                            
+                        } catch (adminError) {
+                            console.error('❌ Step 4 FAILED: Admin check error:', adminError);
+                            console.error('Error code:', adminError.code);
+                            console.error('Error message:', adminError.message);
+                            
+                            hideLoading();
+                            await auth.signOut();
+                            
+                            let errorMsg = 'Database toegang geweigerd. ';
+                            if (adminError.code === 'PERMISSION_DENIED') {
+                                errorMsg += 'Check Firebase Database Rules.';
+                            } else {
+                                errorMsg += adminError.message;
+                            }
+                            
+                            showAlert(document.getElementById('loginAlert'), errorMsg);
                         }
                         
-                    } catch (error) {
-                        console.error('❌ Admin login error:', error);
+                    } catch (authError) {
+                        console.error('❌ Step 1 FAILED: Authentication error:', authError);
                         hideLoading();
                         
                         let errorMessage = 'Inloggen mislukt: ';
-                        if (error.code === 'auth/user-not-found') {
+                        if (authError.code === 'auth/user-not-found') {
                             errorMessage += 'Gebruiker niet gevonden';
-                        } else if (error.code === 'auth/wrong-password') {
+                        } else if (authError.code === 'auth/wrong-password') {
                             errorMessage += 'Verkeerd wachtwoord';
-                        } else if (error.code === 'auth/invalid-email') {
+                        } else if (authError.code === 'auth/invalid-email') {
                             errorMessage += 'Ongeldig e-mailadres';
                         } else {
-                            errorMessage += error.message;
+                            errorMessage += authError.message;
                         }
                         
                         showAlert(document.getElementById('loginAlert'), errorMessage);
