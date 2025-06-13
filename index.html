@@ -175,6 +175,27 @@
             color: #999;
         }
 
+        /* === CHECKBOX STYLING === */
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: var(--gray);
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
         /* === BUTTONS === */
         .btn {
             display: inline-flex;
@@ -924,7 +945,7 @@
         
         <div class="tabs">
             <div class="tab active" id="userTab">Toegang Gebruiker</div>
-            <div class="tab" id="adminTab">Beheerder Inloggen</div>
+            <div class="tab" id="adminTab">Toegang Beheerder</div>
         </div>
         
         <!-- User Access Form -->
@@ -935,7 +956,13 @@
                 <input type="text" id="userCodeInput" class="form-control" placeholder="Voer jouw 10-cijferige code in" required maxlength="10" pattern="[0-9]{10}" style="text-align: center; font-family: 'Courier New', monospace; font-size: 18px; letter-spacing: 2px;">
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-full">Toegang Tot Mijn Wallet</button>
+                <button type="submit" class="btn btn-full">Bekijk mijn wallet</button>
+            </div>
+            <div class="form-group" style="margin-top: 12px;">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="stayLoggedIn">
+                    Blijf ingelogd (onthoud mijn code)
+                </label>
             </div>
             <div class="text-center" style="margin-top: 16px;">
                 <p style="color: var(--gray); font-size: 14px;">
@@ -1055,6 +1082,9 @@
             <div class="account-actions">
                 <button class="btn btn-secondary" id="accountSettingsBtn">
                     <i class="fas fa-cog"></i> Instellingen
+                </button>
+                <button class="btn btn-warning" id="forgetDeviceBtn" style="display: none;">
+                    <i class="fas fa-mobile-alt"></i> Vergeet Apparaat
                 </button>
                 <button class="btn btn-danger" id="logoutBtn">
                     <i class="fas fa-sign-out-alt"></i> Uitloggen
@@ -1635,6 +1665,13 @@
                     // Code-based login
                     userId = sessionStorage.getItem('currentUserId');
                     userData = JSON.parse(sessionStorage.getItem('currentUserData'));
+                    
+                    // Show "forget device" button if user has stored login
+                    const isStoredLogin = localStorage.getItem('ohk_stay_logged_in') === 'true';
+                    const forgetBtn = document.getElementById('forgetDeviceBtn');
+                    if (forgetBtn) {
+                        forgetBtn.style.display = isStoredLogin ? 'block' : 'none';
+                    }
                 } else {
                     // Firebase Auth login
                     const user = auth.currentUser;
@@ -1650,6 +1687,12 @@
                     
                     userData = userSnapshot.val();
                     userId = user.uid;
+                    
+                    // Hide "forget device" button for admin users
+                    const forgetBtn = document.getElementById('forgetDeviceBtn');
+                    if (forgetBtn) {
+                        forgetBtn.style.display = 'none';
+                    }
                 }
                 
                 showContainer('dashboard');
@@ -2269,7 +2312,7 @@
             }
         }
 
-        async function loginWithUserCode(userCode) {
+        async function loginWithUserCode(userCode, stayLoggedIn = false) {
             showLoading('Toegang tot jouw wallet...');
             
             try {
@@ -2292,13 +2335,21 @@
                 });
                 
                 if (!userData.isRegularUser) {
-                    throw new Error('Deze code behoort tot een beheerder account. Gebruik het Beheerder Inloggen tabblad.');
+                    throw new Error('Deze code behoort tot een beheerder account. Gebruik het Toegang Beheerder tabblad.');
                 }
                 
                 // Create a temporary session for this user
                 sessionStorage.setItem('currentUserId', userId);
                 sessionStorage.setItem('currentUserData', JSON.stringify(userData));
                 sessionStorage.setItem('loginMethod', 'userCode');
+                
+                // Store login data permanently if requested
+                if (stayLoggedIn) {
+                    localStorage.setItem('ohk_user_code', userCode);
+                    localStorage.setItem('ohk_user_id', userId);
+                    localStorage.setItem('ohk_user_data', JSON.stringify(userData));
+                    localStorage.setItem('ohk_stay_logged_in', 'true');
+                }
                 
                 await showUserDashboard();
                 
@@ -2308,6 +2359,64 @@
                 hideLoading();
                 throw error;
             }
+        }
+
+        async function checkAutoLogin() {
+            const stayLoggedIn = localStorage.getItem('ohk_stay_logged_in');
+            const storedCode = localStorage.getItem('ohk_user_code');
+            const storedUserId = localStorage.getItem('ohk_user_id');
+            const storedUserData = localStorage.getItem('ohk_user_data');
+            
+            if (stayLoggedIn === 'true' && storedCode && storedUserId && storedUserData) {
+                try {
+                    showLoading('Automatisch inloggen...');
+                    
+                    // Initialize connection status first
+                    const connectedRef = database.ref('.info/connected');
+                    connectedRef.on('value', (snap) => {
+                        if (snap.val() === true) {
+                            elements.connectionStatus.textContent = 'Verbonden';
+                            elements.connectionStatus.className = 'status-connected';
+                        } else {
+                            elements.connectionStatus.textContent = 'Offline';
+                            elements.connectionStatus.className = 'status-disconnected';
+                        }
+                    });
+                    
+                    // Verify the stored data is still valid by checking the database
+                    const userSnapshot = await database.ref(`${USERS_PATH}/${storedUserId}`).once('value');
+                    
+                    if (userSnapshot.exists()) {
+                        const currentUserData = userSnapshot.val();
+                        
+                        // Check if the code still matches
+                        if (currentUserData.userCode.toString() === storedCode) {
+                            // Auto-login the user
+                            sessionStorage.setItem('currentUserId', storedUserId);
+                            sessionStorage.setItem('currentUserData', JSON.stringify(currentUserData));
+                            sessionStorage.setItem('loginMethod', 'userCode');
+                            
+                            await showUserDashboard();
+                            return true;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Auto-login failed:', error);
+                    hideLoading();
+                }
+                
+                // Clear invalid stored data
+                clearStoredLogin();
+            }
+            
+            return false;
+        }
+
+        function clearStoredLogin() {
+            localStorage.removeItem('ohk_user_code');
+            localStorage.removeItem('ohk_user_id');
+            localStorage.removeItem('ohk_user_data');
+            localStorage.removeItem('ohk_stay_logged_in');
         }
         
         async function logout() {
@@ -2597,6 +2706,9 @@
             });
 
             document.getElementById('logoutBtn').addEventListener('click', logout);
+
+            // Forget device button
+            document.getElementById('forgetDeviceBtn').addEventListener('click', forgetDevice);
             
             // Quick token buttons
             document.getElementById('quickAddBtn').addEventListener('click', async () => {
