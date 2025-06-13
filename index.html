@@ -1109,7 +1109,7 @@
         </div>
         
         <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search volunteers by name, phone, or code..." autocomplete="off">
+            <input type="text" id="searchInput" placeholder="Search volunteers by name or code..." autocomplete="off">
         </div>
         
         <div class="user-list" id="userList">
@@ -1220,14 +1220,6 @@
                 <div class="form-group">
                     <label for="addUserName">Full Name</label>
                     <input type="text" id="addUserName" class="form-control" placeholder="Enter full name" required autocomplete="name">
-                </div>
-                <div class="form-group">
-                    <label for="addUserPhone">Phone Number</label>
-                    <input type="tel" id="addUserPhone" class="form-control" placeholder="Enter phone number" required autocomplete="tel">
-                </div>
-                <div class="form-group">
-                    <label for="addUserEmail">Email</label>
-                    <input type="email" id="addUserEmail" class="form-control" placeholder="Enter email" required autocomplete="email">
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-full">Add User</button>
@@ -1622,7 +1614,8 @@
                     phone: 'admin',
                     tokens: 0,
                     workingDays: 0,
-                    userCode: userCode
+                    userCode: userCode,
+                    isRegularUser: false // This is an admin account
                 });
                 
                 await database.ref(`${ADMINS_PATH}/${user.uid}`).set({
@@ -1657,7 +1650,8 @@
                             phone: 'admin',
                             tokens: 0,
                             workingDays: 0,
-                            userCode: altUserCode
+                            userCode: altUserCode,
+                            isRegularUser: false // This is an admin account
                         });
                         
                         await database.ref(`${ADMINS_PATH}/${altUser.uid}`).set({
@@ -1716,7 +1710,8 @@
                 phone: additionalData.phone || '',
                 tokens: 0,
                 workingDays: 0,
-                userCode: userCode
+                userCode: userCode,
+                isRegularUser: false // This is a Firebase Auth user (admin/staff)
             };
             
             await database.ref(`${USERS_PATH}/${user.uid}`).set(userData);
@@ -2010,7 +2005,7 @@
                     const userId = userSnapshot.key;
                     const userData = userSnapshot.val();
                     
-                    if (userId !== currentUser.uid) {
+                    if (userId !== currentUser?.uid) {
                         userData.id = userId;
                         users.push(userData);
                     }
@@ -2037,10 +2032,19 @@
                 filteredUsers.forEach(user => {
                     const userItem = document.createElement('div');
                     userItem.className = 'user-item';
+                    
+                    // Different display for regular users vs admin users
+                    let contactInfo = '';
+                    if (user.isRegularUser) {
+                        contactInfo = `User (Code Access Only)`;
+                    } else {
+                        contactInfo = `${user.phone || 'No phone'} | ${user.email || 'No email'}`;
+                    }
+                    
                     userItem.innerHTML = `
                         <div class="user-info">
                             <h3>${user.name}</h3>
-                            <p>${user.phone || 'No phone'} | ${user.email || 'No email'}</p>
+                            <p>${contactInfo}</p>
                             <p>Code: <span class="user-code">${user.userCode || 'Not assigned'}</span></p>
                         </div>
                         <div class="user-stats">
@@ -2205,7 +2209,7 @@
             }
         }
 
-        async function addNewUser(name, phone, email) {
+        async function addNewUser(name) {
             showLoading('Creating user account...');
             
             try {
@@ -2219,15 +2223,13 @@
                 
                 if (existingUserSnapshot.exists()) {
                     // Generate a new code if duplicate found
-                    return await addNewUser(name, phone, email);
+                    return await addNewUser(name);
                 }
                 
                 // Create user in database without Firebase Auth account
                 const userId = generateId();
                 await database.ref(`${USERS_PATH}/${userId}`).set({
                     name: name,
-                    email: email,
-                    phone: phone,
                     tokens: 0,
                     workingDays: 0,
                     userCode: userCode,
@@ -2240,7 +2242,7 @@
                 
                 hideLoading();
                 
-                alert(`User created successfully!\n\nName: ${name}\nEmail: ${email}\nUser Code: ${userCode}\n\nThe user can access their wallet by:\n1. Entering their code on the login page\n2. Scanning their QR code\n\nNo password required!`);
+                alert(`User created successfully!\n\nName: ${name}\nUser Code: ${userCode}\n\nThe user can access their wallet by:\n1. Entering their code on the login page\n2. Scanning their QR code\n\nNo other credentials needed!`);
                 
                 return { userCode };
             } catch (error) {
@@ -2374,12 +2376,14 @@
                     const userId = userSnapshot.key;
                     const userData = userSnapshot.val();
                     
-                    if (userId !== currentUser.uid) {
+                    if (userId !== currentUser?.uid) {
                         users.push(userData);
                         userMap[userId] = {
                             name: userData.name || 'Unknown',
-                            phone: userData.phone || 'No Phone',
-                            userCode: userData.userCode || 'No Code'
+                            phone: userData.phone || 'N/A',
+                            email: userData.email || 'N/A',
+                            userCode: userData.userCode || 'No Code',
+                            isRegularUser: userData.isRegularUser || false
                         };
                     }
                 });
@@ -2389,21 +2393,26 @@
                 
                 transactionsSnapshot.forEach((transactionSnapshot) => {
                     const transaction = transactionSnapshot.val();
-                    const userInfo = userMap[transaction.userId] || { name: 'Unknown', phone: 'Unknown', userCode: 'Unknown' };
+                    const userInfo = userMap[transaction.userId] || { name: 'Unknown', phone: 'Unknown', email: 'Unknown', userCode: 'Unknown' };
                     transaction.userName = userInfo.name;
                     transaction.userPhone = userInfo.phone;
+                    transaction.userEmail = userInfo.email;
                     transaction.userCode = userInfo.userCode;
+                    transaction.userType = userInfo.isRegularUser ? 'Regular User' : 'Admin/Staff';
                     transactions.push(transaction);
                 });
                 
-                let userCsv = 'Name,Email,Phone,User Code,Tokens,Working Days\n';
+                let userCsv = 'Name,Email,Phone,User Code,User Type,Tokens,Working Days\n';
                 users.forEach(user => {
-                    userCsv += `"${user.name || ''}","${user.email || ''}","${user.phone || ''}","${user.userCode || ''}",${user.tokens || 0},${user.workingDays || 0}\n`;
+                    const userType = user.isRegularUser ? 'Regular User' : 'Admin/Staff';
+                    const email = user.email || 'N/A';
+                    const phone = user.phone || 'N/A';
+                    userCsv += `"${user.name || ''}","${email}","${phone}","${user.userCode || ''}","${userType}",${user.tokens || 0},${user.workingDays || 0}\n`;
                 });
                 
-                let transactionCsv = 'Transaction ID,Volunteer Name,Phone Number,User Code,Amount,Description,Date\n';
+                let transactionCsv = 'Transaction ID,Volunteer Name,Phone Number,Email,User Code,User Type,Amount,Description,Date\n';
                 transactions.forEach(transaction => {
-                    transactionCsv += `"${transaction.id || ''}","${transaction.userName}","${transaction.userPhone}","${transaction.userCode}",${transaction.amount || 0},"${transaction.description || ''}","${transaction.date || ''}"\n`;
+                    transactionCsv += `"${transaction.id || ''}","${transaction.userName}","${transaction.userPhone}","${transaction.userEmail}","${transaction.userCode}","${transaction.userType}",${transaction.amount || 0},"${transaction.description || ''}","${transaction.date || ''}"\n`;
                 });
                 
                 const userBlob = new Blob([userCsv], { type: 'text/csv' });
@@ -2687,22 +2696,16 @@
                 e.preventDefault();
                 
                 const name = document.getElementById('addUserName').value;
-                const phone = document.getElementById('addUserPhone').value;
-                const email = document.getElementById('addUserEmail').value;
                 
-                if (!name || !phone || !email) {
-                    showAlert(document.getElementById('addUserAlert'), 'Please fill in all fields');
+                if (!name) {
+                    showAlert(document.getElementById('addUserAlert'), 'Please enter a name');
                     return;
                 }
                 
                 try {
-                    await addNewUser(name, phone, email);
+                    await addNewUser(name);
                 } catch (error) {
-                    if (error.code === 'auth/email-already-in-use') {
-                        showAlert(document.getElementById('addUserAlert'), 'Email is already in use');
-                    } else {
-                        showAlert(document.getElementById('addUserAlert'), `Failed to add user: ${error.message}`);
-                    }
+                    showAlert(document.getElementById('addUserAlert'), `Failed to add user: ${error.message}`);
                 }
             });
 
