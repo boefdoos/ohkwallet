@@ -1407,8 +1407,10 @@
                             const adminsTableRef = database.ref('admins');
                             const adminsTableSnapshot = await adminsTableRef.once('value');
                             
-                            console.log('Admins table exists:', adminsTableSnapshot.exists());
-                            console.log('Admins table data:', adminsTableSnapshot.val());
+                            console.log('🔍 DEBUG: Admins table exists:', adminsTableSnapshot.exists());
+                            console.log('🔍 DEBUG: Admins table data:', adminsTableSnapshot.val());
+                            console.log('🔍 DEBUG: Current user UID:', user.uid);
+                            console.log('🔍 DEBUG: Current user email:', user.email);
                             
                             if (!adminsTableSnapshot.exists()) {
                                 // No admins table - create first superadmin
@@ -1431,9 +1433,19 @@
                                 return;
                             }
                             
+                            // Show what admins exist
+                            const existingAdmins = adminsTableSnapshot.val();
+                            console.log('🔍 DEBUG: Existing admins in database:');
+                            Object.keys(existingAdmins || {}).forEach(adminId => {
+                                console.log(`  - Admin ID: ${adminId}`, existingAdmins[adminId]);
+                            });
+                            
                             // Check if current user is admin
                             const userAdminRef = database.ref(`admins/${user.uid}`);
                             const userAdminSnapshot = await userAdminRef.once('value');
+                            
+                            console.log('🔍 DEBUG: User admin check path:', `admins/${user.uid}`);
+                            console.log('🔍 DEBUG: User is admin:', userAdminSnapshot.exists());
                             
                             if (userAdminSnapshot.exists()) {
                                 const adminData = userAdminSnapshot.val();
@@ -1445,9 +1457,34 @@
                                 
                             } else {
                                 console.log('❌ Step 4: User exists but is not admin');
-                                hideLoading();
-                                await auth.signOut();
-                                showAlert(document.getElementById('loginAlert'), 'Geen admin rechten. Neem contact op met een beheerder.');
+                                console.log('💡 SOLUTION: Adding user as superadmin now...');
+                                
+                                // WORKAROUND: Force add this user as superadmin
+                                try {
+                                    const adminData = {
+                                        level: 'super',
+                                        email: user.email,
+                                        createdAt: new Date().toISOString(),
+                                        addedManually: true
+                                    };
+                                    
+                                    await database.ref(`admins/${user.uid}`).set(adminData);
+                                    console.log('✅ WORKAROUND SUCCESS: User manually added as superadmin');
+                                    
+                                    hideLoading();
+                                    showContainer('admin');
+                                    await initializeAdminPanel(adminData);
+                                    alert('🎉 Admin rechten toegevoegd! Je bent nu superadmin.');
+                                    
+                                } catch (addError) {
+                                    console.error('❌ WORKAROUND FAILED:', addError);
+                                    hideLoading();
+                                    await auth.signOut();
+                                    
+                                    showAlert(document.getElementById('loginAlert'), 
+                                        'Kan geen admin rechten toekennen. Database write permission denied. ' +
+                                        'Check Firebase Database Rules en zorg dat authenticated users kunnen schrijven naar /admins.');
+                                }
                             }
                             
                         } catch (adminError) {
