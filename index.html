@@ -17,6 +17,9 @@
     <!-- QR Code Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
     
+    <!-- QR Code Scanner Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+    
     <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -334,6 +337,141 @@
             justify-content: center;
             gap: 6px;
             opacity: 0.8;
+        }
+
+        /* === QR SCANNER BUTTON === */
+        .qr-scanner-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--light-gray);
+            color: var(--primary);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-height: var(--min-touch-target);
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .qr-scanner-btn:hover {
+            background: var(--border);
+            color: var(--primary-dark);
+            border-color: var(--primary);
+        }
+
+        /* === QR SCANNER MODAL === */
+        .qr-scanner-modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow: hidden;
+        }
+
+        .qr-scanner-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .qr-scanner-header {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            z-index: 10;
+        }
+
+        .qr-scanner-header h3 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .qr-scanner-header p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .qr-scanner-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .qr-scanner-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .qr-scanner-viewport {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background: #000;
+        }
+
+        #qr-reader {
+            width: 100% !important;
+            border: none !important;
+        }
+
+        #qr-reader > div {
+            border: 3px solid var(--primary) !important;
+            border-radius: var(--border-radius) !important;
+        }
+
+        .qr-scanner-error {
+            background: rgba(229, 57, 53, 0.9);
+            color: white;
+            padding: 16px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .qr-scanner-error h4 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+        }
+
+        .qr-scanner-error p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.9;
         }
 
         /* === DASHBOARD === */
@@ -1035,6 +1173,10 @@
             <div class="login-divider">
                 <span>Of scan je QR-code</span>
             </div>
+            
+            <button type="button" class="qr-scanner-btn" id="openQRScannerBtn">
+                <i class="fas fa-camera"></i> Open camera om QR-code te scannen
+            </button>
         </form>
         
         <!-- Admin Login Form (Hidden by default) -->
@@ -1230,6 +1372,27 @@
             <h3>Beheerder Instellingen</h3>
             <div class="account-actions" id="adminAccountActions">
                 <!-- Actions will be populated based on admin level -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- QR Scanner Modal -->
+    <div class="qr-scanner-modal" id="qrScannerModal">
+        <div class="qr-scanner-content">
+            <div class="qr-scanner-header">
+                <h3>QR-Code Scannen</h3>
+                <p>Richt je camera op een OHK Wallet QR-code</p>
+            </div>
+            
+            <button class="qr-scanner-close" id="closeQRScannerBtn">×</button>
+            
+            <div class="qr-scanner-viewport">
+                <div id="qr-reader"></div>
+            </div>
+            
+            <div class="qr-scanner-error" id="qrScannerError" style="display: none;">
+                <h4>Camera toegang geweigerd</h4>
+                <p>Geef toestemming voor camera toegang om QR-codes te kunnen scannen, of voer handmatig je code in.</p>
             </div>
         </div>
     </div>
@@ -1512,6 +1675,12 @@
             showAdminLoginBtn: document.getElementById('showAdminLoginBtn'),
             backToUserAccessBtn: document.getElementById('backToUserAccessBtn'),
             
+            // QR Scanner elements
+            openQRScannerBtn: document.getElementById('openQRScannerBtn'),
+            qrScannerModal: document.getElementById('qrScannerModal'),
+            closeQRScannerBtn: document.getElementById('closeQRScannerBtn'),
+            qrScannerError: document.getElementById('qrScannerError'),
+            
             userName: document.getElementById('userName'),
             userCode: document.getElementById('userCode'),
             availableTokens: document.getElementById('availableTokens'),
@@ -1554,6 +1723,7 @@
         let selectedUserId = null;
         let currentAdminLevel = null;
         let isInitialized = false;
+        let qrScanner = null;
         
         // Function to show admin login form
         function showAdminLogin() {
