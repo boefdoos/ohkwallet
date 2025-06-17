@@ -15,9 +15,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/web-app-manifest-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/web-app-manifest-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/web-app-manifest-512x512.png">
     <link rel="manifest" href="/site.webmanifest">
     
     <!-- Font Awesome for icons -->
@@ -992,20 +993,24 @@
                 <h1>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="36" height="36" style="vertical-align: middle; margin-right: 8px;">
                         <defs>
-                            <radialGradient id="background4" cx="30%" cy="30%">
+                            <radialGradient id="ohkLogoBackground" cx="30%" cy="30%">
                                 <stop offset="0%" style="stop-color:#FFED33;stop-opacity:1" />
                                 <stop offset="50%" style="stop-color:#FFB800;stop-opacity:1" />
                                 <stop offset="100%" style="stop-color:#009DFF;stop-opacity:1" />
                             </radialGradient>
-                            <radialGradient id="goldOval4" cx="40%" cy="30%">
+                            <radialGradient id="ohkLogoOval" cx="40%" cy="30%">
                                 <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.9" />
                                 <stop offset="30%" style="stop-color:#FFED33;stop-opacity:1" />
                                 <stop offset="100%" style="stop-color:#FFB800;stop-opacity:1" />
                             </radialGradient>
                         </defs>
-                        <circle cx="16" cy="16" r="15.5" fill="url(#background4)" stroke="#FFB800" stroke-width="1"/>
+                        <!-- Outer circle with gradient -->
+                        <circle cx="16" cy="16" r="15.5" fill="url(#ohkLogoBackground)" stroke="#FFB800" stroke-width="1"/>
+                        <!-- Inner black circle -->
                         <circle cx="16" cy="16" r="11" fill="#000000" stroke="#333333" stroke-width="0.5"/>
-                        <ellipse cx="16" cy="16" rx="4" ry="6" fill="url(#goldOval4)" stroke="#FFB800" stroke-width="0.3"/>
+                        <!-- Golden oval in center -->
+                        <ellipse cx="16" cy="16" rx="4" ry="6" fill="url(#ohkLogoOval)" stroke="#FFB800" stroke-width="0.3"/>
+                        <!-- Highlight on oval -->
                         <ellipse cx="14.5" cy="13.5" rx="1.5" ry="2.5" fill="#FFFFFF" opacity="0.6"/>
                     </svg>
                     <span id="publicUserName">Gebruiker Profiel</span>
@@ -1068,7 +1073,31 @@
     <!-- Auth Container -->
     <div class="auth-container" id="authContainer">
         <div class="header">
-            <h1>OHK Wallet</h1>
+            <h1>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="40" height="40" style="vertical-align: middle; margin-right: 8px;">
+                    <defs>
+                        <radialGradient id="authLogoBackground" cx="30%" cy="30%">
+                            <stop offset="0%" style="stop-color:#FFED33;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#FFB800;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#009DFF;stop-opacity:1" />
+                        </radialGradient>
+                        <radialGradient id="authLogoOval" cx="40%" cy="30%">
+                            <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.9" />
+                            <stop offset="30%" style="stop-color:#FFED33;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#FFB800;stop-opacity:1" />
+                        </radialGradient>
+                    </defs>
+                    <!-- Outer circle with gradient -->
+                    <circle cx="16" cy="16" r="15.5" fill="url(#authLogoBackground)" stroke="#FFB800" stroke-width="1"/>
+                    <!-- Inner black circle -->
+                    <circle cx="16" cy="16" r="11" fill="#000000" stroke="#333333" stroke-width="0.5"/>
+                    <!-- Golden oval in center -->
+                    <ellipse cx="16" cy="16" rx="4" ry="6" fill="url(#authLogoOval)" stroke="#FFB800" stroke-width="0.3"/>
+                    <!-- Highlight on oval -->
+                    <ellipse cx="14.5" cy="13.5" rx="1.5" ry="2.5" fill="#FFFFFF" opacity="0.6"/>
+                </svg>
+                OHK Wallet
+            </h1>
             <p>Rewards voor de beste vrijwilligers ♥</p>
         </div>
         
@@ -1150,20 +1179,24 @@
                 <h1>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="36" height="36" style="vertical-align: middle; margin-right: 8px;">
                         <defs>
-                            <radialGradient id="background2" cx="30%" cy="30%">
+                            <radialGradient id="dashboardLogoBackground" cx="30%" cy="30%">
                                 <stop offset="0%" style="stop-color:#FFED33;stop-opacity:1" />
                                 <stop offset="50%" style="stop-color:#FFB800;stop-opacity:1" />
                                 <stop offset="100%" style="stop-color:#009DFF;stop-opacity:1" />
                             </radialGradient>
-                            <radialGradient id="goldOval2" cx="40%" cy="30%">
+                            <radialGradient id="dashboardLogoOval" cx="40%" cy="30%">
                                 <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.9" />
                                 <stop offset="30%" style="stop-color:#FFED33;stop-opacity:1" />
                                 <stop offset="100%" style="stop-color:#FFB800;stop-opacity:1" />
                             </radialGradient>
                         </defs>
-                        <circle cx="16" cy="16" r="15.5" fill="url(#background2)" stroke="#FFB800" stroke-width="1"/>
+                        <!-- Outer circle with gradient -->
+                        <circle cx="16" cy="16" r="15.5" fill="url(#dashboardLogoBackground)" stroke="#FFB800" stroke-width="1"/>
+                        <!-- Inner black circle -->
                         <circle cx="16" cy="16" r="11" fill="#000000" stroke="#333333" stroke-width="0.5"/>
-                        <ellipse cx="16" cy="16" rx="4" ry="6" fill="url(#goldOval2)" stroke="#FFB800" stroke-width="0.3"/>
+                        <!-- Golden oval in center -->
+                        <ellipse cx="16" cy="16" rx="4" ry="6" fill="url(#dashboardLogoOval)" stroke="#FFB800" stroke-width="0.3"/>
+                        <!-- Highlight on oval -->
                         <ellipse cx="14.5" cy="13.5" rx="1.5" ry="2.5" fill="#FFFFFF" opacity="0.6"/>
                     </svg>
                     Welkom, <span id="userName">Kunstenaar</span>!
@@ -1242,20 +1275,24 @@
                 <h1>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="36" height="36" style="vertical-align: middle; margin-right: 8px;">
                         <defs>
-                            <radialGradient id="background3" cx="30%" cy="30%">
+                            <radialGradient id="adminLogoBackground" cx="30%" cy="30%">
                                 <stop offset="0%" style="stop-color:#FFED33;stop-opacity:1" />
                                 <stop offset="50%" style="stop-color:#FFB800;stop-opacity:1" />
                                 <stop offset="100%" style="stop-color:#009DFF;stop-opacity:1" />
                             </radialGradient>
-                            <radialGradient id="goldOval3" cx="40%" cy="30%">
+                            <radialGradient id="adminLogoOval" cx="40%" cy="30%">
                                 <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.9" />
                                 <stop offset="30%" style="stop-color:#FFED33;stop-opacity:1" />
                                 <stop offset="100%" style="stop-color:#FFB800;stop-opacity:1" />
                             </radialGradient>
                         </defs>
-                        <circle cx="16" cy="16" r="15.5" fill="url(#background3)" stroke="#FFB800" stroke-width="1"/>
+                        <!-- Outer circle with gradient -->
+                        <circle cx="16" cy="16" r="15.5" fill="url(#adminLogoBackground)" stroke="#FFB800" stroke-width="1"/>
+                        <!-- Inner black circle -->
                         <circle cx="16" cy="16" r="11" fill="#000000" stroke="#333333" stroke-width="0.5"/>
-                        <ellipse cx="16" cy="16" rx="4" ry="6" fill="url(#goldOval3)" stroke="#FFB800" stroke-width="0.3"/>
+                        <!-- Golden oval in center -->
+                        <ellipse cx="16" cy="16" rx="4" ry="6" fill="url(#adminLogoOval)" stroke="#FFB800" stroke-width="0.3"/>
+                        <!-- Highlight on oval -->
                         <ellipse cx="14.5" cy="13.5" rx="1.5" ry="2.5" fill="#FFFFFF" opacity="0.6"/>
                     </svg>
                     Beheerder Overzicht
