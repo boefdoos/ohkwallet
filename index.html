@@ -15,10 +15,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/favicon ohk wallet III.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon ohk wallet III.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/favicon ohk wallet III.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="/favicon ohk wallet III.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/web-app-manifest-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/web-app-manifest-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/web-app-manifest-512x512.png">
     <link rel="manifest" href="/site.webmanifest">
     
     <!-- Font Awesome for icons -->
@@ -102,8 +102,11 @@
             justify-content: center;
         }
 
-        .header h1 svg {
+        .header h1 img,
+        .dashboard-header h1 img {
             flex-shrink: 0;
+            object-fit: contain;
+            margin-right: 12px;
         }
 
         .header p {
@@ -180,7 +183,7 @@
         }
 
         .checkbox-label input[type="checkbox"] {
-            margin-right: 8px;
+            margin-right: 12px;
             flex-shrink: 0;
         }
 
@@ -189,8 +192,9 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            gap: 8px;
             padding: 16px 24px;
-            background: var(--primary);
+            background: linear-gradient(135deg, #0076FF, #00A8FF);
             color: white;
             border: none;
             border-radius: var(--border-radius);
@@ -203,12 +207,13 @@
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
             line-height: 1;
+            box-shadow: 0 2px 8px rgba(0, 118, 255, 0.2);
         }
 
         .btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 118, 255, 0.3);
+            background: linear-gradient(135deg, #0062D6, #0088CC);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 118, 255, 0.4);
         }
 
         .btn:active {
@@ -216,39 +221,56 @@
         }
 
         .btn-secondary {
-            background: var(--light-gray) !important;
+            background: linear-gradient(135deg, #F8F9FA, #E9ECEF) !important;
             color: var(--text) !important;
             border: 1px solid var(--border) !important;
-        }
-
-        .btn-secondary:hover {
-            background: var(--border) !important;
-            color: var(--text) !important;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
         }
 
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #E9ECEF, #DEE2E6) !important;
+            color: var(--text) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        }
+
         .btn-danger {
-            background: var(--danger) !important;
+            background: linear-gradient(135deg, #E53935, #F44336) !important;
             color: white !important;
+            box-shadow: 0 2px 8px rgba(229, 57, 53, 0.3) !important;
         }
 
         .btn-danger:hover {
-            background: var(--danger-dark) !important;
-            box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3) !important;
+            background: linear-gradient(135deg, #C62828, #D32F2F) !important;
+            box-shadow: 0 6px 20px rgba(229, 57, 53, 0.4) !important;
         }
 
         .btn-warning {
-            background: var(--warning) !important;
+            background: linear-gradient(135deg, #FF9800, #FFC107) !important;
             color: white !important;
+            box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3) !important;
         }
 
         .btn-warning:hover {
-            background: #F57C00 !important;
-            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3) !important;
+            background: linear-gradient(135deg, #F57C00, #FF8F00) !important;
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4) !important;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn:last-child {
+            margin-right: 0;
         }
 
         .btn-full {
             width: 100%;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+            min-height: 36px;
         }
 
         .btn-small {
@@ -312,9 +334,9 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 12px;
             padding: 12px 24px;
-            background: transparent;
+            background: linear-gradient(135deg, #F8F9FA, #E9ECEF);
             color: var(--gray);
             border: 1px solid var(--border);
             border-radius: var(--border-radius);
@@ -325,12 +347,15 @@
             transition: all 0.3s ease;
             min-height: var(--min-touch-target);
             margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .admin-toggle:hover {
-            background: var(--light-gray);
+            background: linear-gradient(135deg, #E9ECEF, #DEE2E6);
             color: var(--text);
             border-color: var(--gray);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .help-text {
@@ -339,7 +364,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
             opacity: 0.8;
         }
 
@@ -371,8 +396,9 @@
             align-items: center;
         }
 
-        .dashboard-header h1 svg {
+        .dashboard-header h1 img {
             flex-shrink: 0;
+            object-fit: contain;
         }
 
         .dashboard-header p {
@@ -384,13 +410,15 @@
         .admin-level-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
+            gap: 8px;
+            padding: 6px 16px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            margin-left: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .admin-level-super {
@@ -405,7 +433,7 @@
 
         .dashboard-actions {
             display: flex;
-            gap: 12px;
+            gap: 16px;
             flex-wrap: wrap;
         }
 
@@ -425,15 +453,22 @@
         .token-card {
             text-align: center;
             padding: 20px 16px;
-            background: var(--light-gray);
+            background: linear-gradient(135deg, #FFFFFF, #F8F9FA);
             border-radius: var(--border-radius);
             border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .token-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
         }
 
         .token-card i {
             font-size: 24px;
             color: var(--primary);
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
         .token-card p {
@@ -540,6 +575,7 @@
         .badge {
             display: inline-flex;
             align-items: center;
+            gap: 6px;
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 14px;
@@ -605,7 +641,7 @@
         }
 
         .close {
-            background: var(--danger);
+            background: linear-gradient(135deg, #E53935, #F44336);
             color: white;
             border: none;
             border-radius: var(--border-radius);
@@ -618,16 +654,18 @@
             min-width: 44px;
             margin-left: 16px;
             flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(229, 57, 53, 0.3);
         }
 
         .close:hover {
-            background: var(--danger-dark);
+            background: linear-gradient(135deg, #C62828, #D32F2F);
             transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(229, 57, 53, 0.4);
         }
 
         .modal-footer {
             display: flex;
-            gap: 12px;
+            gap: 16px;
             justify-content: flex-end;
             margin-top: 24px;
             padding-top: 16px;
@@ -649,14 +687,19 @@
             text-align: center;
             margin: 20px 0;
             padding: 20px;
-            background: var(--light-gray);
+            background: linear-gradient(135deg, #F8F9FA, #E9ECEF);
             border-radius: var(--border-radius);
             border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .qr-container h4 {
             margin-bottom: 16px;
             color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .qr-code {
@@ -769,7 +812,7 @@
         .status-disconnected {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             font-weight: 500;
         }
 
@@ -829,20 +872,20 @@
                 padding: 24px 20px;
             }
 
-            .header h1 svg {
+            .header h1 img {
                 width: 36px;
                 height: 36px;
-                margin-right: 6px;
+                margin-right: 8px;
             }
 
             .dashboard-header {
                 gap: 12px;
             }
 
-            .dashboard-header h1 svg {
+            .dashboard-header h1 img {
                 width: 32px;
                 height: 32px;
-                margin-right: 6px;
+                margin-right: 8px;
             }
 
             .dashboard-actions {
@@ -901,7 +944,7 @@
             #quickTokenActions {
                 display: flex;
                 flex-direction: column;
-                gap: 8px;
+                gap: 12px;
             }
 
             #quickTokenActions .btn {
@@ -937,7 +980,7 @@
 
             #quickTokenActions {
                 display: flex;
-                gap: 8px;
+                gap: 12px;
             }
 
             #quickTokenActions .btn {
@@ -991,7 +1034,7 @@
         <div class="dashboard-header">
             <div>
                 <h1>
-                    <img src="/favicon ohk wallet III.png" alt="OHK Wallet Logo" width="36" height="36" style="vertical-align: middle; margin-right: 8px; border-radius: 50%;">
+                    <img src="/favicon.svg" alt="OHK Logo" width="36" height="36" style="vertical-align: middle; margin-right: 8px;">
                     <span id="publicUserName">Gebruiker Profiel</span>
                 </h1>
                 <p>Publiek wallet overzicht - Code: <span class="user-code" id="publicUserCode">Laden...</span></p>
@@ -1053,7 +1096,7 @@
     <div class="auth-container" id="authContainer">
         <div class="header">
             <h1>
-                <img src="/favicon ohk wallet III.png" alt="OHK Wallet Logo" width="40" height="40" style="vertical-align: middle; margin-right: 8px; border-radius: 50%;">
+                <img src="/favicon.svg" alt="OHK Logo" width="40" height="40" style="vertical-align: middle; margin-right: 8px;">
                 OHK Wallet
             </h1>
             <p>Rewards voor de beste vrijwilligers ♥</p>
@@ -1107,13 +1150,57 @@
             </div>
             
             <div class="form-links">
-                <a href="#" id="forgotPasswordLink">Wachtwoord vergeten?</a>
+                <a href="#" id="forgotPasswordLink">Wachtwoord vergeten?</a> | 
+                <a href="#" id="showRegisterLink">Nog geen account? Registreer hier</a>
             </div>
             
             <div class="form-group" style="margin-top: 24px;">
                 <button type="button" class="btn btn-secondary btn-full" id="backToUserAccessBtn">
                     <i class="fas fa-arrow-left"></i> Terug naar gebruiker toegang
                 </button>
+            </div>
+        </form>
+        
+        <!-- Admin Registration Form -->
+        <form id="registerForm" class="hidden">
+            <div class="alert alert-success" id="registerSuccessAlert"></div>
+            <div class="alert alert-danger" id="registerAlert"></div>
+            
+            <h3 style="text-align: center; margin-bottom: 20px; color: var(--primary);">Beheerder Registratie</h3>
+            
+            <div class="form-group">
+                <label for="registerEmail">E-mailadres</label>
+                <input type="email" id="registerEmail" class="form-control" placeholder="naam@voorbeeld.nl" required autocomplete="email">
+            </div>
+            
+            <div class="form-group">
+                <label for="registerPassword">Wachtwoord</label>
+                <input type="password" id="registerPassword" class="form-control" placeholder="Minimaal 6 tekens" required autocomplete="new-password" minlength="6">
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">Bevestig Wachtwoord</label>
+                <input type="password" id="confirmPassword" class="form-control" placeholder="Herhaal wachtwoord" required autocomplete="new-password" minlength="6">
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn btn-full">
+                    <i class="fas fa-user-plus"></i> Registreer als Beheerder
+                </button>
+            </div>
+            
+            <div class="form-links">
+                <a href="#" id="showLoginLink">Al een account? Inloggen</a>
+            </div>
+            
+            <div class="form-group" style="margin-top: 24px;">
+                <button type="button" class="btn btn-secondary btn-full" id="backToUserAccessFromRegisterBtn">
+                    <i class="fas fa-arrow-left"></i> Terug naar gebruiker toegang
+                </button>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 16px; background: var(--light-gray); border-radius: var(--border-radius); font-size: 14px;">
+                <strong>💡 Let op:</strong> Je kunt alleen registreren als je e-mailadres is toegevoegd door een Super Beheerder. Na registratie krijg je automatisch de juiste beheerder rechten.
             </div>
         </form>
         
@@ -1135,7 +1222,7 @@
         <div class="dashboard-header">
             <div>
                 <h1>
-                    <img src="/favicon ohk wallet III.png" alt="OHK Wallet Logo" width="36" height="36" style="vertical-align: middle; margin-right: 8px; border-radius: 50%;">
+                    <img src="/favicon.svg" alt="OHK Logo" width="36" height="36" style="vertical-align: middle; margin-right: 8px;">
                     Welkom, <span id="userName">Kunstenaar</span>!
                 </h1>
                 <p>Jouw creatieve bijdrage overzicht - Code: <span class="user-code" id="userCode">Laden...</span></p>
@@ -1210,7 +1297,7 @@
         <div class="dashboard-header">
             <div>
                 <h1>
-                    <img src="/favicon ohk wallet III.png" alt="OHK Wallet Logo" width="36" height="36" style="vertical-align: middle; margin-right: 8px; border-radius: 50%;">
+                    <img src="/favicon.svg" alt="OHK Logo" width="36" height="36" style="vertical-align: middle; margin-right: 8px;">
                     Beheerder Overzicht
                     <span class="admin-level-badge" id="adminLevelBadge">Laden...</span>
                 </h1>
@@ -1453,7 +1540,11 @@
                     <button type="submit" class="btn btn-full">Beheerder Toevoegen</button>
                 </div>
                 <p style="color: var(--gray); font-size: 14px; text-align: center; margin-top: 16px;">
-                    De gebruiker wordt geregistreerd in Firebase Authentication en krijgt automatisch beheerderstoegang.
+                    <strong>Zo werkt het:</strong><br>
+                    1. Voer het e-mailadres in van de nieuwe beheerder<br>
+                    2. Kies het beheerder niveau<br>
+                    3. De gebruiker moet zich registreren/inloggen met dit e-mailadres<br>
+                    4. Hun beheerder rechten worden automatisch toegepast bij eerste login
                 </p>
             </form>
         </div>
@@ -1482,6 +1573,8 @@
         let currentAdminData = null;
         let allUsers = [];
         let currentModalUserId = null;
+        let isAdminLoginInProgress = false;
+        let shouldShowAdminLogin = false;
 
         // Utility functions
         function showLoading(message = 'Laden...') {
@@ -1511,13 +1604,24 @@
         function showAdminLogin() {
             document.getElementById('userAccessForm').classList.add('hidden');
             document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('authFooter').style.display = 'none';
+            shouldShowAdminLogin = true; // Set flag when showing admin login
+        }
+        
+        function showAdminRegister() {
+            document.getElementById('userAccessForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
             document.getElementById('authFooter').style.display = 'none';
         }
         
         function showUserAccess() {
             document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
             document.getElementById('userAccessForm').classList.remove('hidden');
             document.getElementById('authFooter').style.display = 'block';
+            shouldShowAdminLogin = false; // Reset flag when showing user access
         }
 
         function showModal(modalId) {
@@ -1766,21 +1870,21 @@
         async function initializeAdminPanel(adminData) {
             currentAdminData = adminData;
             
-            // Wait a short moment to ensure the admin container is visible
-            await new Promise(resolve => setTimeout(resolve, 100));
+            // Ensure admin container is visible first
+            showContainer('admin');
+            
+            // Small delay to ensure DOM is ready
+            await new Promise(resolve => setTimeout(resolve, 50));
             
             const badge = document.getElementById('adminLevelBadge');
-            if (!badge) {
-                console.warn('Admin level badge not found, retrying...');
-                return;
-            }
-            
-            if (adminData.level === 'super') {
-                badge.textContent = 'Super Beheerder';
-                badge.className = 'admin-level-badge admin-level-super';
-            } else {
-                badge.textContent = 'Beheerder';
-                badge.className = 'admin-level-badge admin-level-regular';
+            if (badge) {
+                if (adminData.level === 'super') {
+                    badge.textContent = 'Super Beheerder';
+                    badge.className = 'admin-level-badge admin-level-super';
+                } else {
+                    badge.textContent = 'Beheerder';
+                    badge.className = 'admin-level-badge admin-level-regular';
+                }
             }
             
             const adminActions = document.getElementById('adminActions');
@@ -1792,6 +1896,9 @@
                         </button>
                         <button class="btn btn-secondary" onclick="openAddUserModal()">
                             <i class="fas fa-user-plus"></i> Gebruiker Toevoegen
+                        </button>
+                        <button class="btn btn-secondary" onclick="showPendingAdmins()">
+                            <i class="fas fa-clock"></i> Wachtende Beheerders
                         </button>
                     `;
                 } else {
@@ -1827,7 +1934,6 @@
                 }
             }
             
-            // Load users list only after ensuring the admin panel is ready
             await loadUsersList();
         }
 
@@ -1835,9 +1941,10 @@
             const userList = document.getElementById('userList');
             const usersLoading = document.getElementById('usersLoading');
             
-            // Check if elements exist before trying to access them
+            // Safety check for DOM elements
             if (!userList || !usersLoading) {
-                console.warn('Admin panel elements not found, skipping user list load');
+                console.warn('⚠️ Admin panel DOM elements not ready, retrying...');
+                setTimeout(loadUsersList, 100);
                 return;
             }
             
@@ -1845,11 +1952,6 @@
             
             try {
                 const usersSnapshot = await database.ref('users').once('value');
-                
-                // Check again in case elements were removed during async operation
-                if (!usersLoading || !userList) {
-                    return;
-                }
                 
                 usersLoading.style.display = 'none';
                 
@@ -1869,21 +1971,16 @@
                 
             } catch (error) {
                 console.error('❌ Error loading users:', error);
-                if (usersLoading) {
-                    usersLoading.style.display = 'none';
-                }
-                if (userList) {
-                    userList.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--danger);">Fout bij laden gebruikers</div>';
-                }
+                if (usersLoading) usersLoading.style.display = 'none';
+                if (userList) userList.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--danger);">Fout bij laden gebruikers</div>';
             }
         }
 
         function displayUsers(users) {
             const userList = document.getElementById('userList');
             
-            // Check if userList element exists
             if (!userList) {
-                console.warn('UserList element not found');
+                console.warn('⚠️ UserList element not found');
                 return;
             }
             
@@ -1979,9 +2076,7 @@
 
         function searchUsers() {
             const searchInput = document.getElementById('searchInput');
-            if (!searchInput) {
-                return;
-            }
+            if (!searchInput) return;
             
             const searchTerm = searchInput.value.toLowerCase();
             
@@ -2007,8 +2102,7 @@
                 const userData = userSnapshot.val();
                 
                 if (!userData) {
-                    // Use custom modal instead of alert
-                    showAlert(document.getElementById('addAdminAlert'), 'Gebruiker niet gevonden');
+                    alert('Gebruiker niet gevonden');
                     return;
                 }
                 
@@ -2034,8 +2128,7 @@
                 
             } catch (error) {
                 console.error('Error opening token modal:', error);
-                // Use custom modal instead of alert
-                showAlert(document.getElementById('addAdminAlert'), 'Fout bij laden gebruikersgegevens');
+                alert('Fout bij laden gebruikersgegevens');
             }
         }
 
@@ -2175,12 +2268,144 @@
         }
 
         function openAddAdminModal() {
-            // Clear previous form data and alerts when opening the modal
-            document.getElementById('addAdminEmail').value = '';
-            document.getElementById('addAdminLevel').value = ''; // Reset select to default
-            showAlert(document.getElementById('addAdminAlert'), '', true); // Clear alert
-
             showModal('addAdminModal');
+        }
+
+        // Function to show pending admins
+        async function showPendingAdmins() {
+            try {
+                console.log('🔍 Loading all admin entries...');
+                const adminsSnapshot = await database.ref('admins').once('value');
+                
+                if (!adminsSnapshot.exists()) {
+                    alert('Geen admin entries gevonden in database.\n\nMogelijke oorzaken:\n- Nog geen beheerders toegevoegd\n- Database connection probleem');
+                    return;
+                }
+                
+                const admins = adminsSnapshot.val();
+                console.log('📊 All admin entries:', admins);
+                
+                const pendingAdmins = [];
+                const activeAdmins = [];
+                
+                // Categorize admins
+                for (const [key, adminData] of Object.entries(admins)) {
+                    console.log(`🔍 Admin entry ${key}:`, adminData);
+                    
+                    if (adminData.status === 'pending' && adminData.isPendingAdmin) {
+                        adminData.id = key;
+                        pendingAdmins.push(adminData);
+                    } else if (adminData.status === 'active' || !adminData.status) {
+                        adminData.id = key;
+                        activeAdmins.push(adminData);
+                    }
+                }
+                
+                let message = `=== ADMIN OVERZICHT ===\n\n`;
+                
+                // Show active admins
+                message += `🟢 ACTIEVE BEHEERDERS (${activeAdmins.length}):\n`;
+                if (activeAdmins.length === 0) {
+                    message += '   Geen actieve beheerders\n\n';
+                } else {
+                    activeAdmins.forEach((admin, index) => {
+                        const createdDate = admin.createdAt ? new Date(admin.createdAt).toLocaleDateString('nl-NL') : 'Onbekend';
+                        message += `   ${index + 1}. ${admin.email}\n`;
+                        message += `      Niveau: ${admin.level === 'super' ? 'Super Beheerder' : 'Gewone Beheerder'}\n`;
+                        message += `      Aangemaakt: ${createdDate}\n`;
+                        message += `      UID: ${admin.id}\n\n`;
+                    });
+                }
+                
+                // Show pending admins
+                message += `🟡 WACHTENDE BEHEERDERS (${pendingAdmins.length}):\n`;
+                if (pendingAdmins.length === 0) {
+                    message += '   Geen wachtende beheerders\n\n';
+                } else {
+                    pendingAdmins.forEach((admin, index) => {
+                        const createdDate = admin.createdAt ? new Date(admin.createdAt).toLocaleDateString('nl-NL') : 'Onbekend';
+                        message += `   ${index + 1}. ${admin.email}\n`;
+                        message += `      Niveau: ${admin.level === 'super' ? 'Super Beheerder' : 'Gewone Beheerder'}\n`;
+                        message += `      Toegevoegd: ${createdDate}\n`;
+                        message += `      Door: ${admin.createdByEmail || 'Onbekend'}\n`;
+                        message += `      Status: WACHTEND OP REGISTRATIE\n\n`;
+                    });
+                }
+                
+                message += `📋 INSTRUCTIES VOOR WACHTENDE BEHEERDERS:\n`;
+                message += `1. Ga naar de OHK Wallet website\n`;
+                message += `2. Klik "Beheerder inloggen"\n`;
+                message += `3. Klik "Nog geen account? Registreer hier"\n`;
+                message += `4. Registreer met het exacte e-mailadres\n`;
+                message += `5. Beheerder rechten worden automatisch toegepast`;
+                
+                alert(message);
+                
+            } catch (error) {
+                console.error('Error loading admin overview:', error);
+                alert('Fout bij laden admin overzicht: ' + error.message);
+            }
+        }
+
+        // Function to check and activate pending admin accounts
+        async function checkAndActivatePendingAdmin(user) {
+            try {
+                console.log('🔍 Checking pending admin status for:', user.email);
+                
+                // Check if this email is in pending admins (stored in admins node)
+                const adminsSnapshot = await database.ref('admins').once('value');
+                
+                if (adminsSnapshot.exists()) {
+                    const admins = adminsSnapshot.val();
+                    
+                    // Look for pending admin with this email
+                    let pendingAdminKey = null;
+                    let pendingAdminData = null;
+                    
+                    for (const [key, adminData] of Object.entries(admins)) {
+                        console.log('🔎 Checking admin entry:', key, adminData);
+                        
+                        if (adminData.email === user.email && 
+                            adminData.status === 'pending' && 
+                            adminData.isPendingAdmin) {
+                            pendingAdminKey = key;
+                            pendingAdminData = adminData;
+                            console.log('🎯 Found pending admin for:', user.email);
+                            break;
+                        }
+                    }
+                    
+                    if (pendingAdminData) {
+                        console.log('✅ Activating admin account for:', user.email);
+                        
+                        // Create actual admin record with user's UID
+                        const activatedAdminData = {
+                            level: pendingAdminData.level,
+                            email: user.email,
+                            createdAt: pendingAdminData.createdAt,
+                            createdBy: pendingAdminData.createdBy,
+                            createdByEmail: pendingAdminData.createdByEmail,
+                            activatedAt: new Date().toISOString(),
+                            wasManuallyAdded: true,
+                            status: 'active'
+                        };
+                        
+                        // Set admin status with proper user UID
+                        await database.ref(`admins/${user.uid}`).set(activatedAdminData);
+                        
+                        // Remove the temporary pending admin entry
+                        await database.ref(`admins/${pendingAdminKey}`).remove();
+                        
+                        console.log('🎉 Admin account activated successfully for:', user.email, 'with level:', pendingAdminData.level);
+                    } else {
+                        console.log('ℹ️ No pending admin found for:', user.email);
+                    }
+                } else {
+                    console.log('ℹ️ No admin entries found in database');
+                }
+            } catch (error) {
+                console.error('❌ Error checking pending admin:', error);
+            }
         }
 
         async function addNewUser(name) {
@@ -2226,28 +2451,7 @@
         }
 
         async function deleteUser(userId) {
-            // Use custom modal for confirmation
-            const confirmDelete = await new Promise(resolve => {
-                const modal = document.createElement('div');
-                modal.className = 'modal';
-                modal.innerHTML = `
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2>Gebruiker Verwijderen</h2>
-                            <button class="close" onclick="this.closest('.modal').remove(); resolve(false);">×</button>
-                        </div>
-                        <p style="margin-bottom: 20px;">Weet je zeker dat je deze gebruiker wilt verwijderen? Dit kan niet ongedaan worden gemaakt.</p>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" onclick="this.closest('.modal').remove(); resolve(false);">Annuleren</button>
-                            <button class="btn btn-danger" onclick="this.closest('.modal').remove(); resolve(true);">Verwijderen</button>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(modal);
-                modal.style.display = 'block';
-            });
-
-            if (!confirmDelete) {
+            if (!confirm('Weet je zeker dat je deze gebruiker wilt verwijderen? Dit kan niet ongedaan worden gemaakt.')) {
                 return;
             }
             
@@ -2258,8 +2462,6 @@
                 
             } catch (error) {
                 console.error('❌ Error deleting user:', error);
-                // Use custom modal for alert
-                showAlert(document.getElementById('addAdminAlert'), 'Fout bij verwijderen gebruiker: ' + error.message);
                 throw error;
             }
         }
@@ -2286,8 +2488,7 @@
                 
             } catch (error) {
                 console.error('❌ Error exporting data:', error);
-                // Use custom modal for alert
-                showAlert(document.getElementById('addAdminAlert'), 'Fout bij exporteren van gegevens');
+                alert('Fout bij exporteren van gegevens');
             }
         }
 
@@ -2299,6 +2500,8 @@
         }
 
         function adminLogout() {
+            shouldShowAdminLogin = true; // Flag to show admin login after logout
+            currentAdminData = null;
             auth.signOut();
         }
 
@@ -2329,8 +2532,7 @@
             } catch (error) {
                 console.error('❌ Error loading public profile:', error);
                 hideLoading();
-                // Use custom modal for alert
-                showAlert(document.getElementById('addAdminAlert'), 'Fout bij laden profiel: ' + error.message);
+                alert('Fout bij laden profiel: ' + error.message);
                 showContainer('auth');
             }
         }
@@ -2394,33 +2596,10 @@
         }
 
         function forgetDevice() {
-            // Use custom modal for confirmation
-            const confirmForget = new Promise(resolve => {
-                const modal = document.createElement('div');
-                modal.className = 'modal';
-                modal.innerHTML = `
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h2>Apparaat Vergeten</h2>
-                            <button class="close" onclick="this.closest('.modal').remove(); resolve(false);">×</button>
-                        </div>
-                        <p style="margin-bottom: 20px;">Weet je zeker dat je dit apparaat wilt vergeten? Je moet dan jouw code opnieuw invoeren.</p>
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" onclick="this.closest('.modal').remove(); resolve(false);">Annuleren</button>
-                            <button class="btn btn-warning" onclick="this.closest('.modal').remove(); resolve(true);">Vergeten</button>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(modal);
-                modal.style.display = 'block';
-            });
-
-            confirmForget.then(confirmed => {
-                if (confirmed) {
-                    localStorage.removeItem('ohk_user_code');
-                    document.getElementById('forgetDeviceBtn').style.display = 'none';
-                }
-            });
+            if (confirm('Weet je zeker dat je dit apparaat wilt vergeten? Je moet dan jouw code opnieuw invoeren.')) {
+                localStorage.removeItem('ohk_user_code');
+                document.getElementById('forgetDeviceBtn').style.display = 'none';
+            }
         }
 
         // Event listeners setup
@@ -2436,16 +2615,133 @@
                 }
             }, 1000);
             
+            // IMMEDIATE DEBUG: Test if we can access form elements
+            console.log('🔍 IMMEDIATE FORM DEBUG:');
+            console.log('- registerForm element:', document.getElementById('registerForm'));
+            console.log('- loginForm element:', document.getElementById('loginForm'));
+            console.log('- userAccessForm element:', document.getElementById('userAccessForm'));
+            
+            // Check if forms have existing event listeners
+            const registerForm = document.getElementById('registerForm');
+            if (registerForm) {
+                console.log('✅ Register form exists');
+                console.log('- Form action:', registerForm.action);
+                console.log('- Form method:', registerForm.method);
+                console.log('- Form onsubmit:', registerForm.onsubmit);
+                
+                // Remove any existing listeners first
+                const newRegisterForm = registerForm.cloneNode(true);
+                registerForm.parentNode.replaceChild(newRegisterForm, registerForm);
+                console.log('🧹 Cloned form to remove existing listeners');
+                
+                // Add our event listener to the fresh form
+                newRegisterForm.addEventListener('submit', async function(e) {
+                    console.log('🚀 *** NEW REGISTRATION FORM HANDLER TRIGGERED ***');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const email = document.getElementById('registerEmail').value;
+                    const password = document.getElementById('registerPassword').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+                    
+                    console.log('📝 Registration form data:', { 
+                        email, 
+                        passwordLength: password ? password.length : 0,
+                        confirmPasswordLength: confirmPassword ? confirmPassword.length : 0
+                    });
+                    
+                    if (!email || !password || !confirmPassword) {
+                        console.log('❌ Missing form data');
+                        showAlert(document.getElementById('registerAlert'), 'Vul alle velden in');
+                        return false;
+                    }
+                    
+                    if (password !== confirmPassword) {
+                        console.log('❌ Passwords do not match');
+                        showAlert(document.getElementById('registerAlert'), 'Wachtwoorden komen niet overeen');
+                        return false;
+                    }
+                    
+                    if (password.length < 6) {
+                        console.log('❌ Password too short');
+                        showAlert(document.getElementById('registerAlert'), 'Wachtwoord moet minimaal 6 tekens zijn');
+                        return false;
+                    }
+                    
+                    console.log('✅ Form validation passed - starting registration');
+                    showLoading('Account aanmaken...');
+                    
+                    try {
+                        console.log('🔥 Creating Firebase account...');
+                        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                        const user = userCredential.user;
+                        
+                        console.log('✅ Firebase account created!', user.uid);
+                        
+                        // Admin activation
+                        await checkAndActivatePendingAdmin(user);
+                        
+                        const adminSnapshot = await database.ref(`admins/${user.uid}`).once('value');
+                        if (adminSnapshot.exists()) {
+                            hideLoading();
+                            await initializeAdminPanel(adminSnapshot.val());
+                        } else {
+                            throw new Error('Admin rechten niet gevonden');
+                        }
+                        
+                    } catch (error) {
+                        console.error('❌ Registration failed:', error);
+                        hideLoading();
+                        showAlert(document.getElementById('registerAlert'), `Registratie mislukt: ${error.message}`);
+                    }
+                    
+                    return false;
+                });
+                
+                console.log('✅ NEW registration form handler added');
+            } else {
+                console.error('❌ Register form NOT found!');
+            }
+            
             // Basic navigation
             const showAdminBtn = document.getElementById('showAdminLoginBtn');
             const backToUserBtn = document.getElementById('backToUserAccessBtn');
+            const backToUserFromRegisterBtn = document.getElementById('backToUserAccessFromRegisterBtn');
+            const showRegisterLink = document.getElementById('showRegisterLink');
+            const showLoginLink = document.getElementById('showLoginLink');
             
             if (showAdminBtn) {
                 showAdminBtn.addEventListener('click', showAdminLogin);
             }
             
             if (backToUserBtn) {
-                backToUserBtn.addEventListener('click', showUserAccess);
+                backToUserBtn.addEventListener('click', function() {
+                    shouldShowAdminLogin = false; // Reset flag
+                    showUserAccess();
+                });
+            }
+            
+            if (backToUserFromRegisterBtn) {
+                backToUserFromRegisterBtn.addEventListener('click', function() {
+                    shouldShowAdminLogin = false; // Reset flag
+                    showUserAccess();
+                });
+            }
+            
+            if (showRegisterLink) {
+                showRegisterLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🔄 Switching to registration form');
+                    showAdminRegister();
+                });
+            }
+            
+            if (showLoginLink) {
+                showLoginLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🔄 Switching to login form');
+                    showAdminLogin();
+                });
             }
 
             // User access form
@@ -2484,13 +2780,23 @@
                         return;
                     }
                     
+                    // Set flag to prevent auth listener interference
+                    isAdminLoginInProgress = true;
                     showLoading('Inloggen als beheerder...');
                     
                     try {
+                        console.log('🔑 Starting admin login for:', email);
                         const userCredential = await auth.signInWithEmailAndPassword(email, password);
                         const user = userCredential.user;
                         
-                        // Hardcoded Super Admin Check (only for initial setup or specific super admins)
+                        console.log('✅ Firebase login successful for:', email);
+                        console.log('👤 User UID:', user.uid);
+                        
+                        // Check for pending admin status first
+                        console.log('🔍 Checking for pending admin status...');
+                        await checkAndActivatePendingAdmin(user);
+                        
+                        // Hardcoded Super Admin Check
                         const superAdminEmails = [
                             'admin@ohk.be', 
                             'superadmin@ohk.be', 
@@ -2499,6 +2805,7 @@
                         ];
                         
                         if (superAdminEmails.includes(email.toLowerCase())) {
+                            console.log('🔥 Hardcoded super admin detected');
                             const superAdminData = {
                                 level: 'super',
                                 email: user.email,
@@ -2509,36 +2816,61 @@
                             await database.ref(`admins/${user.uid}`).set(superAdminData);
                             
                             hideLoading();
-                            showContainer('admin');
-                            
-                            // Wait for container to be visible before initializing
-                            setTimeout(async () => {
-                                await initializeAdminPanel(superAdminData);
-                            }, 200);
+                            isAdminLoginInProgress = false; // Reset flag
+                            await initializeAdminPanel(superAdminData);
                             return;
                         }
                         
-                        // Check admin status in the database for existing admins
+                        // Check admin status
+                        console.log('🔍 Checking admin rights for UID:', user.uid);
                         const adminSnapshot = await database.ref(`admins/${user.uid}`).once('value');
                         
                         if (!adminSnapshot.exists()) {
-                            // If no admin record exists and no hardcoded super admin match, deny access
-                            throw new Error('Geen beheerder rechten voor dit account');
+                            console.log('❌ No admin entry found for UID:', user.uid);
+                            console.log('🔍 Checking all admin entries...');
+                            const allAdminsSnapshot = await database.ref('admins').once('value');
+                            console.log('📊 All admin entries:', allAdminsSnapshot.val());
+                            
+                            // Auto-create admin if none exist
+                            const adminsSnapshot = await database.ref('admins').once('value');
+                            
+                            if (!adminsSnapshot.exists()) {
+                                console.log('🆕 No admins exist, creating first admin');
+                                const adminData = {
+                                    level: 'super',
+                                    email: user.email,
+                                    createdAt: new Date().toISOString(),
+                                    isFirstAdmin: true
+                                };
+                                
+                                await database.ref(`admins/${user.uid}`).set(adminData);
+                                
+                                hideLoading();
+                                isAdminLoginInProgress = false; // Reset flag
+                                await initializeAdminPanel(adminData);
+                                return;
+                            } else {
+                                throw new Error(`Geen beheerder rechten gevonden voor ${email}. UID: ${user.uid}`);
+                            }
                         }
                         
                         const adminData = adminSnapshot.val();
+                        console.log('✅ Admin rights confirmed:', adminData);
                         hideLoading();
-                        showContainer('admin');
-                        
-                        setTimeout(async () => {
-                            await initializeAdminPanel(adminData);
-                        }, 200);
+                        isAdminLoginInProgress = false; // Reset flag
+                        await initializeAdminPanel(adminData);
                         
                     } catch (error) {
                         console.error('Admin login error:', error);
                         hideLoading();
-                        // Sign out the user immediately if login failed or they don't have admin rights
-                        await auth.signOut();
+                        isAdminLoginInProgress = false; // Reset flag
+                        
+                        // Sign out on error to clean up auth state
+                        try {
+                            await auth.signOut();
+                        } catch (signOutError) {
+                            console.error('Error signing out:', signOutError);
+                        }
                         
                         let errorMessage = 'Inloggen mislukt: ';
                         if (error.code === 'auth/user-not-found') {
@@ -2618,7 +2950,7 @@
                         
                     } catch (error) {
                         hideLoading();
-                        showAlert(document.getElementById('addAdminAlert'), 'Fout bij toevoegen token: ' + error.message); // Use custom alert
+                        alert('Fout bij toevoegen token: ' + error.message);
                     }
                 });
             }
@@ -2637,7 +2969,7 @@
                         
                     } catch (error) {
                         hideLoading();
-                        showAlert(document.getElementById('addAdminAlert'), 'Fout bij verwijderen token: ' + error.message); // Use custom alert
+                        alert('Fout bij verwijderen token: ' + error.message);
                     }
                 });
             }
@@ -2652,8 +2984,8 @@
                     const amount = parseInt(document.getElementById('tokenAmount').value);
                     const reason = document.getElementById('tokenReason').value;
                     
-                    if (isNaN(amount) || !reason) { // Check for NaN
-                        showAlert(document.getElementById('addAdminAlert'), 'Vul een geldig token aantal en reden in.'); // Use custom alert
+                    if (!amount || !reason) {
+                        alert('Vul alle velden in');
                         return;
                     }
                     
@@ -2670,7 +3002,7 @@
                         
                     } catch (error) {
                         hideLoading();
-                        showAlert(document.getElementById('addAdminAlert'), 'Fout bij toevoegen tokens: ' + error.message); // Use custom alert
+                        alert('Fout bij toevoegen tokens: ' + error.message);
                     }
                 });
             }
@@ -2684,8 +3016,8 @@
                     const amount = parseInt(document.getElementById('tokenAmount').value);
                     const reason = document.getElementById('tokenReason').value;
                     
-                    if (isNaN(amount) || !reason) { // Check for NaN
-                        showAlert(document.getElementById('addAdminAlert'), 'Vul een geldig token aantal en reden in.'); // Use custom alert
+                    if (!amount || !reason) {
+                        alert('Vul alle velden in');
                         return;
                     }
                     
@@ -2702,7 +3034,7 @@
                         
                     } catch (error) {
                         hideLoading();
-                        showAlert(document.getElementById('addAdminAlert'), 'Fout bij verwijderen tokens: ' + error.message); // Use custom alert
+                        alert('Fout bij verwijderen tokens: ' + error.message);
                     }
                 });
             }
@@ -2722,7 +3054,7 @@
                         
                     } catch (error) {
                         hideLoading();
-                        showAlert(document.getElementById('addAdminAlert'), 'Fout bij registreren werkdag: ' + error.message); // Use custom alert
+                        alert('Fout bij registreren werkdag: ' + error.message);
                     }
                 });
             }
@@ -2742,7 +3074,7 @@
                         
                     } catch (error) {
                         hideLoading();
-                        showAlert(document.getElementById('addAdminAlert'), 'Fout bij verwijderen gebruiker: ' + error.message); // Use custom alert
+                        alert('Fout bij verwijderen gebruiker: ' + error.message);
                     }
                 });
             }
@@ -2773,44 +3105,7 @@
                         hideModal('addUserModal');
                         document.getElementById('addUserName').value = '';
                         
-                        // Use custom modal for success message
-                        const successModal = document.createElement('div');
-                        successModal.className = 'modal';
-                        successModal.innerHTML = `
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h2>Gebruiker Toegevoegd!</h2>
-                                    <button class="close" onclick="this.closest('.modal').remove();">×</button>
-                                </div>
-                                <p style="margin-bottom: 20px;">Gebruiker <strong>${name}</strong> is toegevoegd met code: <strong>${result.userCode}</strong></p>
-                                <p style="color: var(--gray); font-size: 14px;">Zorg ervoor dat u deze code veilig deelt met de nieuwe gebruiker.</p>
-                                <div class="modal-footer">
-                                    <button class="btn btn-secondary" onclick="document.execCommand('copy');">Kopieer Code</button>
-                                    <button class="btn" onclick="this.closest('.modal').remove();">Sluiten</button>
-                                </div>
-                            </div>
-                        `;
-                        document.body.appendChild(successModal);
-                        successModal.style.display = 'block';
-
-                        // Copy code to clipboard when "Kopieer Code" is clicked
-                        successModal.querySelector('.btn-secondary').addEventListener('click', () => {
-                            const userCodeSpan = successModal.querySelector('strong:last-of-type');
-                            if (userCodeSpan) {
-                                const range = document.createRange();
-                                range.selectNodeContents(userCodeSpan);
-                                const selection = window.getSelection();
-                                selection.removeAllRanges();
-                                selection.addRange(range);
-                                try {
-                                    document.execCommand('copy');
-                                    showAlert(document.getElementById('addAdminAlert'), 'Code gekopieerd naar klembord!');
-                                } catch (err) {
-                                    showAlert(document.getElementById('addAdminAlert'), 'Niet gelukt om code te kopiëren.');
-                                }
-                                selection.removeAllRanges();
-                            }
-                        });
+                        alert(`Gebruiker ${name} toegevoegd!\nCode: ${result.userCode}`);
                         
                     } catch (error) {
                         hideLoading();
@@ -2932,7 +3227,12 @@
                 });
             }
 
-            // Add admin modal handlers (UPDATED LOGIC)
+            // Add admin modal handlers
+            const closeAddAdminModal = document.getElementById('closeAddAdminModal');
+            if (closeAddAdminModal) {
+                closeAddAdminModal.addEventListener('click', () => hideModal('addAdminModal'));
+            }
+
             const addAdminForm = document.getElementById('addAdminForm');
             if (addAdminForm) {
                 addAdminForm.addEventListener('submit', async function(e) {
@@ -2945,96 +3245,50 @@
                         showAlert(document.getElementById('addAdminAlert'), 'Vul alle velden in');
                         return;
                     }
-
-                    showLoading('Beheerder toevoegen...');
                     
                     try {
-                        // 1. Check if an account with this email already exists in Firebase Auth
-                        // Firebase client SDK does not allow direct user creation for security reasons.
-                        // We assume the admin user might already exist or needs to be manually created
-                        // by a super admin through the Firebase console if they don't have an account.
-                        // However, we can check if a user with that email already exists in our `admins` database node.
-
-                        const adminSnapshot = await database.ref('admins').orderByChild('email').equalTo(email).once('value');
-
-                        if (adminSnapshot.exists()) {
-                            // Admin record already exists for this email
-                            const adminId = Object.keys(adminSnapshot.val())[0];
-                            await database.ref(`admins/${adminId}`).update({
-                                level: level,
-                                email: email, // Ensure email is correctly set/updated
-                                updatedAt: new Date().toISOString(),
-                                updatedBy: auth.currentUser?.uid || 'system'
-                            });
-                            showAlert(document.getElementById('addAdminAlert'), `Beheerder ${email} is bijgewerkt naar niveau: ${level}!`, true);
-                        } else {
-                            // If no admin record exists, we need to associate this email with a Firebase Auth user.
-                            // The client-side SDK does not provide a direct way to link an existing email
-                            // to a user without their password or to create users without server-side logic.
-                            // For simplicity and assuming the admin already has a Firebase Auth account
-                            // (e.g., created manually by a super admin in Firebase Console, or they registered as a regular user),
-                            // we try to find their UID by email.
-                            // IMPORTANT: This is a simplification. In a production environment, you would use
-                            // Firebase Admin SDK on a server (e.g., Cloud Function) to create or set custom claims for users.
-
-                            // Attempt to find user by email (This is not directly supported client-side for security)
-                            // We need to simulate this by looking for a user whose admin record email matches.
-                            // A more robust solution would involve triggering a Cloud Function to handle user creation/admin claims.
-                            // For this client-side example, we'll assume the `auth.currentUser` is the admin
-                            // and we're adding another *existing* Firebase Auth user as admin by their email.
-                            // If the user doesn't exist in Firebase Auth, this will fail.
-
-                            // To make this work client-side:
-                            // The simplest approach is to check if a user *exists* in the 'admins' node
-                            // (which implies they have logged in at least once or their record was manually added)
-                            // and then update their admin level.
-                            // If they don't exist in 'admins' node, but they do have a Firebase Auth account,
-                            // the user needs to log in at least once as a regular user, or their UID needs to be known.
-                            // For a functional client-side demo, we'll assume a new admin's Firebase Auth UID
-                            // will be linked when they *first log in* or if we have a way to look it up.
-                            // For now, let's just create an admin record. The actual Firebase Auth user
-                            // needs to be managed separately (e.g., manual creation in Firebase Console).
-
-                            // This is a common workaround for client-side Firebase when server-side is not used.
-                            // The admin record is created, but the user still needs to have an Auth account.
-                            // The system will only grant access if their Auth UID matches an entry in the 'admins' node.
-                            
-                            // Let's first try to get the user's UID by email for the purpose of storing their admin level
-                            // This part is the main simplification for client-side only.
-                            // In a real app, this would be a server-side call.
-                            const allAuthUsers = await auth.getRedirectResult(); // This doesn't actually get all users
-                            // Simulating getting a UID based on email (not directly possible client-side)
-                            let newAdminUid = null;
-                            const usersRef = database.ref('users');
-                            const usersEmailSnapshot = await usersRef.orderByChild('email').equalTo(email).once('value');
-                            if (usersEmailSnapshot.exists()) {
-                                newAdminUid = Object.keys(usersEmailSnapshot.val())[0]; // Assuming user's database ID is their Auth UID
-                            } else {
-                                // If the email doesn't correspond to an existing user entry (with a linked UID)
-                                // in our 'users' node, we cannot proceed client-side to set their admin level directly.
-                                // The user MUST have logged in at least once for their UID to be available here,
-                                // or their user record must be created with their UID manually.
-                                throw new Error(`Geen Firebase-gebruiker gevonden met e-mail: ${email}. Zorg ervoor dat het account al bestaat.`);
-                            }
-
-                            const newAdminData = {
-                                level: level,
-                                email: email,
-                                createdAt: new Date().toISOString(),
-                                createdBy: auth.currentUser?.uid || 'system'
-                            };
-                            await database.ref(`admins/${newAdminUid}`).set(newAdminData);
-                            showAlert(document.getElementById('addAdminAlert'), `Beheerder ${email} (${level}) succesvol toegevoegd!`, true);
-                        }
+                        showLoading('Beheerder toevoegen...');
+                        
+                        // Create a temporary admin entry with pending status
+                        // We'll use email as a unique identifier in the admins node
+                        const tempAdminId = `pending_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                        
+                        const adminData = {
+                            email: email,
+                            level: level,
+                            status: 'pending',
+                            createdAt: new Date().toISOString(),
+                            createdBy: auth.currentUser?.uid || 'system',
+                            createdByEmail: auth.currentUser?.email || 'system',
+                            isPendingAdmin: true,
+                            tempId: tempAdminId
+                        };
+                        
+                        console.log('📝 Adding pending admin:', adminData);
+                        
+                        // Store in admins with temporary ID
+                        await database.ref(`admins/${tempAdminId}`).set(adminData);
+                        
+                        console.log('✅ Pending admin added successfully');
                         
                         hideLoading();
                         hideModal('addAdminModal');
+                        
+                        // Clear form
                         document.getElementById('addAdminEmail').value = '';
-                        document.getElementById('addAdminLevel').value = ''; // Reset select
+                        document.getElementById('addAdminLevel').value = '';
+                        
+                        alert(`✅ Beheerder ${email} is toegevoegd!\n\n📧 STUUR DEZE INSTRUCTIES NAAR DE NIEUWE BEHEERDER:\n\n"🎯 JE BENT UITGENODIGD ALS BEHEERDER!\n\n1. Ga naar: ${window.location.origin}\n2. Klik: 'Beheerder inloggen'\n3. Klik: 'Nog geen account? Registreer hier'\n4. Vul in:\n   - E-mailadres: ${email}\n   - Wachtwoord: [kies zelf een veilig wachtwoord]\n   - Bevestig wachtwoord: [herhaal je wachtwoord]\n5. Klik: 'Registreer als Beheerder'\n\n✅ Je admin rechten worden automatisch toegepast!\n⚠️ Gebruik EXACT dit e-mailadres: ${email}"\n\nNiveau: ${level === 'super' ? 'Super Beheerder' : 'Gewone Beheerder'}\n\n💡 TIP: De nieuwe beheerder MOET zelf zijn wachtwoord kiezen tijdens registratie!`);
                         
                     } catch (error) {
+                        console.error('❌ Error adding admin:', error);
                         hideLoading();
-                        showAlert(document.getElementById('addAdminAlert'), 'Fout bij toevoegen beheerder: ' + error.message);
+                        
+                        if (error.code === 'PERMISSION_DENIED') {
+                            showAlert(document.getElementById('addAdminAlert'), 'Geen toestemming om beheerders toe te voegen. Controleer Firebase security rules.');
+                        } else {
+                            showAlert(document.getElementById('addAdminAlert'), 'Fout bij toevoegen beheerder: ' + error.message);
+                        }
                     }
                 });
             }
@@ -3064,27 +3318,48 @@
 
             // Firebase auth state listener
             auth.onAuthStateChanged(async (user) => {
+                // Skip processing if admin login is in progress via form
+                if (isAdminLoginInProgress) {
+                    console.log('⏳ Skipping auth state change - admin login in progress');
+                    return;
+                }
+                
                 if (user) {
                     console.log('🔥 Auth state changed: User logged in:', user.email);
                     
-                    const adminSnapshot = await database.ref(`admins/${user.uid}`).once('value');
-                    if (adminSnapshot.exists()) {
-                        const adminData = adminSnapshot.val();
-                        console.log('✅ Admin state restored for:', user.email);
+                    try {
+                        // Check for pending admin status first
+                        await checkAndActivatePendingAdmin(user);
                         
-                        // First show the container, then initialize
-                        showContainer('admin');
-                        
-                        // Wait a moment for the DOM to update
-                        setTimeout(async () => {
+                        const adminSnapshot = await database.ref(`admins/${user.uid}`).once('value');
+                        if (adminSnapshot.exists()) {
+                            const adminData = adminSnapshot.val();
+                            console.log('✅ Admin state restored for:', user.email);
                             await initializeAdminPanel(adminData);
-                        }, 200);
+                            shouldShowAdminLogin = false; // Reset flag
+                        } else {
+                            // User is logged in but not an admin - sign them out
+                            console.log('❌ User has no admin rights, signing out');
+                            await auth.signOut();
+                        }
+                    } catch (error) {
+                        console.error('❌ Error in auth state change:', error);
+                        await auth.signOut();
                     }
                 } else {
                     console.log('🔓 Auth state changed: User logged out');
                     currentAdminData = null;
-                    showContainer('auth');
-                    showUserAccess();
+                    
+                    // Show appropriate login screen based on context
+                    if (shouldShowAdminLogin) {
+                        showContainer('auth');
+                        showAdminLogin(); // Go directly to admin login
+                    } else {
+                        showContainer('auth');
+                        showUserAccess(); // Default user access
+                    }
+                    
+                    shouldShowAdminLogin = false; // Reset flag
                 }
             });
 
@@ -3126,10 +3401,51 @@
         window.openAddUserModal = openAddUserModal;
         window.openAdminPasswordModal = openAdminPasswordModal;
         window.openAddAdminModal = openAddAdminModal;
+        window.showPendingAdmins = showPendingAdmins;
         window.adminLogout = adminLogout;
         window.userLogout = userLogout;
         window.forgetDevice = forgetDevice;
         window.goToLogin = goToLogin;
+        
+        // Debug function for testing admin system
+        window.debugAdminSystem = async function(email) {
+            console.log('🔍 DEBUG: Checking admin system for:', email);
+            
+            try {
+                const adminsSnapshot = await database.ref('admins').once('value');
+                const admins = adminsSnapshot.val() || {};
+                
+                console.log('📊 All admin entries:', admins);
+                
+                let pendingFound = false;
+                let activeFound = false;
+                
+                for (const [key, adminData] of Object.entries(admins)) {
+                    if (adminData.email === email) {
+                        if (adminData.status === 'pending' && adminData.isPendingAdmin) {
+                            console.log('🟡 Found PENDING admin:', key, adminData);
+                            pendingFound = true;
+                        } else if (adminData.status === 'active' || !adminData.status) {
+                            console.log('🟢 Found ACTIVE admin:', key, adminData);
+                            activeFound = true;
+                        }
+                    }
+                }
+                
+                if (!pendingFound && !activeFound) {
+                    console.log('❌ No admin entry found for:', email);
+                    return `❌ ${email} is NIET toegevoegd als admin`;
+                } else if (pendingFound) {
+                    return `🟡 ${email} is PENDING - moet nog registreren`;
+                } else if (activeFound) {
+                    return `🟢 ${email} is ACTIEF - kan inloggen`;
+                }
+                
+            } catch (error) {
+                console.error('Error in debug:', error);
+                return `❌ Error: ${error.message}`;
+            }
+        };
     </script>
 </body>
 </html>
