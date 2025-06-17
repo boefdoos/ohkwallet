@@ -15,10 +15,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Favicon -->
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
@@ -974,90 +975,8 @@
     <!-- Connection Status Bar -->
     <div class="status-bar" id="statusBar">
         <span id="connectionStatus">Verbinden...</span>
-        <!-- Public Profile View (for QR code scans) -->
-        <div class="container dashboard" id="publicProfileContainer" style="display: none;">
-            <div class="dashboard-header">
-                <div>
-                    <h1>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="36" height="36" style="vertical-align: middle; margin-right: 8px;">
-                            <defs>
-                                <radialGradient id="background4" cx="30%" cy="30%">
-                                    <stop offset="0%" style="stop-color:#FFED33;stop-opacity:1" />
-                                    <stop offset="50%" style="stop-color:#FFB800;stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:#009DFF;stop-opacity:1" />
-                                </radialGradient>
-                                <radialGradient id="goldOval4" cx="40%" cy="30%">
-                                    <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.9" />
-                                    <stop offset="30%" style="stop-color:#FFED33;stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:#FFB800;stop-opacity:1" />
-                                </radialGradient>
-                            </defs>
-                            <!-- Outer circle with gradient -->
-                            <circle cx="16" cy="16" r="15.5" fill="url(#background4)" stroke="#FFB800" stroke-width="1"/>
-                            <!-- Inner black circle -->
-                            <circle cx="16" cy="16" r="11" fill="#000000" stroke="#333333" stroke-width="0.5"/>
-                            <!-- Golden oval in center -->
-                            <ellipse cx="16" cy="16" rx="4" ry="6" fill="url(#goldOval4)" stroke="#FFB800" stroke-width="0.3"/>
-                            <!-- Highlight on oval -->
-                            <ellipse cx="14.5" cy="13.5" rx="1.5" ry="2.5" fill="#FFFFFF" opacity="0.6"/>
-                        </svg>
-                        <span id="publicUserName">Gebruiker Profiel</span>
-                    </h1>
-                    <p>Publiek wallet overzicht - Code: <span class="user-code" id="publicUserCode">Laden...</span></p>
-                </div>
-            </div>
-            
-            <div class="token-display">
-                <div class="token-card">
-                    <i class="fas fa-coins"></i>
-                    <p>Beschikbare Tokens</p>
-                    <h3 id="publicAvailableTokens">0</h3>
-                </div>
-                <div class="token-card">
-                    <i class="fas fa-star"></i>
-                    <p>Totaal Verdiend</p>
-                    <h3 id="publicTotalEarned">0</h3>
-                </div>
-                <div class="token-card">
-                    <i class="fas fa-calendar-check"></i>
-                    <p>Activiteiten</p>
-                    <h3 id="publicWorkingDays">0</h3>
-                </div>
-            </div>
+    </div>
 
-            <h2 style="margin-bottom: 16px; color: var(--primary);">Recente Transacties</h2>
-            <div class="loading" id="publicHistoryLoading">
-                <div class="spinner"></div>
-                <p>Transactie geschiedenis laden...</p>
-            </div>
-            <div class="table-container">
-                <table class="history-table" id="publicHistoryTable">
-                    <thead>
-                        <tr>
-                            <th>Datum</th>
-                            <th>Beschrijving</th>
-                            <th>Tokens</th>
-                        </tr>
-                    </thead>
-                    <tbody id="publicHistoryTableBody">
-                        <!-- Transaction history will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="account-section">
-                <h3>Acties</h3>
-                <div class="account-actions">
-                    <button class="btn btn-secondary" onclick="goToLogin()">
-                        <i class="fas fa-sign-in-alt"></i> Inloggen
-                    </button>
-                    <button class="btn btn-secondary" onclick="window.location.reload()">
-                        <i class="fas fa-home"></i> Naar Hoofdpagina
-                    </button>
-                </div>
-            </div>
-        </div>
-    
     <!-- Loading Overlay -->
     <div id="loading-overlay">
         <div class="loading-content">
@@ -1066,12 +985,90 @@
         </div>
     </div>
     
+    <!-- Public Profile View (for QR code scans) -->
+    <div class="container dashboard" id="publicProfileContainer" style="display: none;">
+        <div class="dashboard-header">
+            <div>
+                <h1>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="36" height="36" style="vertical-align: middle; margin-right: 8px;">
+                        <defs>
+                            <radialGradient id="background4" cx="30%" cy="30%">
+                                <stop offset="0%" style="stop-color:#FFED33;stop-opacity:1" />
+                                <stop offset="50%" style="stop-color:#FFB800;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#009DFF;stop-opacity:1" />
+                            </radialGradient>
+                            <radialGradient id="goldOval4" cx="40%" cy="30%">
+                                <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.9" />
+                                <stop offset="30%" style="stop-color:#FFED33;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#FFB800;stop-opacity:1" />
+                            </radialGradient>
+                        </defs>
+                        <circle cx="16" cy="16" r="15.5" fill="url(#background4)" stroke="#FFB800" stroke-width="1"/>
+                        <circle cx="16" cy="16" r="11" fill="#000000" stroke="#333333" stroke-width="0.5"/>
+                        <ellipse cx="16" cy="16" rx="4" ry="6" fill="url(#goldOval4)" stroke="#FFB800" stroke-width="0.3"/>
+                        <ellipse cx="14.5" cy="13.5" rx="1.5" ry="2.5" fill="#FFFFFF" opacity="0.6"/>
+                    </svg>
+                    <span id="publicUserName">Gebruiker Profiel</span>
+                </h1>
+                <p>Publiek wallet overzicht - Code: <span class="user-code" id="publicUserCode">Laden...</span></p>
+            </div>
+        </div>
+        
+        <div class="token-display">
+            <div class="token-card">
+                <i class="fas fa-coins"></i>
+                <p>Beschikbare Tokens</p>
+                <h3 id="publicAvailableTokens">0</h3>
+            </div>
+            <div class="token-card">
+                <i class="fas fa-star"></i>
+                <p>Totaal Verdiend</p>
+                <h3 id="publicTotalEarned">0</h3>
+            </div>
+            <div class="token-card">
+                <i class="fas fa-calendar-check"></i>
+                <p>Activiteiten</p>
+                <h3 id="publicWorkingDays">0</h3>
+            </div>
+        </div>
+
+        <h2 style="margin-bottom: 16px; color: var(--primary);">Recente Transacties</h2>
+        <div class="loading" id="publicHistoryLoading">
+            <div class="spinner"></div>
+            <p>Transactie geschiedenis laden...</p>
+        </div>
+        <div class="table-container">
+            <table class="history-table" id="publicHistoryTable">
+                <thead>
+                    <tr>
+                        <th>Datum</th>
+                        <th>Beschrijving</th>
+                        <th>Tokens</th>
+                    </tr>
+                </thead>
+                <tbody id="publicHistoryTableBody">
+                    <!-- Transaction history will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="account-section">
+            <h3>Acties</h3>
+            <div class="account-actions">
+                <button class="btn btn-secondary" onclick="goToLogin()">
+                    <i class="fas fa-sign-in-alt"></i> Inloggen
+                </button>
+                <button class="btn btn-secondary" onclick="window.location.reload()">
+                    <i class="fas fa-home"></i> Naar Hoofdpagina
+                </button>
+            </div>
+        </div>
+    </div>
+    
     <!-- Auth Container -->
     <div class="auth-container" id="authContainer">
         <div class="header">
-            <h1>
-                OHK Wallet
-            </h1>
+            <h1>OHK Wallet</h1>
             <p>Rewards voor de beste vrijwilligers ♥</p>
         </div>
         
@@ -1164,13 +1161,9 @@
                                 <stop offset="100%" style="stop-color:#FFB800;stop-opacity:1" />
                             </radialGradient>
                         </defs>
-                        <!-- Outer circle with gradient -->
                         <circle cx="16" cy="16" r="15.5" fill="url(#background2)" stroke="#FFB800" stroke-width="1"/>
-                        <!-- Inner black circle -->
                         <circle cx="16" cy="16" r="11" fill="#000000" stroke="#333333" stroke-width="0.5"/>
-                        <!-- Golden oval in center -->
                         <ellipse cx="16" cy="16" rx="4" ry="6" fill="url(#goldOval2)" stroke="#FFB800" stroke-width="0.3"/>
-                        <!-- Highlight on oval -->
                         <ellipse cx="14.5" cy="13.5" rx="1.5" ry="2.5" fill="#FFFFFF" opacity="0.6"/>
                     </svg>
                     Welkom, <span id="userName">Kunstenaar</span>!
@@ -1260,13 +1253,9 @@
                                 <stop offset="100%" style="stop-color:#FFB800;stop-opacity:1" />
                             </radialGradient>
                         </defs>
-                        <!-- Outer circle with gradient -->
                         <circle cx="16" cy="16" r="15.5" fill="url(#background3)" stroke="#FFB800" stroke-width="1"/>
-                        <!-- Inner black circle -->
                         <circle cx="16" cy="16" r="11" fill="#000000" stroke="#333333" stroke-width="0.5"/>
-                        <!-- Golden oval in center -->
                         <ellipse cx="16" cy="16" rx="4" ry="6" fill="url(#goldOval3)" stroke="#FFB800" stroke-width="0.3"/>
-                        <!-- Highlight on oval -->
                         <ellipse cx="14.5" cy="13.5" rx="1.5" ry="2.5" fill="#FFFFFF" opacity="0.6"/>
                     </svg>
                     Beheerder Overzicht
@@ -1316,17 +1305,6 @@
                     <p>Werkdagen</p>
                     <h3 id="modalWorkingDays">0</h3>
                 </div>
-                <div class="token-card">
-                    <p>Gebruiker Code</p>
-                    <h3 id="modalUserCode" class="user-code" style="font-size: 16px;">-</h3>
-                </div>
-            </div>
-
-            <!-- QR Code Display -->
-            <div class="qr-container">
-                <h4><i class="fas fa-qrcode"></i> Gebruiker's Wallet QR-Code</h4>
-                <canvas id="modalQRCode" class="qr-code"></canvas>
-                <p style="color: var(--gray); font-size: 14px;">Scan deze code om direct naar dit profiel te gaan (werkt op elke telefoon met QR scanner)</p>
             </div>
             
             <!-- Quick Actions -->
@@ -1367,6 +1345,18 @@
                     </thead>
                     <tbody id="modalHistoryTableBody"></tbody>
                 </table>
+            </div>
+
+            <!-- User ID and QR Code Section - Moved to bottom for administrators -->
+            <div class="qr-container" style="margin-top: 24px;">
+                <h4><i class="fas fa-user"></i> Gebruiker Informatie</h4>
+                <p style="margin-bottom: 16px;">
+                    <strong>Gebruiker Code:</strong> 
+                    <span class="user-code" id="modalUserCode" style="font-size: 16px;">-</span>
+                </p>
+                <h4><i class="fas fa-qrcode"></i> Gebruiker's Wallet QR-Code</h4>
+                <canvas id="modalQRCode" class="qr-code"></canvas>
+                <p style="color: var(--gray); font-size: 14px;">Scan deze code om direct naar dit profiel te gaan (werkt op elke telefoon met QR scanner)</p>
             </div>
             
             <!-- Super Admin Only Actions -->
@@ -1447,21 +1437,6 @@
                 </div>
             </form>
             
-            <form id="changePasswordForm">
-                <h3 style="margin: 20px 0 10px 0; color: var(--primary);">Wachtwoord Wijzigen</h3>
-                <div class="form-group">
-                    <label for="currentPassword">Huidige Wachtwoord</label>
-                    <input type="password" id="currentPassword" class="form-control" placeholder="Voer huidig wachtwoord in" required autocomplete="current-password">
-                </div>
-                <div class="form-group">
-                    <label for="newPassword">Nieuw Wachtwoord</label>
-                    <input type="password" id="newPassword" class="form-control" placeholder="Voer nieuw wachtwoord in (min. 6 tekens)" required autocomplete="new-password">
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-full">Wachtwoord Wijzigen</button>
-                </div>
-            </form>
-            
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
                 <h3 style="margin-bottom: 10px; color: var(--danger);">Account Verwijderen</h3>
                 <p style="margin-bottom: 15px; color: var(--gray);">Dit zal jouw account en alle gegevens permanent verwijderen. Je kunt later opnieuw registreren met hetzelfde e-mailadres indien gewenst.</p>
@@ -1532,7 +1507,7 @@
     </div>
 
     <script>
-        // Firebase Configuration
+        // Firebase Configuration - DO NOT CHANGE
         const firebaseConfig = {
             apiKey: "AIzaSyAev2VvDz3FCxdZmZo2W2jpgACFh9Q_YlA",
             authDomain: "ohk-volunteers.firebaseapp.com",
@@ -1583,13 +1558,13 @@
         function showAdminLogin() {
             document.getElementById('userAccessForm').classList.add('hidden');
             document.getElementById('loginForm').classList.remove('hidden');
-            document.getElementById('authFooter').style.display = 'none'; // Hide footer with admin button
+            document.getElementById('authFooter').style.display = 'none';
         }
         
         function showUserAccess() {
             document.getElementById('loginForm').classList.add('hidden');
             document.getElementById('userAccessForm').classList.remove('hidden');
-            document.getElementById('authFooter').style.display = 'block'; // Show footer with admin button
+            document.getElementById('authFooter').style.display = 'block';
         }
 
         function showModal(modalId) {
@@ -1601,8 +1576,6 @@
         }
 
         function generateUserCode() {
-            // Generate a random 10-digit number (1000000000 to 9999999999)
-            // This serves as both login code and QR code content
             return Math.floor(1000000000 + Math.random() * 9000000000).toString();
         }
 
@@ -1624,11 +1597,8 @@
         }
 
         async function generateQRCode(canvas, data) {
-            console.log('🔗 Starting QR code generation...');
-            console.log('📝 Data to encode:', data);
-            console.log('🎯 Canvas element:', canvas);
+            console.log('🔗 Starting QR code generation...', data);
             
-            // Check canvas element
             if (!canvas) {
                 console.error('❌ Canvas element not found!');
                 return;
@@ -1637,9 +1607,6 @@
             // Method 1: Try QRCode library
             if (typeof QRCode !== 'undefined') {
                 try {
-                    console.log('🔄 Attempting QR code generation with QRCode library...');
-                    
-                    // Clear any existing content
                     const ctx = canvas.getContext('2d');
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     
@@ -1654,9 +1621,8 @@
                         errorCorrectionLevel: 'M'
                     });
                     
-                    console.log('✅ QR code generated successfully with QRCode library');
+                    console.log('✅ QR code generated successfully');
                     return;
-                    
                 } catch (error) {
                     console.error('❌ QRCode library failed:', error);
                 }
@@ -1664,17 +1630,15 @@
             
             // Method 2: Try Google Charts API as fallback
             try {
-                console.log('🔄 Attempting QR code generation with Google Charts API...');
                 await generateQRWithGoogleAPI(canvas, data);
-                console.log('✅ QR code generated successfully with Google API');
+                console.log('✅ QR code generated with Google API');
                 return;
             } catch (error) {
                 console.error('❌ Google API failed:', error);
             }
             
             // Method 3: Fallback display
-            console.log('🔄 Using fallback QR display...');
-            createFallbackQR(canvas, data, 'Alle QR methoden gefaald');
+            createFallbackQR(canvas, data, 'QR generation failed');
         }
         
         async function generateQRWithGoogleAPI(canvas, data) {
@@ -1702,8 +1666,6 @@
         }
         
         function createFallbackQR(canvas, data, errorMsg) {
-            console.log('🔄 Creating fallback QR display...');
-            
             const ctx = canvas.getContext('2d');
             canvas.width = 200;
             canvas.height = 200;
@@ -1721,29 +1683,12 @@
             ctx.fillStyle = '#6c757d';
             ctx.font = '14px Inter, Arial, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('QR Code', 100, 70);
-            ctx.fillText('Fout', 100, 90);
+            ctx.fillText('QR Code Fout', 100, 100);
             
             // Data display
-            ctx.font = '12px monospace';
+            ctx.font = '10px monospace';
             ctx.fillStyle = '#007bff';
-            ctx.fillText(data, 100, 120);
-            
-            // Error message
-            ctx.font = '10px Arial';
-            ctx.fillStyle = '#dc3545';
-            const lines = errorMsg.split(' ');
-            let y = 140;
-            for (let i = 0; i < lines.length && y < 190; i += 3) {
-                const line = lines.slice(i, i + 3).join(' ');
-                ctx.fillText(line, 100, y);
-                y += 15;
-            }
-            
-            // Manual entry instruction
-            ctx.font = '11px Arial';
-            ctx.fillStyle = '#28a745';
-            ctx.fillText('Voer code handmatig in:', 100, 185);
+            ctx.fillText(data.substring(0, 30), 100, 120);
         }
 
         // User authentication functions
@@ -1751,7 +1696,6 @@
             showLoading('Gebruiker zoeken...');
             
             try {
-                // Search for user with this code
                 const usersSnapshot = await database.ref('users').orderByChild('userCode').equalTo(userCode).once('value');
                 
                 if (!usersSnapshot.exists()) {
@@ -1762,7 +1706,6 @@
                 const userId = Object.keys(users)[0];
                 const userData = users[userId];
                 
-                // Store user session
                 currentUser = { ...userData, id: userId };
                 
                 if (stayLoggedIn) {
@@ -1780,9 +1723,6 @@
         }
 
         async function initializeUserDashboard(userData) {
-            console.log('🎯 Initializing user dashboard for:', userData.name, 'with userCode:', userData.userCode);
-            
-            // Update UI elements
             document.getElementById('userName').textContent = userData.name || 'Gebruiker';
             document.getElementById('userCode').textContent = userData.userCode || 'Geen code';
             document.getElementById('availableTokens').textContent = userData.tokens || 0;
@@ -1792,12 +1732,9 @@
             // Generate QR code with URL to user profile
             const baseUrl = window.location.origin + window.location.pathname;
             const qrData = `${baseUrl}?profile=${userData.id}`;
-            console.log('🔗 Creating QR code with profile URL:', qrData);
             const qrCanvas = document.getElementById('userQRCode');
             if (qrCanvas) {
                 await generateQRCode(qrCanvas, qrData);
-            } else {
-                console.error('❌ QR Canvas element not found');
             }
             
             // Show forget device button if logged in with local storage
@@ -1811,8 +1748,6 @@
         }
 
         async function loadUserTransactionHistory(userId) {
-            console.log('📊 Loading transaction history for user:', userId);
-            
             const historyLoading = document.getElementById('historyLoading');
             const historyTableBody = document.getElementById('historyTableBody');
             
@@ -1843,7 +1778,6 @@
                 for (let i = transactions.length - 1; i >= 0; i--) {
                     const transaction = transactions[i];
                     if (i === transactions.length - 1) {
-                        // First transaction, use current balance minus all previous changes
                         runningBalance = (currentUser.tokens || 0);
                         for (let j = 0; j < i; j++) {
                             runningBalance -= transactions[j].amount || 0;
@@ -1877,11 +1811,8 @@
 
         // Admin functions
         async function initializeAdminPanel(adminData) {
-            console.log('🛡️ Initializing admin panel with level:', adminData.level);
-            
             currentAdminData = adminData;
             
-            // Set admin level badge
             const badge = document.getElementById('adminLevelBadge');
             if (adminData.level === 'super') {
                 badge.textContent = 'Super Beheerder';
@@ -1891,7 +1822,6 @@
                 badge.className = 'admin-level-badge admin-level-regular';
             }
             
-            // Show admin actions based on level
             const adminActions = document.getElementById('adminActions');
             if (adminData.level === 'super') {
                 adminActions.innerHTML = `
@@ -1908,7 +1838,6 @@
                 `;
             }
             
-            // Show admin account actions
             const adminAccountActions = document.getElementById('adminAccountActions');
             if (adminData.level === 'super') {
                 adminAccountActions.innerHTML = `
@@ -1933,15 +1862,10 @@
                 `;
             }
             
-            // Load users list
             await loadUsersList();
-            
-            console.log('✅ Admin panel initialized successfully');
         }
 
         async function loadUsersList() {
-            console.log('📋 Loading users list...');
-            
             const userList = document.getElementById('userList');
             const usersLoading = document.getElementById('usersLoading');
             
@@ -1965,8 +1889,6 @@
                 });
                 
                 displayUsers(allUsers);
-                
-                console.log('✅ Users list loaded:', allUsers.length, 'users');
                 
             } catch (error) {
                 console.error('❌ Error loading users:', error);
@@ -2005,10 +1927,8 @@
         }
 
         async function removeUserFromUI(userId) {
-            // Remove from allUsers array
             allUsers = allUsers.filter(user => user.id !== userId);
             
-            // Remove from current display
             const userElement = document.querySelector(`[data-user-id="${userId}"]`);
             if (userElement) {
                 userElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
@@ -2020,7 +1940,6 @@
                         userElement.parentNode.removeChild(userElement);
                     }
                     
-                    // Update display based on current search
                     const searchTerm = document.getElementById('searchInput').value;
                     if (searchTerm) {
                         searchUsers();
@@ -2033,10 +1952,8 @@
 
         async function updateUserInUI(userId) {
             try {
-                // Get updated user data
                 const userSnapshot = await database.ref(`users/${userId}`).once('value');
                 if (!userSnapshot.exists()) {
-                    // User was deleted, remove from UI
                     await removeUserFromUI(userId);
                     return;
                 }
@@ -2044,7 +1961,6 @@
                 const userData = userSnapshot.val();
                 userData.id = userId;
                 
-                // Update in allUsers array
                 const userIndex = allUsers.findIndex(user => user.id === userId);
                 if (userIndex !== -1) {
                     allUsers[userIndex] = userData;
@@ -2052,7 +1968,6 @@
                     allUsers.push(userData);
                 }
                 
-                // Update the specific user element in UI
                 const userElement = document.querySelector(`[data-user-id="${userId}"]`);
                 if (userElement) {
                     const userInfo = userElement.querySelector('.user-info');
@@ -2062,7 +1977,6 @@
                         <p>Tokens: ${userData.tokens || 0} | Werkdagen: ${userData.workingDays || 0} | Totaal verdiend: ${userData.totalEarned || 0}</p>
                     `;
                     
-                    // Add a subtle highlight effect
                     userElement.style.transition = 'background-color 0.5s ease';
                     userElement.style.backgroundColor = 'rgba(0, 118, 255, 0.1)';
                     setTimeout(() => {
@@ -2104,7 +2018,6 @@
                     return;
                 }
                 
-                // Update modal content
                 document.getElementById('modalUserName').textContent = userData.name || 'Onbekende Gebruiker';
                 document.getElementById('modalCurrentTokens').textContent = userData.tokens || 0;
                 document.getElementById('modalWorkingDays').textContent = userData.workingDays || 0;
@@ -2113,18 +2026,13 @@
                 // Generate QR code with URL to user profile  
                 const baseUrl = window.location.origin + window.location.pathname;
                 const qrData = `${baseUrl}?profile=${userId}`;
-                console.log('🔗 Creating modal QR code with profile URL:', qrData);
                 const qrCanvas = document.getElementById('modalQRCode');
                 if (qrCanvas) {
                     await generateQRCode(qrCanvas, qrData);
-                } else {
-                    console.error('❌ Modal QR Canvas element not found');
                 }
                 
-                // Load transaction history
                 await loadModalTransactionHistory(userId);
                 
-                // Show/hide super admin actions
                 const superAdminActions = document.getElementById('superAdminActions');
                 superAdminActions.style.display = currentAdminData?.level === 'super' ? 'block' : 'none';
                 
@@ -2154,7 +2062,6 @@
                     transactions.push(snap.val());
                 });
                 
-                // Sort by timestamp descending (newest first)
                 transactions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 
                 transactions.forEach((transaction) => {
@@ -2189,7 +2096,6 @@
                 const newTokens = (userData.tokens || 0) + amount;
                 const newTotalEarned = amount > 0 ? (userData.totalEarned || 0) + amount : (userData.totalEarned || 0);
                 
-                // Create transaction record
                 const transaction = {
                     amount: amount,
                     description: reason,
@@ -2198,21 +2104,15 @@
                     adminEmail: auth.currentUser?.email || 'system'
                 };
                 
-                // Update user data
                 const updates = {
                     tokens: newTokens,
                     totalEarned: newTotalEarned
                 };
                 
                 await userRef.update(updates);
-                
-                // Add transaction
                 await database.ref(`users/${userId}/transactions`).push(transaction);
-                
-                // Update UI immediately
                 await updateUserInUI(userId);
                 
-                console.log('✅ Tokens updated successfully');
                 return { success: true, newTokens };
                 
             } catch (error) {
@@ -2235,7 +2135,6 @@
                 const newWorkingDays = (userData.workingDays || 0) + 1;
                 const newTotalEarned = (userData.totalEarned || 0) + 3;
                 
-                // Create transaction record
                 const transaction = {
                     amount: 3,
                     description: `Werkdag ${newWorkingDays} geregistreerd`,
@@ -2244,7 +2143,6 @@
                     adminEmail: auth.currentUser?.email || 'system'
                 };
                 
-                // Update user data
                 const updates = {
                     tokens: newTokens,
                     workingDays: newWorkingDays,
@@ -2252,14 +2150,9 @@
                 };
                 
                 await userRef.update(updates);
-                
-                // Add transaction
                 await database.ref(`users/${userId}/transactions`).push(transaction);
-                
-                // Update UI immediately
                 await updateUserInUI(userId);
                 
-                console.log('✅ Work day added successfully');
                 return { success: true, newTokens, newWorkingDays };
                 
             } catch (error) {
@@ -2295,7 +2188,6 @@
                 let userCode;
                 let isUnique = false;
                 
-                // Generate unique user code
                 while (!isUnique) {
                     userCode = generateUserCode();
                     const existingUser = await database.ref('users').orderByChild('userCode').equalTo(userCode).once('value');
@@ -2315,19 +2207,16 @@
                 const newUserRef = await database.ref('users').push(userData);
                 const userId = newUserRef.key;
                 
-                // Add to UI immediately
                 userData.id = userId;
                 allUsers.push(userData);
                 
-                // If no search is active, show all users, otherwise respect search
                 const searchTerm = document.getElementById('searchInput').value;
                 if (!searchTerm) {
                     displayUsers(allUsers);
                 } else {
-                    searchUsers(); // This will include the new user if it matches search
+                    searchUsers();
                 }
                 
-                console.log('✅ User added successfully:', name, userCode);
                 return { success: true, userCode, userId };
                 
             } catch (error) {
@@ -2343,11 +2232,7 @@
             
             try {
                 await database.ref(`users/${userId}`).remove();
-                console.log('✅ User deleted successfully');
-                
-                // Remove from UI immediately without refresh
                 await removeUserFromUI(userId);
-                
                 return { success: true };
                 
             } catch (error) {
@@ -2376,8 +2261,6 @@
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
                 
-                console.log('✅ Data exported successfully');
-                
             } catch (error) {
                 console.error('❌ Error exporting data:', error);
                 alert('Fout bij exporteren van gegevens');
@@ -2388,7 +2271,6 @@
             currentUser = null;
             localStorage.removeItem('ohk_user_code');
             showContainer('auth');
-            // Ensure auth footer is visible when returning to auth
             document.getElementById('authFooter').style.display = 'block';
         }
 
@@ -2398,7 +2280,6 @@
 
         // Public profile functions
         async function loadPublicProfile(userId) {
-            console.log('👁️ Loading public profile for user:', userId);
             showLoading('Profiel laden...');
             
             try {
@@ -2410,20 +2291,16 @@
                 
                 const userData = userSnapshot.val();
                 
-                // Update public profile UI
                 document.getElementById('publicUserName').textContent = userData.name || 'Onbekende Gebruiker';
                 document.getElementById('publicUserCode').textContent = userData.userCode || 'Geen code';
                 document.getElementById('publicAvailableTokens').textContent = userData.tokens || 0;
                 document.getElementById('publicTotalEarned').textContent = userData.totalEarned || 0;
                 document.getElementById('publicWorkingDays').textContent = userData.workingDays || 0;
                 
-                // Load recent transactions (limited to last 10)
                 await loadPublicTransactionHistory(userId);
                 
                 hideLoading();
                 showContainer('public-profile');
-                
-                console.log('✅ Public profile loaded successfully');
                 
             } catch (error) {
                 console.error('❌ Error loading public profile:', error);
@@ -2434,15 +2311,12 @@
         }
 
         async function loadPublicTransactionHistory(userId) {
-            console.log('📊 Loading public transaction history for user:', userId);
-            
             const historyLoading = document.getElementById('publicHistoryLoading');
             const historyTableBody = document.getElementById('publicHistoryTableBody');
             
             historyLoading.style.display = 'block';
             
             try {
-                // Limit to last 10 transactions for public view
                 const transactionsSnapshot = await database.ref(`users/${userId}/transactions`)
                     .orderByChild('timestamp')
                     .limitToLast(10)
@@ -2461,7 +2335,6 @@
                     transactions.push(snap.val());
                 });
                 
-                // Sort by timestamp descending (newest first)
                 transactions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 
                 transactions.forEach((transaction) => {
@@ -2485,7 +2358,6 @@
         }
 
         function goToLogin() {
-            // Clear URL parameters and go to login
             window.history.replaceState(null, null, window.location.pathname);
             showContainer('auth');
             showUserAccess();
@@ -2513,7 +2385,6 @@
                     console.log('✅ QRCode library loaded successfully');
                 } else {
                     console.error('❌ QRCode library failed to load');
-                    console.log('🔄 Attempting to load alternative QR method...');
                 }
             }, 1000);
             
@@ -2571,7 +2442,7 @@
                         const userCredential = await auth.signInWithEmailAndPassword(email, password);
                         const user = userCredential.user;
                         
-                        // Hardcoded Super Admin Check - Multiple admin emails for flexibility
+                        // Hardcoded Super Admin Check
                         const superAdminEmails = [
                             'admin@ohk.be', 
                             'superadmin@ohk.be', 
@@ -2580,7 +2451,6 @@
                         ];
                         
                         if (superAdminEmails.includes(email.toLowerCase())) {
-                            console.log('🛡️ Hardcoded super admin login detected for:', email);
                             const superAdminData = {
                                 level: 'super',
                                 email: user.email,
@@ -2588,7 +2458,6 @@
                                 isHardcodedAdmin: true
                             };
                             
-                            // Ensure super admin exists in database
                             await database.ref(`admins/${user.uid}`).set(superAdminData);
                             
                             hideLoading();
@@ -2707,7 +2576,25 @@
                         await addTokens(currentModalUserId, 1, 'Snelle toevoeging (+1)');
                         hideLoading();
                         
-                        // Refresh modal content only
+                        await openTokenModal(currentModalUserId);
+                        
+                    } catch (error) {
+                        hideLoading();
+                        alert('Fout bij toevoegen token: ' + error.message);
+                    }
+                });
+            }
+
+            const quickRemoveBtn = document.getElementById('quickRemoveBtn');
+            if (quickRemoveBtn) {
+                quickRemoveBtn.addEventListener('click', async function() {
+                    if (!currentModalUserId) return;
+                    
+                    try {
+                        showLoading('Token verwijderen...');
+                        await addTokens(currentModalUserId, -1, 'Snelle verwijdering (-1)');
+                        hideLoading();
+                        
                         await openTokenModal(currentModalUserId);
                         
                     } catch (error) {
@@ -2741,7 +2628,6 @@
                         document.getElementById('tokenAmount').value = '';
                         document.getElementById('tokenReason').value = '';
                         
-                        // Refresh modal content only
                         await openTokenModal(currentModalUserId);
                         
                     } catch (error) {
@@ -2774,7 +2660,6 @@
                         document.getElementById('tokenAmount').value = '';
                         document.getElementById('tokenReason').value = '';
                         
-                        // Refresh modal content only
                         await openTokenModal(currentModalUserId);
                         
                     } catch (error) {
@@ -2795,7 +2680,6 @@
                         await addWorkDay(currentModalUserId);
                         hideLoading();
                         
-                        // Refresh modal content only
                         await openTokenModal(currentModalUserId);
                         
                     } catch (error) {
@@ -2817,7 +2701,6 @@
                         hideLoading();
                         
                         hideModal('tokenModal');
-                        // No need to reload user list - removeUserFromUI handles it
                         
                     } catch (error) {
                         hideLoading();
@@ -2851,8 +2734,6 @@
                         
                         hideModal('addUserModal');
                         document.getElementById('addUserName').value = '';
-                        
-                        // No need to reload entire user list - addNewUser handles UI update
                         
                         alert(`Gebruiker ${name} toegevoegd!\nCode: ${result.userCode}`);
                         
@@ -2996,8 +2877,6 @@
                     }
                     
                     try {
-                        // In a real implementation, you'd need to look up the user by email
-                        // For now, we'll just show that this feature needs Firebase Admin SDK
                         showAlert(document.getElementById('addAdminAlert'), 'Deze functie vereist Firebase Admin SDK implementatie op de server');
                         
                     } catch (error) {
@@ -3034,7 +2913,6 @@
                 if (user) {
                     console.log('🔥 Auth state changed: User logged in:', user.email);
                     
-                    // Check if this is an admin
                     const adminSnapshot = await database.ref(`admins/${user.uid}`).once('value');
                     if (adminSnapshot.exists()) {
                         const adminData = adminSnapshot.val();
@@ -3046,7 +2924,6 @@
                     console.log('🔓 Auth state changed: User logged out');
                     currentAdminData = null;
                     showContainer('auth');
-                    // Ensure auth footer is visible and user access form is shown
                     showUserAccess();
                 }
             });
@@ -3058,7 +2935,7 @@
                 setTimeout(async () => {
                     await loadPublicProfile(profileId);
                 }, 500);
-                return; // Skip other initialization
+                return;
             }
 
             // Check for stored user code on page load
@@ -3073,24 +2950,17 @@
                     } catch (error) {
                         console.log('❌ Auto-login failed:', error.message);
                         localStorage.removeItem('ohk_user_code');
-                        // Ensure we're back to user access form
                         showUserAccess();
                     }
                 }, 1000);
             } else {
-                // No stored code, ensure we're showing user access form
                 showUserAccess();
             }
             
-            console.log('🎉 OHK Wallet setup complete with full functionality!');
-            console.log('🔑 Hardcoded admin emails available: admin@ohk.be, superadmin@ohk.be, administrator@ohk.be, beheerder@ohk.be');
-            console.log('📱 QR Code System: URLs that link to user profiles');
-            console.log('🔗 QR Test: Use window.testQRGeneration() to test QR code generation');
-            console.log('📚 QR Library status:', typeof QRCode !== 'undefined' ? 'Loaded ✅' : 'Failed ❌');
-            console.log('🔍 QR Handle: Use window.handleQRScan("URL") to simulate QR scan');
+            console.log('🎉 OHK Wallet setup complete!');
         });
 
-        // Global function for exports
+        // Global function exports
         window.openTokenModal = openTokenModal;
         window.exportData = exportData;
         window.openAddUserModal = openAddUserModal;
@@ -3099,98 +2969,7 @@
         window.adminLogout = adminLogout;
         window.userLogout = userLogout;
         window.forgetDevice = forgetDevice;
-        
-        // Debug function to test QR code data
-        window.testQRData = function(qrData) {
-            console.log('🔍 Testing QR data:', qrData);
-            
-            // Check if it's a profile URL
-            if (qrData.includes('?profile=')) {
-                const profileId = qrData.split('?profile=')[1];
-                console.log('✅ Valid OHK Profile QR code, Profile ID:', profileId);
-                return { valid: true, type: 'profile', profileId: profileId };
-            }
-            // Check if it's a 10-digit code (legacy)
-            else if (/^\d{10}$/.test(qrData)) {
-                console.log('✅ Valid OHK Legacy QR code, User Code:', qrData);
-                return { valid: true, type: 'legacy', userCode: qrData };
-            } else {
-                console.log('❌ Invalid QR code format');
-                return { valid: false };
-            }
-        };
-        
-        // Function to handle QR code scan
-        window.handleQRScan = function(qrData) {
-            console.log('🔍 Handling QR scan with data:', qrData);
-            
-            const testResult = window.testQRData(qrData);
-            
-            if (!testResult.valid) {
-                alert('Ongeldige QR code format');
-                return false;
-            }
-            
-            if (testResult.type === 'profile') {
-                // Navigate to profile URL
-                const url = qrData;
-                console.log('🔗 Navigating to profile URL:', url);
-                window.location.href = url;
-                return true;
-            } else if (testResult.type === 'legacy') {
-                // Try legacy login
-                return window.loginWithQR(qrData);
-            }
-            
-            return false;
-        };
-        
-        // Function to login with scanned QR code (legacy support)
-        window.loginWithQR = async function(qrData) {
-            console.log('🔍 Attempting QR login with data:', qrData);
-            
-            // Validate QR code format
-            if (!/^\d{10}$/.test(qrData)) {
-                console.log('❌ Invalid QR code format');
-                alert('Ongeldige QR code - moet 10 cijfers bevatten');
-                return false;
-            }
-            
-            try {
-                // Use the existing login function
-                await loginWithUserCode(qrData, false);
-                console.log('✅ QR login successful');
-                return true;
-            } catch (error) {
-                console.log('❌ QR login failed:', error.message);
-                alert('QR login mislukt: ' + error.message);
-                return false;
-            }
-        };
-        
-        // Debug function to test QR generation
-        window.testQRGeneration = function() {
-            console.log('🧪 Testing QR code generation...');
-            
-            // Create a test canvas
-            const testCanvas = document.createElement('canvas');
-            testCanvas.id = 'testQRCanvas';
-            testCanvas.style.border = '1px solid #ccc';
-            testCanvas.style.margin = '10px';
-            
-            // Add to page temporarily
-            document.body.appendChild(testCanvas);
-            
-            // Test with sample profile URL
-            const testData = window.location.origin + window.location.pathname + '?profile=testUserId123';
-            generateQRCode(testCanvas, testData).then(() => {
-                console.log('✅ Test QR generation completed');
-                alert('QR test voltooid - check console en testcanvas op pagina');
-            }).catch(error => {
-                console.error('❌ Test QR generation failed:', error);
-                alert('QR test gefaald - check console');
-            });
-        };
+        window.goToLogin = goToLogin;
     </script>
 </body>
 </html>
