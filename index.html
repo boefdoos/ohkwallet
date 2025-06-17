@@ -1496,7 +1496,11 @@
                     <button type="submit" class="btn btn-full">Beheerder Toevoegen</button>
                 </div>
                 <p style="color: var(--gray); font-size: 14px; text-align: center; margin-top: 16px;">
-                    De gebruiker moet al bestaan in het systeem en een Firebase Auth account hebben (handmatig aangemaakt voor beheerder doeleinden)
+                    <strong>Zo werkt het:</strong><br>
+                    1. Voer het e-mailadres in van de nieuwe beheerder<br>
+                    2. Kies het beheerder niveau<br>
+                    3. De gebruiker moet zich registreren/inloggen met dit e-mailadres<br>
+                    4. Hun beheerder rechten worden automatisch toegepast bij eerste login
                 </p>
             </form>
         </div>
@@ -1826,6 +1830,9 @@
                     </button>
                     <button class="btn btn-secondary" onclick="openAddUserModal()">
                         <i class="fas fa-user-plus"></i> Gebruiker Toevoegen
+                    </button>
+                    <button class="btn btn-secondary" onclick="showPendingAdmins()">
+                        <i class="fas fa-clock"></i> Wachtende Beheerders
                     </button>
                 `;
             } else {
@@ -2179,6 +2186,43 @@
             showModal('addAdminModal');
         }
 
+        // Function to show pending admins
+        async function showPendingAdmins() {
+            try {
+                const pendingSnapshot = await database.ref('pendingAdmins').once('value');
+                
+                if (!pendingSnapshot.exists()) {
+                    alert('Geen wachtende beheerders gevonden.\n\nAlle toegevoegde beheerders hebben zich al ingelogd.');
+                    return;
+                }
+                
+                const pendingAdmins = [];
+                pendingSnapshot.forEach((snap) => {
+                    const data = snap.val();
+                    data.id = snap.key;
+                    pendingAdmins.push(data);
+                });
+                
+                let message = `Wachtende Beheerders (${pendingAdmins.length}):\n\n`;
+                
+                pendingAdmins.forEach((admin, index) => {
+                    const createdDate = new Date(admin.createdAt).toLocaleDateString('nl-NL');
+                    message += `${index + 1}. ${admin.email}\n`;
+                    message += `   Niveau: ${admin.level === 'super' ? 'Super Beheerder' : 'Gewone Beheerder'}\n`;
+                    message += `   Toegevoegd: ${createdDate}\n`;
+                    message += `   Door: ${admin.createdByEmail || 'Onbekend'}\n\n`;
+                });
+                
+                message += 'Deze gebruikers moeten zich inloggen met hun e-mailadres om beheerder rechten te krijgen.';
+                
+                alert(message);
+                
+            } catch (error) {
+                console.error('Error loading pending admins:', error);
+                alert('Fout bij laden wachtende beheerders: ' + error.message);
+            }
+        }
+
         async function addNewUser(name) {
             try {
                 let userCode;
@@ -2371,6 +2415,44 @@
             }
         }
 
+        // Function to check and activate pending admin accounts
+        async function checkAndActivatePendingAdmin(user) {
+            try {
+                // Check if this email is in pending admins
+                const pendingAdminsSnapshot = await database.ref('pendingAdmins').orderByChild('email').equalTo(user.email).once('value');
+                
+                if (pendingAdminsSnapshot.exists()) {
+                    console.log('🎯 Found pending admin for:', user.email);
+                    
+                    // Get the pending admin data
+                    const pendingAdmins = pendingAdminsSnapshot.val();
+                    const pendingAdminKey = Object.keys(pendingAdmins)[0];
+                    const pendingAdminData = pendingAdmins[pendingAdminKey];
+                    
+                    // Create actual admin record
+                    const adminData = {
+                        level: pendingAdminData.level,
+                        email: user.email,
+                        createdAt: pendingAdminData.createdAt,
+                        createdBy: pendingAdminData.createdBy,
+                        createdByEmail: pendingAdminData.createdByEmail,
+                        activatedAt: new Date().toISOString(),
+                        wasManuallyAdded: true
+                    };
+                    
+                    // Set admin status
+                    await database.ref(`admins/${user.uid}`).set(adminData);
+                    
+                    // Remove from pending admins
+                    await database.ref(`pendingAdmins/${pendingAdminKey}`).remove();
+                    
+                    console.log('✅ Admin account activated for:', user.email, 'with level:', pendingAdminData.level);
+                }
+            } catch (error) {
+                console.error('❌ Error checking pending admin:', error);
+            }
+        }
+
         // Event listeners setup
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🔥 OHK Wallet - Complete App Started');
@@ -2437,6 +2519,9 @@
                     try {
                         const userCredential = await auth.signInWithEmailAndPassword(email, password);
                         const user = userCredential.user;
+                        
+                        // Check for pending admin status first
+                        await checkAndActivatePendingAdmin(user);
                         
                         // Hardcoded Super Admin Check
                         const superAdminEmails = [
@@ -2873,9 +2958,33 @@
                     }
                     
                     try {
-                        showAlert(document.getElementById('addAdminAlert'), 'Deze functie vereist Firebase Admin SDK implementatie op de server');
+                        showLoading('Beheerder toevoegen...');
+                        
+                        // Create admin entry in database
+                        const adminData = {
+                            email: email,
+                            level: level,
+                            createdAt: new Date().toISOString(),
+                            createdBy: auth.currentUser?.uid || 'system',
+                            createdByEmail: auth.currentUser?.email || 'system',
+                            status: 'pending', // Status until they log in
+                            isManuallyAdded: true
+                        };
+                        
+                        // Generate a unique ID for the admin entry
+                        const adminRef = await database.ref('pendingAdmins').push(adminData);
+                        
+                        hideLoading();
+                        hideModal('addAdminModal');
+                        
+                        // Clear form
+                        document.getElementById('addAdminEmail').value = '';
+                        document.getElementById('addAdminLevel').value = '';
+                        
+                        alert(`Beheerder ${email} is toegevoegd!\n\nDe gebruiker moet zich nu registreren/inloggen met dit e-mailadres. Hun beheerder rechten worden automatisch toegepast bij eerste login.`);
                         
                     } catch (error) {
+                        hideLoading();
                         showAlert(document.getElementById('addAdminAlert'), 'Fout bij toevoegen beheerder: ' + error.message);
                     }
                 });
@@ -2908,6 +3017,9 @@
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     console.log('🔥 Auth state changed: User logged in:', user.email);
+                    
+                    // Check for pending admin status first
+                    await checkAndActivatePendingAdmin(user);
                     
                     const adminSnapshot = await database.ref(`admins/${user.uid}`).once('value');
                     if (adminSnapshot.exists()) {
@@ -2962,6 +3074,7 @@
         window.openAddUserModal = openAddUserModal;
         window.openAdminPasswordModal = openAdminPasswordModal;
         window.openAddAdminModal = openAddAdminModal;
+        window.showPendingAdmins = showPendingAdmins;
         window.adminLogout = adminLogout;
         window.userLogout = userLogout;
         window.forgetDevice = forgetDevice;
