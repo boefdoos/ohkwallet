@@ -1052,7 +1052,7 @@
         </form>
         
         <!-- Footer Section -->
-        <div class="auth-footer">
+        <div class="auth-footer" id="authFooter">
             <button type="button" class="admin-toggle" id="showAdminLoginBtn">
                 <i class="fas fa-user-shield"></i> Beheerder inloggen
             </button>
@@ -1500,11 +1500,13 @@
         function showAdminLogin() {
             document.getElementById('userAccessForm').classList.add('hidden');
             document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('authFooter').style.display = 'none'; // Hide footer with admin button
         }
         
         function showUserAccess() {
             document.getElementById('loginForm').classList.add('hidden');
             document.getElementById('userAccessForm').classList.remove('hidden');
+            document.getElementById('authFooter').style.display = 'block'; // Show footer with admin button
         }
 
         function showModal(modalId) {
@@ -1538,16 +1540,32 @@
 
         async function generateQRCode(canvas, data) {
             try {
+                console.log('🔗 Generating QR code with data:', data);
                 await QRCode.toCanvas(canvas, data, {
                     width: 200,
                     margin: 2,
                     color: {
                         dark: '#333333',
                         light: '#FFFFFF'
-                    }
+                    },
+                    errorCorrectionLevel: 'M'
                 });
+                console.log('✅ QR code generated successfully');
             } catch (error) {
-                console.error('Error generating QR code:', error);
+                console.error('❌ Error generating QR code:', error);
+                // Create fallback text in canvas
+                const ctx = canvas.getContext('2d');
+                canvas.width = 200;
+                canvas.height = 200;
+                ctx.fillStyle = '#f0f0f0';
+                ctx.fillRect(0, 0, 200, 200);
+                ctx.fillStyle = '#333';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('QR Code', 100, 90);
+                ctx.fillText('Fout', 100, 110);
+                ctx.font = '12px Arial';
+                ctx.fillText(data, 100, 130);
             }
         }
 
@@ -1585,7 +1603,7 @@
         }
 
         async function initializeUserDashboard(userData) {
-            console.log('🎯 Initializing user dashboard for:', userData.name);
+            console.log('🎯 Initializing user dashboard for:', userData.name, 'with ID:', userData.id);
             
             // Update UI elements
             document.getElementById('userName').textContent = userData.name || 'Gebruiker';
@@ -1594,10 +1612,15 @@
             document.getElementById('totalEarned').textContent = userData.totalEarned || 0;
             document.getElementById('workingDays').textContent = userData.workingDays || 0;
             
-            // Generate QR code for user - using user ID instead of user code
-            const qrData = `OHK:${userData.id}`;
+            // Generate QR code for user - using user ID for wallet access
+            const qrData = `OHK_WALLET:${userData.id}`;
+            console.log('🔗 Creating QR code with data:', qrData);
             const qrCanvas = document.getElementById('userQRCode');
-            await generateQRCode(qrCanvas, qrData);
+            if (qrCanvas) {
+                await generateQRCode(qrCanvas, qrData);
+            } else {
+                console.error('❌ QR Canvas element not found');
+            }
             
             // Show forget device button if logged in with local storage
             const storedCode = localStorage.getItem('ohk_user_code');
@@ -1910,9 +1933,14 @@
                 document.getElementById('modalUserCode').textContent = userData.userCode || 'Geen code';
                 
                 // Generate QR code using user ID instead of user code
-                const qrData = `OHK:${userId}`;
+                const qrData = `OHK_WALLET:${userId}`;
+                console.log('🔗 Creating modal QR code with data:', qrData);
                 const qrCanvas = document.getElementById('modalQRCode');
-                await generateQRCode(qrCanvas, qrData);
+                if (qrCanvas) {
+                    await generateQRCode(qrCanvas, qrData);
+                } else {
+                    console.error('❌ Modal QR Canvas element not found');
+                }
                 
                 // Load transaction history
                 await loadModalTransactionHistory(userId);
@@ -2181,6 +2209,8 @@
             currentUser = null;
             localStorage.removeItem('ohk_user_code');
             showContainer('auth');
+            // Ensure auth footer is visible when returning to auth
+            document.getElementById('authFooter').style.display = 'block';
         }
 
         function adminLogout() {
@@ -2252,135 +2282,27 @@
                         const userCredential = await auth.signInWithEmailAndPassword(email, password);
                         const user = userCredential.user;
                         
-                        // Check admin status
-                        const adminSnapshot = await database.ref(`admins/${user.uid}`).once('value');
+                        // Hardcoded Super Admin Check - Multiple admin emails for flexibility
+                        const superAdminEmails = [
+                            'admin@ohk.be', 
+                            'superadmin@ohk.be', 
+                            'administrator@ohk.be',
+                            'beheerder@ohk.be'
+                        ];
                         
-                        if (!adminSnapshot.exists()) {
-                            // Auto-create admin if none exist
-                            const adminsSnapshot = await database.ref('admins').once('value');
+                        if (superAdminEmails.includes(email.toLowerCase())) {
+                            console.log('🛡️ Hardcoded super admin login detected for:', email);
+                            const superAdminData = {
+                                level: 'super',
+                                email: user.email,
+                                createdAt: new Date().toISOString(),
+                                isHardcodedAdmin: true
+                            };
                             
-                            if (!adminsSnapshot.exists()) {
-                                const adminData = {
-                                    level: 'super',
-                                    email: user.email,
-                                    createdAt: new Date().toISOString(),
-                                    isFirstAdmin: true
-                                };
-                                
-                                await database.ref(`admins/${user.uid}`).set(adminData);
-                                
-                                hideLoading();
-                                showContainer('admin');
-                                await initializeAdminPanel(adminData);
-                                return;
-                            } else {
-                                throw new Error('Geen beheerder rechten voor dit account');
-                            }
-                        }
-                        
-                        const adminData = adminSnapshot.val();
-                        hideLoading();
-                        showContainer('admin');
-                        await initializeAdminPanel(adminData);
-                        
-                    } catch (error) {
-                        console.error('Admin login error:', error);
-                        hideLoading();
-                        await auth.signOut();
-                        
-                        let errorMessage = 'Inloggen mislukt: ';
-                        if (error.code === 'auth/user-not-found') {
-                            errorMessage += 'Gebruiker niet gevonden';
-                        } else if (error.code === 'auth/wrong-password') {
-                            errorMessage += 'Verkeerd wachtwoord';
-                        } else if (error.code === 'auth/invalid-email') {
-                            errorMessage += 'Ongeldig e-mailadres';
-                        } else {
-                            errorMessage += error.message;
-                        }
-                        
-                        showAlert(document.getElementById('loginAlert'), errorMessage);
-                    }
-                });
-            }
-
-            // Code input formatting
-            const codeInput = document.getElementById('userCodeInput');
-            if (codeInput) {
-                codeInput.addEventListener('input', function(e) {
-                    e.target.value = e.target.value.replace(/\D/g, '');
-                    if (e.target.value.length > 10) {
-                        e.target.value = e.target.value.slice(0, 10);
-                    }
-                });
-            }
-
-            // Search functionality
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) {
-                searchInput.addEventListener('input', searchUsers);
-            }
-
-            // User dashboard buttons
-            const accountSettingsBtn = document.getElementById('accountSettingsBtn');
-            if (accountSettingsBtn) {
-                accountSettingsBtn.addEventListener('click', openAccountSettingsModal);
-            }
-
-            const forgetDeviceBtn = document.getElementById('forgetDeviceBtn');
-            if (forgetDeviceBtn) {
-                forgetDeviceBtn.addEventListener('click', forgetDevice);
-            }
-
-            const logoutBtn = document.getElementById('logoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', userLogout);
-            }
-
-            // Password reset link
-            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-            if (forgotPasswordLink) {
-                forgotPasswordLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    openPasswordResetModal();
-                });
-            }
-
-            // Token modal event handlers
-            const closeTokenModal = document.getElementById('closeTokenModal');
-            if (closeTokenModal) {
-                closeTokenModal.addEventListener('click', () => hideModal('tokenModal'));
-            }
-
-            const quickAddBtn = document.getElementById('quickAddBtn');
-            if (quickAddBtn) {
-                quickAddBtn.addEventListener('click', async function() {
-                    if (!currentModalUserId) return;
-                    
-                    try {
-                        showLoading('Token toevoegen...');
-                        await addTokens(currentModalUserId, 1, 'Snelle toevoeging (+1)');
-                        hideLoading();
-                        
-                        // Refresh modal content only
-                        await openTokenModal(currentModalUserId);
-                        
-                    } catch (error) {
-                        hideLoading();
-                        alert('Fout bij toevoegen token: ' + error.message);
-                    }
-                });
-            }
-
-            const quickRemoveBtn = document.getElementById('quickRemoveBtn');
-            if (quickRemoveBtn) {
-                quickRemoveBtn.addEventListener('click', async function() {
-                    if (!currentModalUserId) return;
-                    
-                    try {
-                        showLoading('Token verwijderen...');
-                        await addTokens(currentModalUserId, -1, 'Snelle verwijdering (-1)');
-                        hideLoading();
+                            // Ensure super admin exists in database
+                            await database.ref(`admins/${user.uid}`).set(superAdminData);
+                            
+                            hideLoading();
                         
                         // Refresh modal content only
                         await openTokenModal(currentModalUserId);
@@ -2721,6 +2643,8 @@
                     console.log('🔓 Auth state changed: User logged out');
                     currentAdminData = null;
                     showContainer('auth');
+                    // Ensure auth footer is visible and user access form is shown
+                    showUserAccess();
                 }
             });
 
@@ -2736,11 +2660,17 @@
                     } catch (error) {
                         console.log('❌ Auto-login failed:', error.message);
                         localStorage.removeItem('ohk_user_code');
+                        // Ensure we're back to user access form
+                        showUserAccess();
                     }
                 }, 1000);
+            } else {
+                // No stored code, ensure we're showing user access form
+                showUserAccess();
             }
             
             console.log('🎉 OHK Wallet setup complete with full functionality!');
+            console.log('🔑 Hardcoded admin emails available: admin@ohk.be, superadmin@ohk.be, administrator@ohk.be, beheerder@ohk.be');
         });
 
         // Global function for exports
@@ -2752,6 +2682,153 @@
         window.adminLogout = adminLogout;
         window.userLogout = userLogout;
         window.forgetDevice = forgetDevice;
+        
+        // Debug function to test QR code data
+        window.testQRData = function(qrData) {
+            console.log('🔍 Testing QR data:', qrData);
+            if (qrData.startsWith('OHK_WALLET:')) {
+                const userId = qrData.replace('OHK_WALLET:', '');
+                console.log('✅ Valid OHK Wallet QR code, User ID:', userId);
+                return { valid: true, userId: userId };
+            } else {
+                console.log('❌ Invalid QR code format');
+                return { valid: false };
+            }
+        };
     </script>
 </body>
 </html>
+                            showContainer('admin');
+                            await initializeAdminPanel(superAdminData);
+                            return;
+                        }
+                        
+                        // Check admin status
+                        const adminSnapshot = await database.ref(`admins/${user.uid}`).once('value');
+                        
+                        if (!adminSnapshot.exists()) {
+                            // Auto-create admin if none exist
+                            const adminsSnapshot = await database.ref('admins').once('value');
+                            
+                            if (!adminsSnapshot.exists()) {
+                                const adminData = {
+                                    level: 'super',
+                                    email: user.email,
+                                    createdAt: new Date().toISOString(),
+                                    isFirstAdmin: true
+                                };
+                                
+                                await database.ref(`admins/${user.uid}`).set(adminData);
+                                
+                                hideLoading();
+                                showContainer('admin');
+                                await initializeAdminPanel(adminData);
+                                return;
+                            } else {
+                                throw new Error('Geen beheerder rechten voor dit account');
+                            }
+                        }
+                        
+                        const adminData = adminSnapshot.val();
+                        hideLoading();
+                        showContainer('admin');
+                        await initializeAdminPanel(adminData);
+                        
+                    } catch (error) {
+                        console.error('Admin login error:', error);
+                        hideLoading();
+                        await auth.signOut();
+                        
+                        let errorMessage = 'Inloggen mislukt: ';
+                        if (error.code === 'auth/user-not-found') {
+                            errorMessage += 'Gebruiker niet gevonden';
+                        } else if (error.code === 'auth/wrong-password') {
+                            errorMessage += 'Verkeerd wachtwoord';
+                        } else if (error.code === 'auth/invalid-email') {
+                            errorMessage += 'Ongeldig e-mailadres';
+                        } else {
+                            errorMessage += error.message;
+                        }
+                        
+                        showAlert(document.getElementById('loginAlert'), errorMessage);
+                    }
+                });
+            }
+
+            // Code input formatting
+            const codeInput = document.getElementById('userCodeInput');
+            if (codeInput) {
+                codeInput.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.replace(/\D/g, '');
+                    if (e.target.value.length > 10) {
+                        e.target.value = e.target.value.slice(0, 10);
+                    }
+                });
+            }
+
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', searchUsers);
+            }
+
+            // User dashboard buttons
+            const accountSettingsBtn = document.getElementById('accountSettingsBtn');
+            if (accountSettingsBtn) {
+                accountSettingsBtn.addEventListener('click', openAccountSettingsModal);
+            }
+
+            const forgetDeviceBtn = document.getElementById('forgetDeviceBtn');
+            if (forgetDeviceBtn) {
+                forgetDeviceBtn.addEventListener('click', forgetDevice);
+            }
+
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', userLogout);
+            }
+
+            // Password reset link
+            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+            if (forgotPasswordLink) {
+                forgotPasswordLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openPasswordResetModal();
+                });
+            }
+
+            // Token modal event handlers
+            const closeTokenModal = document.getElementById('closeTokenModal');
+            if (closeTokenModal) {
+                closeTokenModal.addEventListener('click', () => hideModal('tokenModal'));
+            }
+
+            const quickAddBtn = document.getElementById('quickAddBtn');
+            if (quickAddBtn) {
+                quickAddBtn.addEventListener('click', async function() {
+                    if (!currentModalUserId) return;
+                    
+                    try {
+                        showLoading('Token toevoegen...');
+                        await addTokens(currentModalUserId, 1, 'Snelle toevoeging (+1)');
+                        hideLoading();
+                        
+                        // Refresh modal content only
+                        await openTokenModal(currentModalUserId);
+                        
+                    } catch (error) {
+                        hideLoading();
+                        alert('Fout bij toevoegen token: ' + error.message);
+                    }
+                });
+            }
+
+            const quickRemoveBtn = document.getElementById('quickRemoveBtn');
+            if (quickRemoveBtn) {
+                quickRemoveBtn.addEventListener('click', async function() {
+                    if (!currentModalUserId) return;
+                    
+                    try {
+                        showLoading('Token verwijderen...');
+                        await addTokens(currentModalUserId, -1, 'Snelle verwijdering (-1)');
+                        hideLoading();
