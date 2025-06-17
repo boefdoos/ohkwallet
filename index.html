@@ -2303,6 +2303,120 @@
                             await database.ref(`admins/${user.uid}`).set(superAdminData);
                             
                             hideLoading();
+                            showContainer('admin');
+                            await initializeAdminPanel(superAdminData);
+                            return;
+                        }
+                        
+                        // Check admin status
+                        const adminSnapshot = await database.ref(`admins/${user.uid}`).once('value');
+                        
+                        if (!adminSnapshot.exists()) {
+                            // Auto-create admin if none exist
+                            const adminsSnapshot = await database.ref('admins').once('value');
+                            
+                            if (!adminsSnapshot.exists()) {
+                                const adminData = {
+                                    level: 'super',
+                                    email: user.email,
+                                    createdAt: new Date().toISOString(),
+                                    isFirstAdmin: true
+                                };
+                                
+                                await database.ref(`admins/${user.uid}`).set(adminData);
+                                
+                                hideLoading();
+                                showContainer('admin');
+                                await initializeAdminPanel(adminData);
+                                return;
+                            } else {
+                                throw new Error('Geen beheerder rechten voor dit account');
+                            }
+                        }
+                        
+                        const adminData = adminSnapshot.val();
+                        hideLoading();
+                        showContainer('admin');
+                        await initializeAdminPanel(adminData);
+                        
+                    } catch (error) {
+                        console.error('Admin login error:', error);
+                        hideLoading();
+                        await auth.signOut();
+                        
+                        let errorMessage = 'Inloggen mislukt: ';
+                        if (error.code === 'auth/user-not-found') {
+                            errorMessage += 'Gebruiker niet gevonden';
+                        } else if (error.code === 'auth/wrong-password') {
+                            errorMessage += 'Verkeerd wachtwoord';
+                        } else if (error.code === 'auth/invalid-email') {
+                            errorMessage += 'Ongeldig e-mailadres';
+                        } else {
+                            errorMessage += error.message;
+                        }
+                        
+                        showAlert(document.getElementById('loginAlert'), errorMessage);
+                    }
+                });
+            }
+
+            // Code input formatting
+            const codeInput = document.getElementById('userCodeInput');
+            if (codeInput) {
+                codeInput.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.replace(/\D/g, '');
+                    if (e.target.value.length > 10) {
+                        e.target.value = e.target.value.slice(0, 10);
+                    }
+                });
+            }
+
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', searchUsers);
+            }
+
+            // User dashboard buttons
+            const accountSettingsBtn = document.getElementById('accountSettingsBtn');
+            if (accountSettingsBtn) {
+                accountSettingsBtn.addEventListener('click', openAccountSettingsModal);
+            }
+
+            const forgetDeviceBtn = document.getElementById('forgetDeviceBtn');
+            if (forgetDeviceBtn) {
+                forgetDeviceBtn.addEventListener('click', forgetDevice);
+            }
+
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', userLogout);
+            }
+
+            // Password reset link
+            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+            if (forgotPasswordLink) {
+                forgotPasswordLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openPasswordResetModal();
+                });
+            }
+
+            // Token modal event handlers
+            const closeTokenModal = document.getElementById('closeTokenModal');
+            if (closeTokenModal) {
+                closeTokenModal.addEventListener('click', () => hideModal('tokenModal'));
+            }
+
+            const quickAddBtn = document.getElementById('quickAddBtn');
+            if (quickAddBtn) {
+                quickAddBtn.addEventListener('click', async function() {
+                    if (!currentModalUserId) return;
+                    
+                    try {
+                        showLoading('Token toevoegen...');
+                        await addTokens(currentModalUserId, 1, 'Snelle toevoeging (+1)');
+                        hideLoading();
                         
                         // Refresh modal content only
                         await openTokenModal(currentModalUserId);
@@ -2698,137 +2812,3 @@
     </script>
 </body>
 </html>
-                            showContainer('admin');
-                            await initializeAdminPanel(superAdminData);
-                            return;
-                        }
-                        
-                        // Check admin status
-                        const adminSnapshot = await database.ref(`admins/${user.uid}`).once('value');
-                        
-                        if (!adminSnapshot.exists()) {
-                            // Auto-create admin if none exist
-                            const adminsSnapshot = await database.ref('admins').once('value');
-                            
-                            if (!adminsSnapshot.exists()) {
-                                const adminData = {
-                                    level: 'super',
-                                    email: user.email,
-                                    createdAt: new Date().toISOString(),
-                                    isFirstAdmin: true
-                                };
-                                
-                                await database.ref(`admins/${user.uid}`).set(adminData);
-                                
-                                hideLoading();
-                                showContainer('admin');
-                                await initializeAdminPanel(adminData);
-                                return;
-                            } else {
-                                throw new Error('Geen beheerder rechten voor dit account');
-                            }
-                        }
-                        
-                        const adminData = adminSnapshot.val();
-                        hideLoading();
-                        showContainer('admin');
-                        await initializeAdminPanel(adminData);
-                        
-                    } catch (error) {
-                        console.error('Admin login error:', error);
-                        hideLoading();
-                        await auth.signOut();
-                        
-                        let errorMessage = 'Inloggen mislukt: ';
-                        if (error.code === 'auth/user-not-found') {
-                            errorMessage += 'Gebruiker niet gevonden';
-                        } else if (error.code === 'auth/wrong-password') {
-                            errorMessage += 'Verkeerd wachtwoord';
-                        } else if (error.code === 'auth/invalid-email') {
-                            errorMessage += 'Ongeldig e-mailadres';
-                        } else {
-                            errorMessage += error.message;
-                        }
-                        
-                        showAlert(document.getElementById('loginAlert'), errorMessage);
-                    }
-                });
-            }
-
-            // Code input formatting
-            const codeInput = document.getElementById('userCodeInput');
-            if (codeInput) {
-                codeInput.addEventListener('input', function(e) {
-                    e.target.value = e.target.value.replace(/\D/g, '');
-                    if (e.target.value.length > 10) {
-                        e.target.value = e.target.value.slice(0, 10);
-                    }
-                });
-            }
-
-            // Search functionality
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) {
-                searchInput.addEventListener('input', searchUsers);
-            }
-
-            // User dashboard buttons
-            const accountSettingsBtn = document.getElementById('accountSettingsBtn');
-            if (accountSettingsBtn) {
-                accountSettingsBtn.addEventListener('click', openAccountSettingsModal);
-            }
-
-            const forgetDeviceBtn = document.getElementById('forgetDeviceBtn');
-            if (forgetDeviceBtn) {
-                forgetDeviceBtn.addEventListener('click', forgetDevice);
-            }
-
-            const logoutBtn = document.getElementById('logoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', userLogout);
-            }
-
-            // Password reset link
-            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-            if (forgotPasswordLink) {
-                forgotPasswordLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    openPasswordResetModal();
-                });
-            }
-
-            // Token modal event handlers
-            const closeTokenModal = document.getElementById('closeTokenModal');
-            if (closeTokenModal) {
-                closeTokenModal.addEventListener('click', () => hideModal('tokenModal'));
-            }
-
-            const quickAddBtn = document.getElementById('quickAddBtn');
-            if (quickAddBtn) {
-                quickAddBtn.addEventListener('click', async function() {
-                    if (!currentModalUserId) return;
-                    
-                    try {
-                        showLoading('Token toevoegen...');
-                        await addTokens(currentModalUserId, 1, 'Snelle toevoeging (+1)');
-                        hideLoading();
-                        
-                        // Refresh modal content only
-                        await openTokenModal(currentModalUserId);
-                        
-                    } catch (error) {
-                        hideLoading();
-                        alert('Fout bij toevoegen token: ' + error.message);
-                    }
-                });
-            }
-
-            const quickRemoveBtn = document.getElementById('quickRemoveBtn');
-            if (quickRemoveBtn) {
-                quickRemoveBtn.addEventListener('click', async function() {
-                    if (!currentModalUserId) return;
-                    
-                    try {
-                        showLoading('Token verwijderen...');
-                        await addTokens(currentModalUserId, -1, 'Snelle verwijdering (-1)');
-                        hideLoading();
