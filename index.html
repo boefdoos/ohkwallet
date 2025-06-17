@@ -974,7 +974,89 @@
     <!-- Connection Status Bar -->
     <div class="status-bar" id="statusBar">
         <span id="connectionStatus">Verbinden...</span>
-    </div>
+        <!-- Public Profile View (for QR code scans) -->
+        <div class="container dashboard" id="publicProfileContainer" style="display: none;">
+            <div class="dashboard-header">
+                <div>
+                    <h1>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="36" height="36" style="vertical-align: middle; margin-right: 8px;">
+                            <defs>
+                                <radialGradient id="background4" cx="30%" cy="30%">
+                                    <stop offset="0%" style="stop-color:#FFED33;stop-opacity:1" />
+                                    <stop offset="50%" style="stop-color:#FFB800;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#009DFF;stop-opacity:1" />
+                                </radialGradient>
+                                <radialGradient id="goldOval4" cx="40%" cy="30%">
+                                    <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.9" />
+                                    <stop offset="30%" style="stop-color:#FFED33;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#FFB800;stop-opacity:1" />
+                                </radialGradient>
+                            </defs>
+                            <!-- Outer circle with gradient -->
+                            <circle cx="16" cy="16" r="15.5" fill="url(#background4)" stroke="#FFB800" stroke-width="1"/>
+                            <!-- Inner black circle -->
+                            <circle cx="16" cy="16" r="11" fill="#000000" stroke="#333333" stroke-width="0.5"/>
+                            <!-- Golden oval in center -->
+                            <ellipse cx="16" cy="16" rx="4" ry="6" fill="url(#goldOval4)" stroke="#FFB800" stroke-width="0.3"/>
+                            <!-- Highlight on oval -->
+                            <ellipse cx="14.5" cy="13.5" rx="1.5" ry="2.5" fill="#FFFFFF" opacity="0.6"/>
+                        </svg>
+                        <span id="publicUserName">Gebruiker Profiel</span>
+                    </h1>
+                    <p>Publiek wallet overzicht - Code: <span class="user-code" id="publicUserCode">Laden...</span></p>
+                </div>
+            </div>
+            
+            <div class="token-display">
+                <div class="token-card">
+                    <i class="fas fa-coins"></i>
+                    <p>Beschikbare Tokens</p>
+                    <h3 id="publicAvailableTokens">0</h3>
+                </div>
+                <div class="token-card">
+                    <i class="fas fa-star"></i>
+                    <p>Totaal Verdiend</p>
+                    <h3 id="publicTotalEarned">0</h3>
+                </div>
+                <div class="token-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <p>Activiteiten</p>
+                    <h3 id="publicWorkingDays">0</h3>
+                </div>
+            </div>
+
+            <h2 style="margin-bottom: 16px; color: var(--primary);">Recente Transacties</h2>
+            <div class="loading" id="publicHistoryLoading">
+                <div class="spinner"></div>
+                <p>Transactie geschiedenis laden...</p>
+            </div>
+            <div class="table-container">
+                <table class="history-table" id="publicHistoryTable">
+                    <thead>
+                        <tr>
+                            <th>Datum</th>
+                            <th>Beschrijving</th>
+                            <th>Tokens</th>
+                        </tr>
+                    </thead>
+                    <tbody id="publicHistoryTableBody">
+                        <!-- Transaction history will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="account-section">
+                <h3>Acties</h3>
+                <div class="account-actions">
+                    <button class="btn btn-secondary" onclick="goToLogin()">
+                        <i class="fas fa-sign-in-alt"></i> Inloggen
+                    </button>
+                    <button class="btn btn-secondary" onclick="window.location.reload()">
+                        <i class="fas fa-home"></i> Naar Hoofdpagina
+                    </button>
+                </div>
+            </div>
+        </div>
     
     <!-- Loading Overlay -->
     <div id="loading-overlay">
@@ -1119,7 +1201,7 @@
         <div class="qr-container">
             <h4><i class="fas fa-qrcode"></i> Jouw Wallet QR-Code</h4>
             <canvas id="userQRCode" class="qr-code"></canvas>
-            <p style="color: var(--gray); font-size: 14px;">Scan deze code voor directe toegang tot jouw wallet (bevat jouw 10-cijferige code)</p>
+            <p style="color: var(--gray); font-size: 14px;">Scan deze code om direct naar jouw profiel te gaan (werkt op elke telefoon met QR scanner)</p>
         </div>
         
         <h2 style="margin-bottom: 16px; color: var(--primary);">Transactie Geschiedenis</h2>
@@ -1244,7 +1326,7 @@
             <div class="qr-container">
                 <h4><i class="fas fa-qrcode"></i> Gebruiker's Wallet QR-Code</h4>
                 <canvas id="modalQRCode" class="qr-code"></canvas>
-                <p style="color: var(--gray); font-size: 14px;">Scan deze code voor directe toegang tot wallet (bevat 10-cijferige login code)</p>
+                <p style="color: var(--gray); font-size: 14px;">Scan deze code om direct naar dit profiel te gaan (werkt op elke telefoon met QR scanner)</p>
             </div>
             
             <!-- Quick Actions -->
@@ -1495,6 +1577,7 @@
             document.getElementById('authContainer').style.display = containerName === 'auth' ? 'block' : 'none';
             document.getElementById('dashboardContainer').style.display = containerName === 'dashboard' ? 'block' : 'none';
             document.getElementById('adminContainer').style.display = containerName === 'admin' ? 'block' : 'none';
+            document.getElementById('publicProfileContainer').style.display = containerName === 'public-profile' ? 'block' : 'none';
         }
 
         function showAdminLogin() {
@@ -1706,9 +1789,10 @@
             document.getElementById('totalEarned').textContent = userData.totalEarned || 0;
             document.getElementById('workingDays').textContent = userData.workingDays || 0;
             
-            // Generate QR code for user - using userCode for login
-            const qrData = userData.userCode; // Just the 10-digit code for easy scanning
-            console.log('🔗 Creating QR code with userCode:', qrData);
+            // Generate QR code with URL to user profile
+            const baseUrl = window.location.origin + window.location.pathname;
+            const qrData = `${baseUrl}?profile=${userData.id}`;
+            console.log('🔗 Creating QR code with profile URL:', qrData);
             const qrCanvas = document.getElementById('userQRCode');
             if (qrCanvas) {
                 await generateQRCode(qrCanvas, qrData);
@@ -2026,9 +2110,10 @@
                 document.getElementById('modalWorkingDays').textContent = userData.workingDays || 0;
                 document.getElementById('modalUserCode').textContent = userData.userCode || 'Geen code';
                 
-                // Generate QR code using userCode instead of userId for login
-                const qrData = userData.userCode; // Just the 10-digit code for easy scanning
-                console.log('🔗 Creating modal QR code with userCode:', qrData);
+                // Generate QR code with URL to user profile  
+                const baseUrl = window.location.origin + window.location.pathname;
+                const qrData = `${baseUrl}?profile=${userId}`;
+                console.log('🔗 Creating modal QR code with profile URL:', qrData);
                 const qrCanvas = document.getElementById('modalQRCode');
                 if (qrCanvas) {
                     await generateQRCode(qrCanvas, qrData);
@@ -2309,6 +2394,106 @@
 
         function adminLogout() {
             auth.signOut();
+        }
+
+        // Public profile functions
+        async function loadPublicProfile(userId) {
+            console.log('👁️ Loading public profile for user:', userId);
+            showLoading('Profiel laden...');
+            
+            try {
+                const userSnapshot = await database.ref(`users/${userId}`).once('value');
+                
+                if (!userSnapshot.exists()) {
+                    throw new Error('Gebruiker niet gevonden');
+                }
+                
+                const userData = userSnapshot.val();
+                
+                // Update public profile UI
+                document.getElementById('publicUserName').textContent = userData.name || 'Onbekende Gebruiker';
+                document.getElementById('publicUserCode').textContent = userData.userCode || 'Geen code';
+                document.getElementById('publicAvailableTokens').textContent = userData.tokens || 0;
+                document.getElementById('publicTotalEarned').textContent = userData.totalEarned || 0;
+                document.getElementById('publicWorkingDays').textContent = userData.workingDays || 0;
+                
+                // Load recent transactions (limited to last 10)
+                await loadPublicTransactionHistory(userId);
+                
+                hideLoading();
+                showContainer('public-profile');
+                
+                console.log('✅ Public profile loaded successfully');
+                
+            } catch (error) {
+                console.error('❌ Error loading public profile:', error);
+                hideLoading();
+                alert('Fout bij laden profiel: ' + error.message);
+                showContainer('auth');
+            }
+        }
+
+        async function loadPublicTransactionHistory(userId) {
+            console.log('📊 Loading public transaction history for user:', userId);
+            
+            const historyLoading = document.getElementById('publicHistoryLoading');
+            const historyTableBody = document.getElementById('publicHistoryTableBody');
+            
+            historyLoading.style.display = 'block';
+            
+            try {
+                // Limit to last 10 transactions for public view
+                const transactionsSnapshot = await database.ref(`users/${userId}/transactions`)
+                    .orderByChild('timestamp')
+                    .limitToLast(10)
+                    .once('value');
+                
+                historyLoading.style.display = 'none';
+                historyTableBody.innerHTML = '';
+                
+                if (!transactionsSnapshot.exists()) {
+                    historyTableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--gray);">Nog geen transacties</td></tr>';
+                    return;
+                }
+                
+                const transactions = [];
+                transactionsSnapshot.forEach((snap) => {
+                    transactions.push(snap.val());
+                });
+                
+                // Sort by timestamp descending (newest first)
+                transactions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                transactions.forEach((transaction) => {
+                    const row = document.createElement('tr');
+                    const amountClass = (transaction.amount || 0) >= 0 ? 'color: var(--success)' : 'color: var(--danger)';
+                    const amountPrefix = (transaction.amount || 0) >= 0 ? '+' : '';
+                    
+                    row.innerHTML = `
+                        <td>${formatDate(transaction.timestamp)}<br><small style="color: var(--gray)">${formatTime(transaction.timestamp)}</small></td>
+                        <td>${transaction.description || 'Geen beschrijving'}</td>
+                        <td style="${amountClass}; font-weight: 600;">${amountPrefix}${transaction.amount || 0}</td>
+                    `;
+                    historyTableBody.appendChild(row);
+                });
+                
+            } catch (error) {
+                console.error('❌ Error loading public transaction history:', error);
+                historyLoading.style.display = 'none';
+                historyTableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--danger);">Fout bij laden transacties</td></tr>';
+            }
+        }
+
+        function goToLogin() {
+            // Clear URL parameters and go to login
+            window.history.replaceState(null, null, window.location.pathname);
+            showContainer('auth');
+            showUserAccess();
+        }
+
+        function getURLParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
         }
 
         function forgetDevice() {
@@ -2866,6 +3051,16 @@
                 }
             });
 
+            // Check for URL parameters (QR code scans)
+            const profileId = getURLParameter('profile');
+            if (profileId) {
+                console.log('🔗 Profile parameter detected:', profileId);
+                setTimeout(async () => {
+                    await loadPublicProfile(profileId);
+                }, 500);
+                return; // Skip other initialization
+            }
+
             // Check for stored user code on page load
             const storedCode = localStorage.getItem('ohk_user_code');
             if (storedCode) {
@@ -2889,10 +3084,10 @@
             
             console.log('🎉 OHK Wallet setup complete with full functionality!');
             console.log('🔑 Hardcoded admin emails available: admin@ohk.be, superadmin@ohk.be, administrator@ohk.be, beheerder@ohk.be');
-            console.log('📱 QR Code System: Uses 10-digit userCode for direct login access');
-            console.log('🔗 QR Login: Use window.loginWithQR("1234567890") to test QR code login');
-            console.log('🧪 QR Test: Use window.testQRGeneration() to test QR code generation');
+            console.log('📱 QR Code System: URLs that link to user profiles');
+            console.log('🔗 QR Test: Use window.testQRGeneration() to test QR code generation');
             console.log('📚 QR Library status:', typeof QRCode !== 'undefined' ? 'Loaded ✅' : 'Failed ❌');
+            console.log('🔍 QR Handle: Use window.handleQRScan("URL") to simulate QR scan');
         });
 
         // Global function for exports
@@ -2908,17 +3103,49 @@
         // Debug function to test QR code data
         window.testQRData = function(qrData) {
             console.log('🔍 Testing QR data:', qrData);
-            // Check if it's a 10-digit code (our userCode format)
-            if (/^\d{10}$/.test(qrData)) {
-                console.log('✅ Valid OHK Wallet QR code, User Code:', qrData);
-                return { valid: true, userCode: qrData };
+            
+            // Check if it's a profile URL
+            if (qrData.includes('?profile=')) {
+                const profileId = qrData.split('?profile=')[1];
+                console.log('✅ Valid OHK Profile QR code, Profile ID:', profileId);
+                return { valid: true, type: 'profile', profileId: profileId };
+            }
+            // Check if it's a 10-digit code (legacy)
+            else if (/^\d{10}$/.test(qrData)) {
+                console.log('✅ Valid OHK Legacy QR code, User Code:', qrData);
+                return { valid: true, type: 'legacy', userCode: qrData };
             } else {
-                console.log('❌ Invalid QR code format - should be 10 digits');
+                console.log('❌ Invalid QR code format');
                 return { valid: false };
             }
         };
         
-        // Function to login with scanned QR code
+        // Function to handle QR code scan
+        window.handleQRScan = function(qrData) {
+            console.log('🔍 Handling QR scan with data:', qrData);
+            
+            const testResult = window.testQRData(qrData);
+            
+            if (!testResult.valid) {
+                alert('Ongeldige QR code format');
+                return false;
+            }
+            
+            if (testResult.type === 'profile') {
+                // Navigate to profile URL
+                const url = qrData;
+                console.log('🔗 Navigating to profile URL:', url);
+                window.location.href = url;
+                return true;
+            } else if (testResult.type === 'legacy') {
+                // Try legacy login
+                return window.loginWithQR(qrData);
+            }
+            
+            return false;
+        };
+        
+        // Function to login with scanned QR code (legacy support)
         window.loginWithQR = async function(qrData) {
             console.log('🔍 Attempting QR login with data:', qrData);
             
@@ -2954,8 +3181,8 @@
             // Add to page temporarily
             document.body.appendChild(testCanvas);
             
-            // Test with sample data
-            const testData = '1234567890';
+            // Test with sample profile URL
+            const testData = window.location.origin + window.location.pathname + '?profile=testUserId123';
             generateQRCode(testCanvas, testData).then(() => {
                 console.log('✅ Test QR generation completed');
                 alert('QR test voltooid - check console en testcanvas op pagina');
