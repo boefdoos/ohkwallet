@@ -1541,34 +1541,126 @@
         }
 
         async function generateQRCode(canvas, data) {
-            try {
-                console.log('🔗 Generating QR code with data:', data);
-                await QRCode.toCanvas(canvas, data, {
-                    width: 200,
-                    margin: 2,
-                    color: {
-                        dark: '#333333',
-                        light: '#FFFFFF'
-                    },
-                    errorCorrectionLevel: 'M'
-                });
-                console.log('✅ QR code generated successfully');
-            } catch (error) {
-                console.error('❌ Error generating QR code:', error);
-                // Create fallback text in canvas
-                const ctx = canvas.getContext('2d');
-                canvas.width = 200;
-                canvas.height = 200;
-                ctx.fillStyle = '#f0f0f0';
-                ctx.fillRect(0, 0, 200, 200);
-                ctx.fillStyle = '#333';
-                ctx.font = '16px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('QR Code', 100, 90);
-                ctx.fillText('Fout', 100, 110);
-                ctx.font = '12px Arial';
-                ctx.fillText(data, 100, 130);
+            console.log('🔗 Starting QR code generation...');
+            console.log('📝 Data to encode:', data);
+            console.log('🎯 Canvas element:', canvas);
+            
+            // Check canvas element
+            if (!canvas) {
+                console.error('❌ Canvas element not found!');
+                return;
             }
+            
+            // Method 1: Try QRCode library
+            if (typeof QRCode !== 'undefined') {
+                try {
+                    console.log('🔄 Attempting QR code generation with QRCode library...');
+                    
+                    // Clear any existing content
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    await QRCode.toCanvas(canvas, data, {
+                        width: 200,
+                        height: 200,
+                        margin: 2,
+                        color: {
+                            dark: '#333333',
+                            light: '#FFFFFF'
+                        },
+                        errorCorrectionLevel: 'M'
+                    });
+                    
+                    console.log('✅ QR code generated successfully with QRCode library');
+                    return;
+                    
+                } catch (error) {
+                    console.error('❌ QRCode library failed:', error);
+                }
+            }
+            
+            // Method 2: Try Google Charts API as fallback
+            try {
+                console.log('🔄 Attempting QR code generation with Google Charts API...');
+                await generateQRWithGoogleAPI(canvas, data);
+                console.log('✅ QR code generated successfully with Google API');
+                return;
+            } catch (error) {
+                console.error('❌ Google API failed:', error);
+            }
+            
+            // Method 3: Fallback display
+            console.log('🔄 Using fallback QR display...');
+            createFallbackQR(canvas, data, 'Alle QR methoden gefaald');
+        }
+        
+        async function generateQRWithGoogleAPI(canvas, data) {
+            return new Promise((resolve, reject) => {
+                const size = 200;
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(data)}`;
+                
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                
+                img.onload = function() {
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = size;
+                    canvas.height = size;
+                    ctx.drawImage(img, 0, 0, size, size);
+                    resolve();
+                };
+                
+                img.onerror = function() {
+                    reject(new Error('Failed to load QR code from API'));
+                };
+                
+                img.src = qrUrl;
+            });
+        }
+        
+        function createFallbackQR(canvas, data, errorMsg) {
+            console.log('🔄 Creating fallback QR display...');
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = 200;
+            canvas.height = 200;
+            
+            // Background
+            ctx.fillStyle = '#f8f9fa';
+            ctx.fillRect(0, 0, 200, 200);
+            
+            // Border
+            ctx.strokeStyle = '#dee2e6';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(1, 1, 198, 198);
+            
+            // Error text
+            ctx.fillStyle = '#6c757d';
+            ctx.font = '14px Inter, Arial, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('QR Code', 100, 70);
+            ctx.fillText('Fout', 100, 90);
+            
+            // Data display
+            ctx.font = '12px monospace';
+            ctx.fillStyle = '#007bff';
+            ctx.fillText(data, 100, 120);
+            
+            // Error message
+            ctx.font = '10px Arial';
+            ctx.fillStyle = '#dc3545';
+            const lines = errorMsg.split(' ');
+            let y = 140;
+            for (let i = 0; i < lines.length && y < 190; i += 3) {
+                const line = lines.slice(i, i + 3).join(' ');
+                ctx.fillText(line, 100, y);
+                y += 15;
+            }
+            
+            // Manual entry instruction
+            ctx.font = '11px Arial';
+            ctx.fillStyle = '#28a745';
+            ctx.fillText('Voer code handmatig in:', 100, 185);
         }
 
         // User authentication functions
@@ -2230,6 +2322,16 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🔥 OHK Wallet - Complete App Started');
             
+            // Check QRCode library availability
+            setTimeout(() => {
+                if (typeof QRCode !== 'undefined') {
+                    console.log('✅ QRCode library loaded successfully');
+                } else {
+                    console.error('❌ QRCode library failed to load');
+                    console.log('🔄 Attempting to load alternative QR method...');
+                }
+            }, 1000);
+            
             // Basic navigation
             const showAdminBtn = document.getElementById('showAdminLoginBtn');
             const backToUserBtn = document.getElementById('backToUserAccessBtn');
@@ -2789,6 +2891,8 @@
             console.log('🔑 Hardcoded admin emails available: admin@ohk.be, superadmin@ohk.be, administrator@ohk.be, beheerder@ohk.be');
             console.log('📱 QR Code System: Uses 10-digit userCode for direct login access');
             console.log('🔗 QR Login: Use window.loginWithQR("1234567890") to test QR code login');
+            console.log('🧪 QR Test: Use window.testQRGeneration() to test QR code generation');
+            console.log('📚 QR Library status:', typeof QRCode !== 'undefined' ? 'Loaded ✅' : 'Failed ❌');
         });
 
         // Global function for exports
@@ -2835,6 +2939,30 @@
                 alert('QR login mislukt: ' + error.message);
                 return false;
             }
+        };
+        
+        // Debug function to test QR generation
+        window.testQRGeneration = function() {
+            console.log('🧪 Testing QR code generation...');
+            
+            // Create a test canvas
+            const testCanvas = document.createElement('canvas');
+            testCanvas.id = 'testQRCanvas';
+            testCanvas.style.border = '1px solid #ccc';
+            testCanvas.style.margin = '10px';
+            
+            // Add to page temporarily
+            document.body.appendChild(testCanvas);
+            
+            // Test with sample data
+            const testData = '1234567890';
+            generateQRCode(testCanvas, testData).then(() => {
+                console.log('✅ Test QR generation completed');
+                alert('QR test voltooid - check console en testcanvas op pagina');
+            }).catch(error => {
+                console.error('❌ Test QR generation failed:', error);
+                alert('QR test gefaald - check console');
+            });
         };
     </script>
 </body>
