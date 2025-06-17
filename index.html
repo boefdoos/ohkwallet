@@ -1850,7 +1850,15 @@
         async function initializeAdminPanel(adminData) {
             currentAdminData = adminData;
             
+            // Wait a short moment to ensure the admin container is visible
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
             const badge = document.getElementById('adminLevelBadge');
+            if (!badge) {
+                console.warn('Admin level badge not found, retrying...');
+                return;
+            }
+            
             if (adminData.level === 'super') {
                 badge.textContent = 'Super Beheerder';
                 badge.className = 'admin-level-badge admin-level-super';
@@ -1860,45 +1868,50 @@
             }
             
             const adminActions = document.getElementById('adminActions');
-            if (adminData.level === 'super') {
-                adminActions.innerHTML = `
-                    <button class="btn btn-secondary" onclick="exportData()">
-                        <i class="fas fa-download"></i> Gegevens Exporteren
-                    </button>
-                    <button class="btn btn-secondary" onclick="openAddUserModal()">
-                        <i class="fas fa-user-plus"></i> Gebruiker Toevoegen
-                    </button>
-                `;
-            } else {
-                adminActions.innerHTML = `
-                    <p style="color: var(--gray);">Basis beheerder rechten - Token beheer beschikbaar</p>
-                `;
+            if (adminActions) {
+                if (adminData.level === 'super') {
+                    adminActions.innerHTML = `
+                        <button class="btn btn-secondary" onclick="exportData()">
+                            <i class="fas fa-download"></i> Gegevens Exporteren
+                        </button>
+                        <button class="btn btn-secondary" onclick="openAddUserModal()">
+                            <i class="fas fa-user-plus"></i> Gebruiker Toevoegen
+                        </button>
+                    `;
+                } else {
+                    adminActions.innerHTML = `
+                        <p style="color: var(--gray);">Basis beheerder rechten - Token beheer beschikbaar</p>
+                    `;
+                }
             }
             
             const adminAccountActions = document.getElementById('adminAccountActions');
-            if (adminData.level === 'super') {
-                adminAccountActions.innerHTML = `
-                    <button class="btn btn-secondary" onclick="openAdminPasswordModal()">
-                        <i class="fas fa-key"></i> Wachtwoord Wijzigen
-                    </button>
-                    <button class="btn btn-secondary" onclick="openAddAdminModal()">
-                        <i class="fas fa-user-shield"></i> Beheerder Toevoegen
-                    </button>
-                    <button class="btn btn-danger" onclick="adminLogout()">
-                        <i class="fas fa-sign-out-alt"></i> Uitloggen
-                    </button>
-                `;
-            } else {
-                adminAccountActions.innerHTML = `
-                    <button class="btn btn-secondary" onclick="openAdminPasswordModal()">
-                        <i class="fas fa-key"></i> Wachtwoord Wijzigen
-                    </button>
-                    <button class="btn btn-danger" onclick="adminLogout()">
-                        <i class="fas fa-sign-out-alt"></i> Uitloggen
-                    </button>
-                `;
+            if (adminAccountActions) {
+                if (adminData.level === 'super') {
+                    adminAccountActions.innerHTML = `
+                        <button class="btn btn-secondary" onclick="openAdminPasswordModal()">
+                            <i class="fas fa-key"></i> Wachtwoord Wijzigen
+                        </button>
+                        <button class="btn btn-secondary" onclick="openAddAdminModal()">
+                            <i class="fas fa-user-shield"></i> Beheerder Toevoegen
+                        </button>
+                        <button class="btn btn-danger" onclick="adminLogout()">
+                            <i class="fas fa-sign-out-alt"></i> Uitloggen
+                        </button>
+                    `;
+                } else {
+                    adminAccountActions.innerHTML = `
+                        <button class="btn btn-secondary" onclick="openAdminPasswordModal()">
+                            <i class="fas fa-key"></i> Wachtwoord Wijzigen
+                        </button>
+                        <button class="btn btn-danger" onclick="adminLogout()">
+                            <i class="fas fa-sign-out-alt"></i> Uitloggen
+                        </button>
+                    `;
+                }
             }
             
+            // Load users list only after ensuring the admin panel is ready
             await loadUsersList();
         }
 
@@ -1906,10 +1919,21 @@
             const userList = document.getElementById('userList');
             const usersLoading = document.getElementById('usersLoading');
             
+            // Check if elements exist before trying to access them
+            if (!userList || !usersLoading) {
+                console.warn('Admin panel elements not found, skipping user list load');
+                return;
+            }
+            
             usersLoading.style.display = 'block';
             
             try {
                 const usersSnapshot = await database.ref('users').once('value');
+                
+                // Check again in case elements were removed during async operation
+                if (!usersLoading || !userList) {
+                    return;
+                }
                 
                 usersLoading.style.display = 'none';
                 
@@ -1929,13 +1953,24 @@
                 
             } catch (error) {
                 console.error('❌ Error loading users:', error);
-                usersLoading.style.display = 'none';
-                userList.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--danger);">Fout bij laden gebruikers</div>';
+                if (usersLoading) {
+                    usersLoading.style.display = 'none';
+                }
+                if (userList) {
+                    userList.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--danger);">Fout bij laden gebruikers</div>';
+                }
             }
         }
 
         function displayUsers(users) {
             const userList = document.getElementById('userList');
+            
+            // Check if userList element exists
+            if (!userList) {
+                console.warn('UserList element not found');
+                return;
+            }
+            
             userList.innerHTML = '';
             
             if (users.length === 0) {
@@ -2027,7 +2062,12 @@
         }
 
         function searchUsers() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const searchInput = document.getElementById('searchInput');
+            if (!searchInput) {
+                return;
+            }
+            
+            const searchTerm = searchInput.value.toLowerCase();
             
             if (!searchTerm) {
                 displayUsers(allUsers);
@@ -2499,7 +2539,11 @@
                             
                             hideLoading();
                             showContainer('admin');
-                            await initializeAdminPanel(superAdminData);
+                            
+                            // Wait for container to be visible before initializing
+                            setTimeout(async () => {
+                                await initializeAdminPanel(superAdminData);
+                            }, 200);
                             return;
                         }
                         
@@ -2522,7 +2566,10 @@
                                 
                                 hideLoading();
                                 showContainer('admin');
-                                await initializeAdminPanel(adminData);
+                                
+                                setTimeout(async () => {
+                                    await initializeAdminPanel(adminData);
+                                }, 200);
                                 return;
                             } else {
                                 throw new Error('Geen beheerder rechten voor dit account');
@@ -2532,7 +2579,10 @@
                         const adminData = adminSnapshot.val();
                         hideLoading();
                         showContainer('admin');
-                        await initializeAdminPanel(adminData);
+                        
+                        setTimeout(async () => {
+                            await initializeAdminPanel(adminData);
+                        }, 200);
                         
                     } catch (error) {
                         console.error('Admin login error:', error);
@@ -2954,8 +3004,14 @@
                     if (adminSnapshot.exists()) {
                         const adminData = adminSnapshot.val();
                         console.log('✅ Admin state restored for:', user.email);
+                        
+                        // First show the container, then initialize
                         showContainer('admin');
-                        await initializeAdminPanel(adminData);
+                        
+                        // Wait a moment for the DOM to update
+                        setTimeout(async () => {
+                            await initializeAdminPanel(adminData);
+                        }, 200);
                     }
                 } else {
                     console.log('🔓 Auth state changed: User logged out');
