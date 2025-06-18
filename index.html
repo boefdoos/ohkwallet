@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#06b6d4">
     <meta name="description" content="Ademruimte - Je persoonlijke ruimte voor ademhalingsoefeningen en hyperventilatie begeleiding">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Ademruimte - Hyperventilatie Helper</title>
@@ -1040,6 +1041,9 @@
     </footer>
 
 <script type="module">
+    // Enable detailed logging
+    console.log('🚀 Ademruimte App Starting...');
+    
     // Firebase configuration
     const firebaseConfig = {
         apiKey: "AIzaSyBwDkmbKOzZAyIZW7-ud4qYr7xHyILCdzI",
@@ -1055,6 +1059,7 @@
     let app, db, auth;
     let currentUser = null;
     let isFirebaseConnected = false;
+    let authInitialized = false;
     
     // Exercise variables
     let breathInterval = null;
@@ -1135,7 +1140,13 @@
     // Utility functions
     function log(level, message, data = null) {
         const timestamp = new Date().toLocaleTimeString('nl-NL');
-        console.log(`${level} [${timestamp}] ${message}`, data || '');
+        const emoji = {
+            'INFO': 'ℹ️',
+            'SUCCESS': '✅', 
+            'WARNING': '⚠️',
+            'ERROR': '❌'
+        };
+        console.log(`${emoji[level] || '📝'} [${timestamp}] ${message}`, data || '');
     }
 
     function showUserMessage(message, type = 'info') {
@@ -1249,63 +1260,129 @@
         log('INFO', 'Switched to main app');
     }
 
-    // Firebase initialization
+    // Firebase initialization with detailed logging
     async function initializeFirebase() {
+        if (authInitialized) {
+            console.log('✅ Firebase already initialized');
+            return true;
+        }
+        
         try {
-            log('INFO', 'Initializing Firebase...');
+            console.log('🔥 Starting Firebase initialization...');
+            console.log('📊 Config check:', {
+                apiKey: firebaseConfig.apiKey ? 'Present' : 'Missing',
+                authDomain: firebaseConfig.authDomain,
+                projectId: firebaseConfig.projectId
+            });
             
+            // Test if we can access Firebase modules
+            console.log('📦 Loading Firebase modules...');
             const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js");
             const { getFirestore } = await import("https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js");
-            const { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } = await import("https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js");
+            const { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut } = await import("https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js");
+            
+            console.log('✅ Firebase modules loaded successfully');
 
+            // Initialize Firebase
+            console.log('🔧 Initializing Firebase app...');
             app = initializeApp(firebaseConfig);
+            console.log('✅ Firebase app initialized');
+            
             db = getFirestore(app);
+            console.log('✅ Firestore initialized');
+            
             auth = getAuth(app);
+            console.log('✅ Auth initialized');
 
-            // Auth state observer
+            // Set up auth state observer with detailed logging
+            console.log('👁️ Setting up auth state observer...');
             onAuthStateChanged(auth, (user) => {
+                console.log('🔔 Auth state changed:', user ? `User: ${user.email}` : 'No user');
                 currentUser = user;
                 updateUserInfo();
                 
                 if (user) {
-                    log('SUCCESS', 'User authenticated:', user.email);
+                    console.log('✅ User authenticated, showing main app');
                     showMainApp();
                 } else {
-                    log('INFO', 'User not authenticated');
+                    console.log('❌ No user, showing login screen');
                     showLoginScreen();
                 }
+            }, (error) => {
+                console.error('❌ Auth state observer error:', error);
+                updateUserInfo(); // Hide spinner
+                showUserMessage('Authenticatie fout: ' + error.message, 'error');
+                showLoginScreen();
             });
 
             updateConnectionStatus(true);
-            log('SUCCESS', 'Firebase initialized successfully');
+            authInitialized = true;
+            console.log('🎉 Firebase initialization completed successfully');
             return true;
 
         } catch (error) {
-            log('ERROR', 'Firebase initialization failed:', error);
+            console.error('💥 Firebase initialization failed:', error);
+            console.error('Error details:', {
+                name: error.name,
+                message: error.message,
+                code: error.code,
+                stack: error.stack
+            });
+            
             updateConnectionStatus(false);
-            showUserMessage('Firebase kon niet worden geïnitialiseerd. Controleer je internetverbinding.', 'error');
+            authInitialized = false;
+            
+            showUserMessage('Firebase kon niet worden geïnitialiseerd. Details in console.', 'error');
             showLoginScreen();
             return false;
         }
     }
 
-    // Authentication functions
+    // Authentication functions with enhanced debugging
     window.signInWithGoogle = async function() {
+        console.log('🔵 Google sign-in button clicked');
         const googleBtn = document.getElementById('google-login-btn');
         const originalText = googleBtn.textContent;
         googleBtn.textContent = 'Bezig...';
         googleBtn.disabled = true;
 
         try {
+            if (!authInitialized || !auth) {
+                console.log('⚠️ Firebase not initialized, initializing now...');
+                const initialized = await initializeFirebase();
+                if (!initialized) {
+                    throw new Error('Firebase initialization failed');
+                }
+            }
+
+            console.log('🔵 Starting Google popup sign-in...');
             const { GoogleAuthProvider, signInWithPopup } = await import("https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js");
             const provider = new GoogleAuthProvider();
-            await signInWithPopup(auth, provider);
-            log('SUCCESS', 'Google sign-in successful');
+            provider.setCustomParameters({
+                prompt: 'select_account'
+            });
+            
+            console.log('🔵 Opening popup...');
+            const result = await signInWithPopup(auth, provider);
+            console.log('✅ Google sign-in successful:', result.user.email);
+            
         } catch (error) {
-            log('ERROR', 'Google sign-in failed:', error);
+            console.error('❌ Google sign-in failed:', error);
+            console.error('Error details:', {
+                name: error.name,
+                message: error.message,
+                code: error.code
+            });
+            
             let message = 'Google inloggen mislukt';
             if (error.code === 'auth/popup-blocked') {
                 message = 'Login werd geblokkeerd. Controleer popup instellingen.';
+            } else if (error.code === 'auth/cancelled-popup-request') {
+                message = 'Login geannuleerd door gebruiker.';
+            } else if (error.code === 'auth/popup-closed-by-user') {
+                message = 'Login popup gesloten.';
+            } else if (error.message.includes('Firebase initialization failed')) {
+                message = 'Firebase kon niet worden geïnitialiseerd. Herlaad de pagina.';
             }
             showUserMessage(message, 'error');
         } finally {
@@ -1316,13 +1393,26 @@
 
     async function handleLogin(e) {
         e.preventDefault();
+        console.log('📧 Email login attempt');
         
         const email = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-password').value;
         
+        console.log('📧 Email:', email);
+        console.log('🔑 Password length:', password.length);
+        
         if (!email || !password) {
             showUserMessage('Vul alle velden in', 'warning');
             return;
+        }
+
+        if (!authInitialized || !auth) {
+            console.log('⚠️ Firebase not initialized for email login');
+            const initialized = await initializeFirebase();
+            if (!initialized) {
+                showUserMessage('Firebase niet beschikbaar. Herlaad de pagina.', 'error');
+                return;
+            }
         }
 
         const submitBtn = e.target.querySelector('button[type="submit"]');
@@ -1332,22 +1422,32 @@
             submitBtn.textContent = 'Bezig met inloggen...';
             submitBtn.disabled = true;
             
+            console.log('📧 Attempting email sign-in...');
             const { signInWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js");
-            await signInWithEmailAndPassword(auth, email, password);
+            const result = await signInWithEmailAndPassword(auth, email, password);
             
-            log('SUCCESS', 'Email sign-in successful');
+            console.log('✅ Email sign-in successful:', result.user.email);
             e.target.reset();
             
         } catch (error) {
-            log('ERROR', 'Email sign-in failed:', error);
+            console.error('❌ Email sign-in failed:', error);
+            console.error('Error details:', {
+                name: error.name,
+                message: error.message,
+                code: error.code
+            });
             
             let message = 'Inloggen mislukt';
-            if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-                message = 'Geen account gevonden met deze gegevens';
+            if (error.code === 'auth/user-not-found') {
+                message = 'Geen account gevonden met dit email adres';
             } else if (error.code === 'auth/wrong-password') {
                 message = 'Verkeerd wachtwoord';
             } else if (error.code === 'auth/invalid-email') {
                 message = 'Ongeldig email adres';
+            } else if (error.code === 'auth/invalid-credential') {
+                message = 'Ongeldige inloggegevens';
+            } else if (error.code === 'auth/too-many-requests') {
+                message = 'Te veel mislukte pogingen. Probeer het later opnieuw.';
             }
             
             showUserMessage(message, 'error');
@@ -1360,10 +1460,13 @@
 
     async function handleRegister(e) {
         e.preventDefault();
+        console.log('🆕 Registration attempt');
         
         const name = document.getElementById('register-name').value.trim();
         const email = document.getElementById('register-email').value.trim();
         const password = document.getElementById('register-password').value;
+        
+        console.log('🆕 Registration data:', { name, email, passwordLength: password.length });
         
         if (!name || !email || !password) {
             showUserMessage('Vul alle velden in', 'warning');
@@ -1375,6 +1478,15 @@
             return;
         }
 
+        if (!authInitialized || !auth) {
+            console.log('⚠️ Firebase not initialized for registration');
+            const initialized = await initializeFirebase();
+            if (!initialized) {
+                showUserMessage('Firebase niet beschikbaar. Herlaad de pagina.', 'error');
+                return;
+            }
+        }
+
         const submitBtn = e.target.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
         
@@ -1382,23 +1494,34 @@
             submitBtn.textContent = 'Account aanmaken...';
             submitBtn.disabled = true;
             
+            console.log('🆕 Creating user account...');
             const { createUserWithEmailAndPassword, updateProfile } = await import("https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js");
             
             const result = await createUserWithEmailAndPassword(auth, email, password);
-            await updateProfile(result.user, { displayName: name });
+            console.log('✅ User created:', result.user.uid);
             
-            log('SUCCESS', 'Account created successfully');
+            console.log('👤 Updating profile...');
+            await updateProfile(result.user, { displayName: name });
+            console.log('✅ Profile updated');
+            
             closeRegisterModal();
             showUserMessage('Account succesvol aangemaakt!', 'success');
             
         } catch (error) {
-            log('ERROR', 'Registration failed:', error);
+            console.error('❌ Registration failed:', error);
+            console.error('Error details:', {
+                name: error.name,
+                message: error.message,
+                code: error.code
+            });
             
             let message = 'Account aanmaken mislukt';
             if (error.code === 'auth/email-already-in-use') {
                 message = 'Dit email adres is al in gebruik. Probeer in te loggen.';
             } else if (error.code === 'auth/weak-password') {
                 message = 'Wachtwoord is te zwak. Gebruik minimaal 6 karakters.';
+            } else if (error.code === 'auth/invalid-email') {
+                message = 'Ongeldig email adres';
             }
             
             showUserMessage(message, 'error');
@@ -1415,14 +1538,15 @@
         }
         
         try {
+            console.log('🚪 Logging out...');
             if (auth && auth.currentUser) {
                 const { signOut } = await import("https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js");
                 await signOut(auth);
-                log('SUCCESS', 'User logged out successfully');
+                console.log('✅ User logged out successfully');
                 showUserMessage('Je bent succesvol uitgelogd!', 'success');
             }
         } catch (error) {
-            log('ERROR', 'Logout failed:', error);
+            console.error('❌ Logout failed:', error);
             showUserMessage('Uitloggen mislukt: ' + error.message, 'error');
         }
     };
@@ -1695,79 +1819,179 @@
         }
     }
 
-    // Event listeners setup
+    // Event listeners setup with detailed logging
     function setupEventListeners() {
-        // Google login
-        document.getElementById('google-login-btn').addEventListener('click', signInWithGoogle);
-        
-        // Login form
-        document.getElementById('login-form').addEventListener('submit', handleLogin);
-        
-        // Register modal
-        document.getElementById('show-register-btn').addEventListener('click', showRegisterForm);
-        document.getElementById('register-form').addEventListener('submit', handleRegister);
-        document.getElementById('cancel-register-btn').addEventListener('click', closeRegisterModal);
-        
-        // Register modal close button
-        document.querySelector('#register-modal .close-btn').addEventListener('click', closeRegisterModal);
-        
-        // Tip refresh
-        document.getElementById('tip-refresh-btn').addEventListener('click', getNewTip);
-        
-        // Tab navigation
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tab = btn.getAttribute('data-tab');
-                showTab(tab);
-            });
-        });
-        
-        // Modal close on background click
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('modal')) {
-                e.target.classList.remove('show');
-            }
-        });
-
-        log('SUCCESS', 'Event listeners setup complete');
-    }
-
-    // Initialize app
-    document.addEventListener('DOMContentLoaded', async function() {
-        log('INFO', 'Starting Ademruimte app initialization');
+        console.log('🔧 Setting up event listeners...');
         
         try {
+            // Google login
+            const googleBtn = document.getElementById('google-login-btn');
+            if (googleBtn) {
+                googleBtn.addEventListener('click', signInWithGoogle);
+                console.log('✅ Google login button listener attached');
+            } else {
+                console.error('❌ Google login button not found');
+            }
+            
+            // Login form
+            const loginForm = document.getElementById('login-form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', handleLogin);
+                console.log('✅ Login form listener attached');
+            } else {
+                console.error('❌ Login form not found');
+            }
+            
+            // Register modal buttons
+            const showRegisterBtn = document.getElementById('show-register-btn');
+            if (showRegisterBtn) {
+                showRegisterBtn.addEventListener('click', showRegisterForm);
+                console.log('✅ Show register button listener attached');
+            }
+            
+            const registerForm = document.getElementById('register-form');
+            if (registerForm) {
+                registerForm.addEventListener('submit', handleRegister);
+                console.log('✅ Register form listener attached');
+            }
+            
+            const cancelRegisterBtn = document.getElementById('cancel-register-btn');
+            if (cancelRegisterBtn) {
+                cancelRegisterBtn.addEventListener('click', closeRegisterModal);
+                console.log('✅ Cancel register button listener attached');
+            }
+            
+            // Register modal close button
+            const registerCloseBtn = document.querySelector('#register-modal .close-btn');
+            if (registerCloseBtn) {
+                registerCloseBtn.addEventListener('click', closeRegisterModal);
+                console.log('✅ Register close button listener attached');
+            }
+            
+            // Tip refresh
+            const tipRefreshBtn = document.getElementById('tip-refresh-btn');
+            if (tipRefreshBtn) {
+                tipRefreshBtn.addEventListener('click', getNewTip);
+                console.log('✅ Tip refresh button listener attached');
+            }
+            
+            // Tab navigation
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            console.log(`🔧 Found ${tabButtons.length} tab buttons`);
+            tabButtons.forEach((btn, index) => {
+                btn.addEventListener('click', () => {
+                    const tab = btn.getAttribute('data-tab');
+                    console.log(`🔄 Tab clicked: ${tab}`);
+                    showTab(tab);
+                });
+                console.log(`✅ Tab button ${index + 1} listener attached`);
+            });
+            
+            // Modal close on background click
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    e.target.classList.remove('show');
+                }
+            });
+            
+            console.log('🎉 All event listeners setup completed successfully');
+            
+        } catch (error) {
+            console.error('❌ Error setting up event listeners:', error);
+            throw error; // Re-throw to be caught by main initialization
+        }
+    }
+
+    // Initialize app with comprehensive debugging
+    document.addEventListener('DOMContentLoaded', async function() {
+        console.log('🎯 DOMContentLoaded fired - starting app initialization');
+        console.log('🌐 User agent:', navigator.userAgent);
+        console.log('🌐 Online status:', navigator.onLine);
+        
+        try {
+            // Show loading spinner initially
+            const authLoading = document.getElementById('auth-loading');
+            if (authLoading) {
+                authLoading.style.display = 'inline-block';
+                console.log('⏳ Showing auth loading spinner');
+            }
+            
+            // Initialize UI components first
+            console.log('🎨 Initializing UI components...');
             updateUserInfo();
             updateConnectionStatus(false);
             setRandomTip();
             updateRitualDisplay();
             
             setupEventListeners();
+            console.log('✅ UI components initialized');
             
+            // Initialize Firebase immediately
+            console.log('🔥 Starting Firebase initialization immediately...');
             const success = await initializeFirebase();
+            
             if (!success) {
+                console.log('❌ Firebase initialization failed, showing login screen');
                 showLoginScreen();
+            } else {
+                console.log('✅ Firebase initialized successfully');
+                // Auth state observer will handle showing the right screen
             }
             
-            log('SUCCESS', 'App initialization completed');
+            console.log('🎉 App initialization completed');
             
         } catch (error) {
-            log('ERROR', 'App initialization failed', error);
+            console.error('💥 Critical error during app initialization:', error);
+            console.error('Error details:', {
+                name: error.name,
+                message: error.message,
+                stack: error.stack
+            });
+            
+            // Hide loading spinner on critical failure
             const authLoading = document.getElementById('auth-loading');
             if (authLoading) {
                 authLoading.style.display = 'none';
             }
-            showUserMessage('Er is een fout opgetreden bij het laden van de app.', 'error');
+            
+            showUserMessage('Er is een kritieke fout opgetreden. Check de console voor details.', 'error');
             showLoginScreen();
         }
     });
 
+    // Additional debugging for network issues
+    window.addEventListener('online', () => {
+        console.log('🌐 Network connection restored');
+        updateConnectionStatus(isFirebaseConnected);
+    });
+
+    window.addEventListener('offline', () => {
+        console.log('🌐 Network connection lost');
+        updateConnectionStatus(false);
+        showUserMessage('Internetverbinding verloren.', 'warning');
+    });
+
     // Cleanup on page unload
     window.addEventListener('beforeunload', () => {
+        console.log('🚪 App shutting down');
         if (timerInterval) clearInterval(timerInterval);
         if (breathInterval) clearInterval(breathInterval);
-        log('INFO', 'App shutting down');
     });
+
+    // Add a test function for debugging
+    window.testFirebase = async function() {
+        console.log('🧪 Testing Firebase connection...');
+        console.log('Auth object:', auth);
+        console.log('Current user:', currentUser);
+        console.log('Auth initialized:', authInitialized);
+        console.log('Firebase connected:', isFirebaseConnected);
+        
+        if (auth) {
+            console.log('Auth state:', auth.currentUser ? 'Logged in' : 'Not logged in');
+        }
+    };
+
+    console.log('📜 Script loaded successfully - waiting for DOMContentLoaded');
 </script>
 
 </body>
