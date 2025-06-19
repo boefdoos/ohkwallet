@@ -3356,62 +3356,48 @@ async function handleQRProfileAccess(userId) {
                 }
             });
 
-            // Firebase auth state listener
-            auth.onAuthStateChanged(async (user) => {
-                // Skip processing if admin login is in progress via form
-                if (isAdminLoginInProgress) {
-                    console.log('⏳ Skipping auth state change - admin login in progress');
-                    return;
-                }
-                
-                if (user) {
-                    console.log('🔥 Auth state changed: User logged in:', user.email);
-                    
-                    try {
-                        // Check for pending admin status first
-                        await checkAndActivatePendingAdmin(user);
-                        
-                        const adminSnapshot = await database.ref(`admins/${user.uid}`).once('value');
-                        if (adminSnapshot.exists()) {
-                            const adminData = adminSnapshot.val();
-                            console.log('✅ Admin state restored for:', user.email);
-                            await initializeAdminPanel(adminData);
-                            shouldShowAdminLogin = false; // Reset flag
-                        } else {
-                            // User is logged in but not an admin - sign them out
-                            console.log('❌ User has no admin rights, signing out');
-                            await auth.signOut();
-                        }
-                    } catch (error) {
-                        console.error('❌ Error in auth state change:', error);
-                        await auth.signOut();
-                    }
-                } else {
-                    console.log('🔓 Auth state changed: User logged out');
-                    currentAdminData = null;
-                    
-                    // Show appropriate login screen based on context
-                    if (shouldShowAdminLogin) {
-                        showContainer('auth');
-                        showAdminLogin(); // Go directly to admin login
-                    } else {
-                        showContainer('auth');
-                        showUserAccess(); // Default user access
-                    }
-                    
-                    shouldShowAdminLogin = false; // Reset flag
-                }
-            });
-
-            // Check for URL parameters (QR code scans)
+auth.onAuthStateChanged(async (user) => {
+    if (user) {
+        console.log('🔥 Auth state changed: User logged in:', user.email);
+        
+        // Check if this is an admin
+        const adminSnapshot = await database.ref(`admins/${user.uid}`).once('value');
+        if (adminSnapshot.exists()) {
+            const adminData = adminSnapshot.val();
+            console.log('✅ Admin state restored for:', user.email);
+            currentAdminData = adminData; // Store admin data globally
+            
+            // Check if we have a profile parameter and should open token management
             const profileId = getURLParameter('profile');
             if (profileId) {
-                console.log('🔗 Profile parameter detected:', profileId);
-                setTimeout(async () => {
-                    await loadPublicProfile(profileId);
-                }, 500);
+                console.log('🔗 Profile parameter with admin session - opening token management');
+                showContainer('admin');
+                await initializeAdminPanel(adminData);
+                await openTokenModal(profileId);
                 return;
             }
+            
+            showContainer('admin');
+            await initializeAdminPanel(adminData);
+        }
+    } else {
+        console.log('🔓 Auth state changed: User logged out');
+        currentAdminData = null;
+        showContainer('auth');
+        // Ensure auth footer is visible and user access form is shown
+        showUserAccess();
+    }
+});
+
+// Check for URL parameters (QR code scans)
+const profileId = getURLParameter('profile');
+if (profileId) {
+    console.log('🔗 Profile parameter detected:', profileId);
+    setTimeout(async () => {
+        await handleQRProfileAccess(profileId);
+    }, 500);
+    return; // Skip other initialization
+}
 
             // Check for stored user code on page load
             const storedCode = localStorage.getItem('ohk_user_code');
@@ -3446,6 +3432,7 @@ async function handleQRProfileAccess(userId) {
         window.userLogout = userLogout;
         window.forgetDevice = forgetDevice;
         window.goToLogin = goToLogin;
+        window.handleQRProfileAccess = handleQRProfileAccess;
         
         // Debug function for testing admin system
         window.debugAdminSystem = async function(email) {
