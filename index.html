@@ -3184,31 +3184,6 @@ async function handleQRProfileAccess(userId) {
                 closeAccountSettingsModal.addEventListener('click', () => hideModal('accountSettingsModal'));
             }
 
-            const changeUsernameForm = document.getElementById('changeUsernameForm');
-            if (changeUsernameForm) {
-                changeUsernameForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    
-                    const newUsername = document.getElementById('newUsername').value;
-                    
-                    if (!newUsername || !currentUser) {
-                        showAlert(document.getElementById('accountSettingsAlert'), 'Vul een gebruikersnaam in');
-                        return;
-                    }
-                    
-                    try {
-                        await database.ref(`users/${currentUser.id}/name`).set(newUsername);
-                        currentUser.name = newUsername;
-                        
-                        document.getElementById('userName').textContent = newUsername;
-                        showAlert(document.getElementById('accountSettingsSuccessAlert'), 'Gebruikersnaam bijgewerkt!');
-                        
-                    } catch (error) {
-                        showAlert(document.getElementById('accountSettingsAlert'), 'Fout bij bijwerken gebruikersnaam: ' + error.message);
-                    }
-                });
-            }
-
             // Admin password modal handlers
             const closeAdminPasswordModal = document.getElementById('closeAdminPasswordModal');
             if (closeAdminPasswordModal) {
