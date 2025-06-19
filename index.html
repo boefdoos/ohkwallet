@@ -2589,6 +2589,46 @@
             showContainer('auth');
             showUserAccess();
         }
+        // QR Profile Access Handler - Context Aware
+async function handleQRProfileAccess(userId) {
+    console.log('🔗 Handling QR profile access for user:', userId);
+    
+    // Check if there's an admin currently logged in
+    if (auth.currentUser && currentAdminData) {
+        console.log('🛡️ Admin detected - opening token management for user:', userId);
+        
+        try {
+            // Verify the user exists
+            const userSnapshot = await database.ref(`users/${userId}`).once('value');
+            if (!userSnapshot.exists()) {
+                throw new Error('Gebruiker niet gevonden');
+            }
+            
+            // Show admin panel and open token modal
+            showContainer('admin');
+            if (!allUsers.length) {
+                await loadUsersList(); // Load users if not already loaded
+            }
+            
+            // Open token management modal for this specific user
+            await openTokenModal(userId);
+            
+            console.log('✅ Admin token management opened for user:', userId);
+            
+        } catch (error) {
+            console.error('❌ Error opening admin token management:', error);
+            alert('Fout bij openen gebruikersbeheer: ' + error.message);
+            
+            // Fallback to public profile
+            await loadPublicProfile(userId);
+        }
+        
+    } else {
+        console.log('👁️ No admin session - showing public profile for user:', userId);
+        // Regular user or no login - show public profile
+        await loadPublicProfile(userId);
+    }
+}
 
         function getURLParameter(name) {
             const urlParams = new URLSearchParams(window.location.search);
