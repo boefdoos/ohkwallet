@@ -391,6 +391,7 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            margin-left: 8px;
         }
 
         .admin-level-super {
@@ -994,7 +995,7 @@
                     <img src="/favicon ohk wallet III.png" alt="OHK Wallet Logo" width="36" height="36" style="vertical-align: middle; margin-right: 8px; border-radius: 50%;">
                     <span id="publicUserName">Gebruiker Profiel</span>
                 </h1>
-                <p>Publiek wallet overzicht - Code: <span class="user-code" id="publicUserCode">Laden...</span></p>
+
             </div>
         </div>
         
@@ -1138,7 +1139,7 @@
                     <img src="/favicon ohk wallet III.png" alt="OHK Wallet Logo" width="36" height="36" style="vertical-align: middle; margin-right: 8px; border-radius: 50%;">
                     Welkom, <span id="userName">Kunstenaar</span>!
                 </h1>
-                <p>Jouw creatieve bijdrage overzicht - Code: <span class="user-code" id="userCode">Laden...</span></p>
+
             </div>
         </div>
         
@@ -1214,7 +1215,7 @@
                     Beheerder Overzicht
                     <span class="admin-level-badge" id="adminLevelBadge">Laden...</span>
                 </h1>
-                <p>Beheer gemeenschap beloningen</p>
+
             </div>
             <div class="dashboard-actions" id="adminActions">
                 <!-- Actions will be populated based on admin level -->
@@ -2082,6 +2083,11 @@
                 
                 if (!userData) {
                     throw new Error('Gebruiker niet gevonden');
+                }
+                
+                // Voorkom negatief saldo
+                if (amount < 0 && (userData.tokens || 0) + amount < 0) {
+                    throw new Error(`Onvoldoende tokens. Huidig saldo: ${userData.tokens || 0}`);
                 }
                 
                 const newTokens = (userData.tokens || 0) + amount;
