@@ -1446,13 +1446,7 @@
                     <label for="addAdminPassword">Tijdelijk Wachtwoord</label>
                     <input type="password" id="addAdminPassword" class="form-control" placeholder="Min. 6 tekens — beheerder kan dit later wijzigen" required autocomplete="new-password">
                 </div>
-                <div class="form-group">
-                    <label for="addAdminLevel">Beheerder Niveau</label>
-                    <select id="addAdminLevel" class="form-control" required>
-                        <option value="">Selecteer beheerder niveau</option>
-                        <option value="regular">Gewone Beheerder (Alleen Token Beheer)</option>
-                    </select>
-                </div>
+                <input type="hidden" id="addAdminLevel" value="regular">
                 <div class="form-group">
                     <button type="submit" class="btn btn-full">Beheerder Toevoegen</button>
                 </div>
