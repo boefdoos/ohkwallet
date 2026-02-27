@@ -189,6 +189,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            gap: 8px;
             padding: 16px 24px;
             background: var(--primary);
             color: white;
@@ -569,6 +570,7 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .modal-content {
@@ -578,8 +580,7 @@
             border-radius: var(--border-radius);
             width: calc(100% - 40px);
             max-width: 600px;
-            max-height: calc(100vh - 40px);
-            overflow-y: auto;
+            overflow-y: visible;
             box-shadow: 0 20px 25px rgba(0, 0, 0, 0.2);
             position: relative;
         }
@@ -1261,6 +1262,13 @@
                 </div>
             </div>
             
+            <!-- Werkdag - bovenaan voor snel gebruik -->
+            <div class="form-group mb-20">
+                <button type="button" class="btn btn-full" id="addWorkDayBtn" style="background: var(--success);">
+                    <i class="fas fa-calendar-check"></i> Werkdag registreren (+3 tokens)
+                </button>
+            </div>
+
             <!-- Quick Actions -->
             <div id="quickTokenActions" class="mb-20">
                 <button type="button" class="btn" id="quickAddBtn">+1 Token</button>
@@ -1280,10 +1288,6 @@
                 <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
                     <button type="submit" class="btn" style="flex: 1; min-width: 120px;">Tokens Toevoegen</button>
                     <button type="button" class="btn btn-danger" id="removeTokensBtn" style="flex: 1; min-width: 120px;">Tokens Verwijderen</button>
-                </div>
-                
-                <div class="form-group">
-                    <button type="button" class="btn btn-secondary btn-full" id="addWorkDayBtn">Werkdag registreren (+3 tokens)</button>
                 </div>
             </form>
             
@@ -1724,21 +1728,13 @@
                 // Sort by timestamp descending (newest first)
                 transactions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 
+                // Bereken lopend saldo: start bij huidig saldo en trek elke transactie af
+                // (van nieuwste naar oudste), zodat elke rij het saldo NA die transactie toont
                 let runningBalance = currentUser.tokens || 0;
-                
-                // Calculate running balance backwards
-                for (let i = transactions.length - 1; i >= 0; i--) {
-                    const transaction = transactions[i];
-                    if (i === transactions.length - 1) {
-                        runningBalance = (currentUser.tokens || 0);
-                        for (let j = 0; j < i; j++) {
-                            runningBalance -= transactions[j].amount || 0;
-                        }
-                    } else {
-                        runningBalance += transaction.amount || 0;
-                    }
+                transactions.forEach((transaction) => {
                     transaction.runningBalance = runningBalance;
-                }
+                    runningBalance -= (transaction.amount || 0);
+                });
                 
                 transactions.forEach((transaction) => {
                     const row = document.createElement('tr');
@@ -1904,7 +1900,7 @@
                         <p>Tokens: ${user.tokens || 0} | Werkdagen: ${user.workingDays || 0} | Totaal verdiend: ${user.totalEarned || 0}</p>
                     </div>
                     <div class="user-actions">
-                        <button class="btn btn-small" onclick="openTokenModal('${user.id}')">
+                        <button class="btn btn-small" onclick="openTokenModal('${user.id}')" >
                             <i class="fas fa-coins"></i> Beheer Tokens
                         </button>
                     </div>
