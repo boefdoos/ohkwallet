@@ -2178,6 +2178,12 @@
 
         async function addNewUser(name) {
             try {
+                // Controleer op dubbele naam (hoofdletterongevoelig, via lokale lijst)
+                const duplicate = allUsers.find(u => (u.name || '').toLowerCase() === name.toLowerCase());
+                if (duplicate) {
+                    throw new Error(`Er bestaat al een gebruiker met de naam "${duplicate.name}". Controleer de lijst of gebruik een andere naam.`);
+                }
+                
                 let userCode;
                 let isUnique = false;
                 
