@@ -1680,7 +1680,6 @@
 
         async function initializeUserDashboard(userData) {
             document.getElementById('userName').textContent = userData.name || 'Gebruiker';
-            document.getElementById('userCode').textContent = userData.userCode || 'Geen code';
             document.getElementById('availableTokens').textContent = userData.tokens || 0;
             document.getElementById('totalEarned').textContent = userData.totalEarned || 0;
             document.getElementById('workingDays').textContent = userData.workingDays || 0;
@@ -2302,7 +2301,6 @@
                 const userData = userSnapshot.val();
                 
                 document.getElementById('publicUserName').textContent = userData.name || 'Onbekende Gebruiker';
-                document.getElementById('publicUserCode').textContent = userData.userCode || 'Geen code';
                 document.getElementById('publicAvailableTokens').textContent = userData.tokens || 0;
                 document.getElementById('publicTotalEarned').textContent = userData.totalEarned || 0;
                 document.getElementById('publicWorkingDays').textContent = userData.workingDays || 0;
