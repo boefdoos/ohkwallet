@@ -1041,10 +1041,10 @@
         <div class="account-section">
             <h3>Acties</h3>
             <div class="account-actions">
-                <button class="btn btn-secondary" onclick="goToLogin()">
+                <button class="btn btn-secondary" id="publicProfileActionBtn" onclick="goToLogin()">
                     <i class="fas fa-sign-in-alt"></i> Inloggen
                 </button>
-                <button class="btn btn-secondary" onclick="window.location.reload()">
+                <button class="btn btn-secondary" id="publicProfileHomeBtn" onclick="window.location.reload()">
                     <i class="fas fa-home"></i> Naar Hoofdpagina
                 </button>
             </div>
@@ -2306,6 +2306,20 @@
                 document.getElementById('publicWorkingDays').textContent = userData.workingDays || 0;
                 
                 await loadPublicTransactionHistory(userId);
+                
+                // Pas knoppen aan op basis van inlogstatus
+                const isLoggedIn = !!localStorage.getItem('ohk_user_code');
+                const actionBtn = document.getElementById('publicProfileActionBtn');
+                const homeBtn = document.getElementById('publicProfileHomeBtn');
+                if (isLoggedIn) {
+                    actionBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Uitloggen';
+                    actionBtn.onclick = userLogout;
+                    homeBtn.style.display = 'none';
+                } else {
+                    actionBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Inloggen';
+                    actionBtn.onclick = goToLogin;
+                    homeBtn.style.display = '';
+                }
                 
                 hideLoading();
                 showContainer('public-profile');
