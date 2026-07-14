@@ -1306,6 +1306,10 @@
                     <i class="fas fa-wallet"></i> Bekijk mijn wallet
                 </button>
             </div>
+
+            <div class="form-links">
+                <a href="#" id="volunteerForgotPasswordLink">Wachtwoord vergeten?</a>
+            </div>
         </form>
         
         <!-- Admin Login Form -->
@@ -1601,6 +1605,25 @@
         </div>
     </div>
     
+    <!-- Volunteer Forgot Password Modal (geen echte e-mail, dus geen resetlink mogelijk) -->
+    <div class="modal" id="volunteerForgotPasswordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Wachtwoord vergeten?</h2>
+                <button class="close" id="closeVolunteerForgotPasswordModal">×</button>
+            </div>
+
+            <p style="margin-bottom: 16px; color: var(--text);">Geen probleem. Je gebruikersnaam en wachtwoord zijn een extra sneltoets - je 10-cijferige code blijft altijd werken.</p>
+            <p style="margin-bottom: 20px; color: var(--gray);">Log in met je 10-cijferige code, ga naar Instellingen, en stel daar een nieuwe gebruikersnaam en wachtwoord in.</p>
+
+            <div class="form-group">
+                <button type="button" class="btn btn-full" id="volunteerForgotPasswordToCodeBtn">
+                    <i class="fas fa-hashtag"></i> Ga naar 10-cijferige code
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Account Settings Modal -->
     <div class="modal" id="accountSettingsModal">
         <div class="modal-content">
@@ -1634,7 +1657,8 @@
                 </div>
 
                 <div id="quickLoginAlreadySetUp" style="display: none;">
-                    <p style="color: var(--gray);">Je kan al inloggen met gebruikersnaam <strong id="quickLoginCurrentUsername"></strong> op het inlogscherm, via "Inloggen met gebruikersnaam en wachtwoord".</p>
+                    <p style="color: var(--gray); margin-bottom: 12px;">Je kan al inloggen met gebruikersnaam <strong id="quickLoginCurrentUsername"></strong> op het inlogscherm, via "Inloggen met gebruikersnaam en wachtwoord".</p>
+                    <button type="button" class="btn btn-secondary btn-full" id="resetQuickLoginBtn">Nieuwe gebruikersnaam en wachtwoord instellen</button>
                 </div>
             </div>
 
@@ -2961,6 +2985,28 @@
                 });
             }
 
+            // Volunteer 'wachtwoord vergeten' (geen echte e-mail -> terug naar 10-cijferige code)
+            const volunteerForgotPasswordLink = document.getElementById('volunteerForgotPasswordLink');
+            if (volunteerForgotPasswordLink) {
+                volunteerForgotPasswordLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showModal('volunteerForgotPasswordModal');
+                });
+            }
+
+            const closeVolunteerForgotPasswordModal = document.getElementById('closeVolunteerForgotPasswordModal');
+            if (closeVolunteerForgotPasswordModal) {
+                closeVolunteerForgotPasswordModal.addEventListener('click', () => hideModal('volunteerForgotPasswordModal'));
+            }
+
+            const volunteerForgotPasswordToCodeBtn = document.getElementById('volunteerForgotPasswordToCodeBtn');
+            if (volunteerForgotPasswordToCodeBtn) {
+                volunteerForgotPasswordToCodeBtn.addEventListener('click', function() {
+                    hideModal('volunteerForgotPasswordModal');
+                    showUserAccess();
+                });
+            }
+
             // Token modal event handlers
             const closeTokenModal = document.getElementById('closeTokenModal');
             if (closeTokenModal) {
@@ -3184,6 +3230,16 @@
             const closeAccountSettingsModal = document.getElementById('closeAccountSettingsModal');
             if (closeAccountSettingsModal) {
                 closeAccountSettingsModal.addEventListener('click', () => hideModal('accountSettingsModal'));
+            }
+
+            const resetQuickLoginBtn = document.getElementById('resetQuickLoginBtn');
+            if (resetQuickLoginBtn) {
+                resetQuickLoginBtn.addEventListener('click', function() {
+                    document.getElementById('setupUsername').value = '';
+                    document.getElementById('setupPassword').value = '';
+                    document.getElementById('quickLoginAlreadySetUp').style.display = 'none';
+                    document.getElementById('quickLoginNotSetUp').style.display = 'block';
+                });
             }
 
             // One-time username/password setup for volunteers (does not touch admin accounts)
