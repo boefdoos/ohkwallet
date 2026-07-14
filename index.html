@@ -1761,6 +1761,11 @@
         const database = firebase.database();
         
         // Global variables
+        // Vast domein voor QR-codes: nooit window.location gebruiken, anders bakt een
+        // QR-code de URL van een specifieke (bevroren) Vercel-deployment in plaats van
+        // het altijd-actuele productie-adres in.
+        const WALLET_BASE_URL = 'https://ohkwallet.vercel.app/';
+
         let currentUser = null;
         let currentAdminData = null;
         let allUsers = [];
@@ -2024,8 +2029,7 @@
             document.getElementById('workingDays').textContent = userData.workingDays || 0;
             
             // Generate QR code with URL to user profile
-            const baseUrl = window.location.origin + window.location.pathname;
-            const qrData = `${baseUrl}?profile=${userData.id}`;
+            const qrData = `${WALLET_BASE_URL}?profile=${userData.id}`;
             const qrCanvas = document.getElementById('userQRCode');
             if (qrCanvas) {
                 await generateQRCode(qrCanvas, qrData);
@@ -2351,8 +2355,7 @@
                 document.getElementById('modalUserCode').textContent = userData.userCode || 'Geen code';
                 
                 // Generate QR code with URL to user profile  
-                const baseUrl = window.location.origin + window.location.pathname;
-                const qrData = `${baseUrl}?profile=${userId}`;
+                const qrData = `${WALLET_BASE_URL}?profile=${userId}`;
                 const qrCanvas = document.getElementById('modalQRCode');
                 if (qrCanvas) {
                     await generateQRCode(qrCanvas, qrData);
