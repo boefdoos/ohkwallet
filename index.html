@@ -258,6 +258,44 @@
             min-height: 36px;
         }
 
+        /* === LOGIN METHOD TABS (code vs. gebruikersnaam, gelijk gewicht) === */
+        .login-method-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+
+        .login-method-tab {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 12px;
+            border: none;
+            background: transparent;
+            border-radius: calc(var(--border-radius) - 4px);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: var(--min-touch-target);
+        }
+
+        .login-method-tab.active {
+            background: var(--background);
+            color: var(--primary);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-method-tab:hover:not(.active) {
+            color: var(--text);
+        }
+
         /* === LOGIN DIVIDER === */
         .login-divider {
             text-align: center;
@@ -838,7 +876,15 @@
 
         .onboarding-actions {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
             gap: 12px;
+        }
+
+        .onboarding-actions-right {
+            display: flex;
+            gap: 12px;
+            margin-left: auto;
         }
 
         .onboarding-contact {
@@ -1095,32 +1141,38 @@
         <div class="onboarding-card">
             <div class="onboarding-step" data-step="1">
                 <div class="onboarding-icon"><i class="fas fa-coins"></i></div>
+                <h2>Wat is een token?</h2>
+                <p>Een digitoken heeft dezelfde waarde als een fysieke jeton. Je verzamelt ze digitaal in deze wallet in plaats van in je broekzak.</p>
+            </div>
+            <div class="onboarding-step" data-step="2" style="display: none;">
+                <div class="onboarding-icon"><i class="fas fa-hands-helping"></i></div>
                 <h2>Meehelpen = tokens verdienen</h2>
                 <p>Sta je mee op een event, achter de bar, aan de techniek, aan de inkom, bij de op- of afbouw? Dan krijg je nadien automatisch <strong>3 tokens</strong> in je account. Geen aanvraag, geen gedoe: gewoon een bedankje van ons.</p>
             </div>
-            <div class="onboarding-step" data-step="2" style="display: none;">
+            <div class="onboarding-step" data-step="3" style="display: none;">
                 <div class="onboarding-icon"><i class="fas fa-calendar-check"></i></div>
                 <h2>Jouw tokens, jouw regels</h2>
                 <p>Je tokens verdwijnen niet. Zet ze in wanneer het jou uitkomt, op eender welk OHK event.</p>
             </div>
-            <div class="onboarding-step" data-step="3" style="display: none;">
+            <div class="onboarding-step" data-step="4" style="display: none;">
                 <div class="onboarding-icon"><i class="fas fa-mug-hot"></i></div>
                 <h2>Aan het werk? Geen tokens nodig</h2>
                 <p>Sta je zelf te werken tijdens een event? Dan heb je geen tokens nodig om iets te drinken. Dat gebeurt gewoon, binnen een redelijke hoeveelheid, op basis van vertrouwen.</p>
-                <div class="onboarding-callout">
-                    <p><strong>Goed om te weten:</strong> je tokens en je shift-drankjes hebben niks met elkaar te maken. Je saldo verandert alleen als je nieuwe tokens verdient, of ze zelf inzet buiten je shift.</p>
-                </div>
             </div>
 
             <div class="onboarding-dots">
                 <span class="onboarding-dot active" data-dot="1"></span>
                 <span class="onboarding-dot" data-dot="2"></span>
                 <span class="onboarding-dot" data-dot="3"></span>
+                <span class="onboarding-dot" data-dot="4"></span>
             </div>
 
             <div class="onboarding-actions">
-                <button type="button" class="btn btn-secondary" id="onboardingSkipBtn">Overslaan</button>
-                <button type="button" class="btn" id="onboardingNextBtn">Volgende</button>
+                <button type="button" class="btn btn-secondary" id="onboardingPrevBtn" style="display: none;">Vorige</button>
+                <div class="onboarding-actions-right">
+                    <button type="button" class="btn btn-secondary" id="onboardingSkipBtn">Overslaan</button>
+                    <button type="button" class="btn" id="onboardingNextBtn">Volgende</button>
+                </div>
             </div>
 
             <p class="onboarding-contact">Vragen over je saldo, of doet de app raar? Mail naar <strong>thomas@ohk.be</strong>, we fixen het meteen.</p>
@@ -1199,6 +1251,16 @@
             </h1>
             <p>Rewards voor de beste vrijwilligers ♥</p>
         </div>
+
+        <!-- Login method switcher: code vs. gebruikersnaam, gelijk gewicht -->
+        <div class="login-method-tabs" id="loginMethodTabs">
+            <button type="button" class="login-method-tab active" id="tabCodeLogin" data-method="code">
+                <i class="fas fa-hashtag"></i> 10-cijferige code
+            </button>
+            <button type="button" class="login-method-tab" id="tabUsernameLogin" data-method="username">
+                <i class="fas fa-user"></i> Gebruikersnaam
+            </button>
+        </div>
         
         <!-- User Access Form -->
         <form id="userAccessForm">
@@ -1225,10 +1287,6 @@
             <div class="login-divider">
                 <span>Of scan een QR-code voor directe toegang</span>
             </div>
-
-            <div class="form-links">
-                <a href="#" id="showUsernameLoginLink">Inloggen met gebruikersnaam en wachtwoord</a>
-            </div>
         </form>
 
         <!-- Volunteer Username/Password Login Form -->
@@ -1248,12 +1306,6 @@
             <div class="form-group">
                 <button type="submit" class="btn btn-full">
                     <i class="fas fa-wallet"></i> Bekijk mijn wallet
-                </button>
-            </div>
-
-            <div class="form-group" style="margin-top: 24px;">
-                <button type="button" class="btn btn-secondary btn-full" id="backToUserAccessFromUsernameBtn">
-                    <i class="fas fa-arrow-left"></i> Terug naar 10-cijferige code
                 </button>
             </div>
         </form>
@@ -1711,11 +1763,19 @@
             document.getElementById('publicProfileContainer').style.display = containerName === 'public-profile' ? 'block' : 'none';
         }
 
+        function setLoginMethodTab(method) {
+            const tabCode = document.getElementById('tabCodeLogin');
+            const tabUsername = document.getElementById('tabUsernameLogin');
+            if (tabCode) tabCode.classList.toggle('active', method === 'code');
+            if (tabUsername) tabUsername.classList.toggle('active', method === 'username');
+        }
+
         function showAdminLogin() {
             document.getElementById('userAccessForm').classList.add('hidden');
             document.getElementById('usernameLoginForm').classList.add('hidden');
             document.getElementById('loginForm').classList.remove('hidden');
             document.getElementById('authFooter').style.display = 'none';
+            document.getElementById('loginMethodTabs').style.display = 'none';
         }
         
         function showUserAccess() {
@@ -1723,18 +1783,22 @@
             document.getElementById('usernameLoginForm').classList.add('hidden');
             document.getElementById('userAccessForm').classList.remove('hidden');
             document.getElementById('authFooter').style.display = 'block';
+            document.getElementById('loginMethodTabs').style.display = 'flex';
+            setLoginMethodTab('code');
         }
 
         function showUsernameLogin() {
             document.getElementById('userAccessForm').classList.add('hidden');
             document.getElementById('loginForm').classList.add('hidden');
             document.getElementById('usernameLoginForm').classList.remove('hidden');
-            document.getElementById('authFooter').style.display = 'none';
+            document.getElementById('authFooter').style.display = 'block';
+            document.getElementById('loginMethodTabs').style.display = 'flex';
+            setLoginMethodTab('username');
         }
 
         // === Onboarding (uitleg over tokens voor nieuwe vrijwilligers) ===
         let onboardingStep = 1;
-        const ONBOARDING_TOTAL_STEPS = 3;
+        const ONBOARDING_TOTAL_STEPS = 4;
 
         function renderOnboardingStep() {
             for (let i = 1; i <= ONBOARDING_TOTAL_STEPS; i++) {
@@ -1743,8 +1807,10 @@
                 if (stepEl) stepEl.style.display = i === onboardingStep ? 'block' : 'none';
                 if (dotEl) dotEl.classList.toggle('active', i === onboardingStep);
             }
+            const prevBtn = document.getElementById('onboardingPrevBtn');
             const nextBtn = document.getElementById('onboardingNextBtn');
             const skipBtn = document.getElementById('onboardingSkipBtn');
+            if (prevBtn) prevBtn.style.display = onboardingStep === 1 ? 'none' : 'inline-flex';
             if (nextBtn) nextBtn.textContent = onboardingStep === ONBOARDING_TOTAL_STEPS ? 'Aan de slag!' : 'Volgende';
             if (skipBtn) skipBtn.style.display = onboardingStep === ONBOARDING_TOTAL_STEPS ? 'none' : 'inline-flex';
         }
@@ -2682,23 +2748,21 @@
                 backToUserBtn.addEventListener('click', showUserAccess);
             }
 
-            // Volunteer username/password login toggle
-            const showUsernameLoginLink = document.getElementById('showUsernameLoginLink');
-            const backToUserAccessFromUsernameBtn = document.getElementById('backToUserAccessFromUsernameBtn');
+            // Volunteer login method tabs (code vs. gebruikersnaam)
+            const tabCodeLogin = document.getElementById('tabCodeLogin');
+            const tabUsernameLogin = document.getElementById('tabUsernameLogin');
 
-            if (showUsernameLoginLink) {
-                showUsernameLoginLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    showUsernameLogin();
-                });
+            if (tabCodeLogin) {
+                tabCodeLogin.addEventListener('click', showUserAccess);
             }
 
-            if (backToUserAccessFromUsernameBtn) {
-                backToUserAccessFromUsernameBtn.addEventListener('click', showUserAccess);
+            if (tabUsernameLogin) {
+                tabUsernameLogin.addEventListener('click', showUsernameLogin);
             }
 
             // Onboarding controls
             const showOnboardingLink = document.getElementById('showOnboardingLink');
+            const onboardingPrevBtn = document.getElementById('onboardingPrevBtn');
             const onboardingNextBtn = document.getElementById('onboardingNextBtn');
             const onboardingSkipBtn = document.getElementById('onboardingSkipBtn');
 
@@ -2706,6 +2770,15 @@
                 showOnboardingLink.addEventListener('click', function(e) {
                     e.preventDefault();
                     openOnboarding();
+                });
+            }
+
+            if (onboardingPrevBtn) {
+                onboardingPrevBtn.addEventListener('click', function() {
+                    if (onboardingStep > 1) {
+                        onboardingStep--;
+                        renderOnboardingStep();
+                    }
                 });
             }
 
