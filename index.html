@@ -2644,47 +2644,33 @@
         }
 
         // Public profile functions
-        async function loadPublicProfile(userId) {
-            showLoading('Profiel laden...');
-            
+        // QR-scan (?profile=<id>) logt nu meteen volledig in op de eigen wallet,
+        // in plaats van het oude, aparte beperkte profielschermpje te tonen.
+        async function loginWithProfileId(userId) {
+            showLoading('Wallet laden...');
+
             try {
                 const userSnapshot = await database.ref(`users/${userId}`).once('value');
-                
+
                 if (!userSnapshot.exists()) {
                     throw new Error('Gebruiker niet gevonden');
                 }
-                
-                const userData = userSnapshot.val();
-                
-                document.getElementById('publicUserName').textContent = userData.name || 'Onbekende Gebruiker';
-                document.getElementById('publicAvailableTokens').textContent = userData.tokens || 0;
-                document.getElementById('publicTotalEarned').textContent = userData.totalEarned || 0;
-                document.getElementById('publicWorkingDays').textContent = userData.workingDays || 0;
-                
-                await loadPublicTransactionHistory(userId);
-                
-                // Pas knoppen aan op basis van inlogstatus
-                const isLoggedIn = !!localStorage.getItem('ohk_user_code');
-                const actionBtn = document.getElementById('publicProfileActionBtn');
-                const homeBtn = document.getElementById('publicProfileHomeBtn');
-                if (isLoggedIn) {
-                    actionBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Uitloggen';
-                    actionBtn.onclick = userLogout;
-                    homeBtn.style.display = 'none';
-                } else {
-                    actionBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Inloggen';
-                    actionBtn.onclick = goToLogin;
-                    homeBtn.style.display = '';
-                }
-                
+
+                currentUser = { ...userSnapshot.val(), id: userId };
+
+                // Haal ?profile=... uit de adresbalk zodat verversen niet opnieuw dit pad volgt
+                window.history.replaceState(null, null, window.location.pathname);
+
                 hideLoading();
-                showContainer('public-profile');
-                
+                showContainer('dashboard');
+                await initializeUserDashboard(currentUser);
+
             } catch (error) {
-                console.error('❌ Error loading public profile:', error);
+                console.error('❌ Error logging in via QR:', error);
                 hideLoading();
-                alert('Fout bij laden profiel: ' + error.message);
+                alert('Fout bij laden wallet: ' + error.message);
                 showContainer('auth');
+                showUserAccess();
             }
         }
 
@@ -3523,12 +3509,12 @@
                 }
             });
 
-            // Check for URL parameters (QR code scans)
+            // Check for URL parameters (QR code scans) - logt nu meteen volledig in
             const profileId = getURLParameter('profile');
             if (profileId) {
                 console.log('🔗 Profile parameter detected:', profileId);
                 setTimeout(async () => {
-                    await loadPublicProfile(profileId);
+                    await loginWithProfileId(profileId);
                 }, 500);
                 return;
             }
