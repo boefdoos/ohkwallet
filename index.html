@@ -1368,6 +1368,14 @@
                 </h1>
 
             </div>
+            <div class="dashboard-actions">
+                <button class="btn btn-secondary" id="accountSettingsBtn">
+                    <i class="fas fa-cog"></i> Instellingen
+                </button>
+                <button class="btn btn-danger" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Uitloggen
+                </button>
+            </div>
         </div>
         
         <div class="token-display">
@@ -1416,18 +1424,12 @@
             </table>
         </div>
 
-        <!-- Account Section at Bottom -->
-        <div class="account-section">
-            <h3>Account Instellingen</h3>
+        <!-- Apparaat Sectie (alleen zichtbaar als dit apparaat onthouden werd) -->
+        <div class="account-section" id="deviceSection" style="display: none;">
+            <h3>Apparaat</h3>
             <div class="account-actions">
-                <button class="btn btn-secondary" id="accountSettingsBtn">
-                    <i class="fas fa-cog"></i> Instellingen
-                </button>
                 <button class="btn btn-warning" id="forgetDeviceBtn" style="display: none;">
                     <i class="fas fa-mobile-alt"></i> Vergeet Apparaat
-                </button>
-                <button class="btn btn-danger" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> Uitloggen
                 </button>
             </div>
         </div>
@@ -1609,19 +1611,8 @@
             
             <div class="alert alert-success" id="accountSettingsSuccessAlert"></div>
             <div class="alert alert-danger" id="accountSettingsAlert"></div>
-            
-            <form id="changeUsernameForm">
-                <h3 style="margin: 20px 0 10px 0; color: var(--primary);">Gebruikersnaam Wijzigen</h3>
-                <div class="form-group">
-                    <label for="newUsername">Nieuwe Gebruikersnaam</label>
-                    <input type="text" id="newUsername" class="form-control" placeholder="Voer nieuwe gebruikersnaam in" required autocomplete="name">
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-secondary btn-full">Gebruikersnaam Bijwerken</button>
-                </div>
-            </form>
-            
-            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
+
+            <div>
                 <h3 style="margin-bottom: 10px; color: var(--primary);">Snelle Login Instellen</h3>
 
                 <div id="quickLoginNotSetUp">
@@ -2007,6 +1998,7 @@
             const storedCode = localStorage.getItem('ohk_user_code');
             if (storedCode) {
                 document.getElementById('forgetDeviceBtn').style.display = 'inline-flex';
+                document.getElementById('deviceSection').style.display = 'block';
             }
             
             // Load transaction history
@@ -2474,8 +2466,6 @@
         }
 
         function openAccountSettingsModal() {
-            document.getElementById('newUsername').value = currentUser?.name || '';
-
             const notSetUp = document.getElementById('quickLoginNotSetUp');
             const alreadySetUp = document.getElementById('quickLoginAlreadySetUp');
             if (currentUser?.authUid) {
@@ -2720,6 +2710,7 @@
             if (confirm('Weet je zeker dat je dit apparaat wilt vergeten? Je moet dan jouw code opnieuw invoeren.')) {
                 localStorage.removeItem('ohk_user_code');
                 document.getElementById('forgetDeviceBtn').style.display = 'none';
+                document.getElementById('deviceSection').style.display = 'none';
             }
         }
 
@@ -3193,31 +3184,6 @@
             const closeAccountSettingsModal = document.getElementById('closeAccountSettingsModal');
             if (closeAccountSettingsModal) {
                 closeAccountSettingsModal.addEventListener('click', () => hideModal('accountSettingsModal'));
-            }
-
-            const changeUsernameForm = document.getElementById('changeUsernameForm');
-            if (changeUsernameForm) {
-                changeUsernameForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    
-                    const newUsername = document.getElementById('newUsername').value;
-                    
-                    if (!newUsername || !currentUser) {
-                        showAlert(document.getElementById('accountSettingsAlert'), 'Vul een gebruikersnaam in');
-                        return;
-                    }
-                    
-                    try {
-                        await database.ref(`users/${currentUser.id}/name`).set(newUsername);
-                        currentUser.name = newUsername;
-                        
-                        document.getElementById('userName').textContent = newUsername;
-                        showAlert(document.getElementById('accountSettingsSuccessAlert'), 'Gebruikersnaam bijgewerkt!');
-                        
-                    } catch (error) {
-                        showAlert(document.getElementById('accountSettingsAlert'), 'Fout bij bijwerken gebruikersnaam: ' + error.message);
-                    }
-                });
             }
 
             // One-time username/password setup for volunteers (does not touch admin accounts)
