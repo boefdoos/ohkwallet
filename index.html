@@ -568,7 +568,9 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(20, 20, 20, 0.75);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
@@ -729,7 +731,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(20, 20, 20, 0.75);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
             z-index: 9999;
         }
 
@@ -744,6 +748,104 @@
             text-align: center;
             min-width: 200px;
             box-shadow: 0 20px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* === ONBOARDING (first-time uitleg over tokens) === */
+        .onboarding-overlay {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(20, 20, 20, 0.75);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .onboarding-card {
+            background: var(--background);
+            margin: 40px auto;
+            padding: 32px;
+            border-radius: var(--border-radius);
+            width: calc(100% - 40px);
+            max-width: 460px;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .onboarding-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: rgba(0, 118, 255, 0.1);
+            color: var(--primary);
+            font-size: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .onboarding-step h2 {
+            color: var(--primary);
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .onboarding-step p {
+            color: var(--text);
+            font-size: 15px;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .onboarding-callout {
+            background: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 14px 16px;
+            margin-top: 16px;
+            text-align: left;
+        }
+
+        .onboarding-callout p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .onboarding-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0;
+        }
+
+        .onboarding-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: background 0.3s ease;
+        }
+
+        .onboarding-dot.active {
+            background: var(--primary);
+        }
+
+        .onboarding-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .onboarding-contact {
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--gray);
+            text-align: center;
         }
 
         /* === STATUS BAR === */
@@ -988,6 +1090,43 @@
         </div>
     </div>
     
+    <!-- First-time Onboarding: uitleg over tokens -->
+    <div class="onboarding-overlay" id="onboardingOverlay" style="display: none;">
+        <div class="onboarding-card">
+            <div class="onboarding-step" data-step="1">
+                <div class="onboarding-icon"><i class="fas fa-coins"></i></div>
+                <h2>Meehelpen = tokens verdienen</h2>
+                <p>Sta je mee op een event, achter de bar, aan de techniek, aan de inkom, bij de op- of afbouw? Dan krijg je nadien automatisch <strong>3 tokens</strong> in je account. Geen aanvraag, geen gedoe: gewoon een bedankje van ons.</p>
+            </div>
+            <div class="onboarding-step" data-step="2" style="display: none;">
+                <div class="onboarding-icon"><i class="fas fa-calendar-check"></i></div>
+                <h2>Jouw tokens, jouw regels</h2>
+                <p>Je tokens verdwijnen niet. Zet ze in wanneer het jou uitkomt, op eender welk OHK event.</p>
+            </div>
+            <div class="onboarding-step" data-step="3" style="display: none;">
+                <div class="onboarding-icon"><i class="fas fa-mug-hot"></i></div>
+                <h2>Aan het werk? Geen tokens nodig</h2>
+                <p>Sta je zelf te werken tijdens een event? Dan heb je geen tokens nodig om iets te drinken. Dat gebeurt gewoon, binnen een redelijke hoeveelheid, op basis van vertrouwen.</p>
+                <div class="onboarding-callout">
+                    <p><strong>Goed om te weten:</strong> je tokens en je shift-drankjes hebben niks met elkaar te maken. Je saldo verandert alleen als je nieuwe tokens verdient, of ze zelf inzet buiten je shift.</p>
+                </div>
+            </div>
+
+            <div class="onboarding-dots">
+                <span class="onboarding-dot active" data-dot="1"></span>
+                <span class="onboarding-dot" data-dot="2"></span>
+                <span class="onboarding-dot" data-dot="3"></span>
+            </div>
+
+            <div class="onboarding-actions">
+                <button type="button" class="btn btn-secondary" id="onboardingSkipBtn">Overslaan</button>
+                <button type="button" class="btn" id="onboardingNextBtn">Volgende</button>
+            </div>
+
+            <p class="onboarding-contact">Vragen over je saldo, of doet de app raar? Mail naar <strong>thomas@ohk.be</strong>, we fixen het meteen.</p>
+        </div>
+    </div>
+
     <!-- Public Profile View (for QR code scans) -->
     <div class="container dashboard" id="publicProfileContainer" style="display: none;">
         <div class="dashboard-header">
@@ -1086,6 +1225,37 @@
             <div class="login-divider">
                 <span>Of scan een QR-code voor directe toegang</span>
             </div>
+
+            <div class="form-links">
+                <a href="#" id="showUsernameLoginLink">Inloggen met gebruikersnaam en wachtwoord</a>
+            </div>
+        </form>
+
+        <!-- Volunteer Username/Password Login Form -->
+        <form id="usernameLoginForm" class="hidden">
+            <div class="alert alert-danger" id="usernameLoginAlert"></div>
+
+            <div class="form-group">
+                <label for="volunteerUsernameInput">Gebruikersnaam</label>
+                <input type="text" id="volunteerUsernameInput" class="form-control" placeholder="Jouw gebruikersnaam" required autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="volunteerPasswordInput">Wachtwoord</label>
+                <input type="password" id="volunteerPasswordInput" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-full">
+                    <i class="fas fa-wallet"></i> Bekijk mijn wallet
+                </button>
+            </div>
+
+            <div class="form-group" style="margin-top: 24px;">
+                <button type="button" class="btn btn-secondary btn-full" id="backToUserAccessFromUsernameBtn">
+                    <i class="fas fa-arrow-left"></i> Terug naar 10-cijferige code
+                </button>
+            </div>
         </form>
         
         <!-- Admin Login Form -->
@@ -1128,6 +1298,10 @@
             <div class="help-text">
                 <i class="fas fa-info-circle"></i>
                 Nieuw in het systeem? Neem contact op met een beheerder.
+            </div>
+
+            <div class="form-links" style="margin-top: 8px;">
+                <a href="#" id="showOnboardingLink"><i class="fas fa-coins"></i> Wat zijn tokens? Bekijk de uitleg</a>
             </div>
         </div>
     </div>
@@ -1396,6 +1570,32 @@
             </form>
             
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
+                <h3 style="margin-bottom: 10px; color: var(--primary);">Snelle Login Instellen</h3>
+
+                <div id="quickLoginNotSetUp">
+                    <p style="margin-bottom: 15px; color: var(--gray);">Stel eenmalig een gebruikersnaam en wachtwoord in. Daarna kan je inloggen zonder je 10-cijferige code in te typen. Je code blijft ook gewoon werken.</p>
+                    <form id="setupUsernamePasswordForm">
+                        <div class="alert alert-danger" id="setupUsernamePasswordAlert"></div>
+                        <div class="form-group">
+                            <label for="setupUsername">Gebruikersnaam</label>
+                            <input type="text" id="setupUsername" class="form-control" placeholder="Kies een gebruikersnaam" required minlength="3" autocomplete="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="setupPassword">Wachtwoord</label>
+                            <input type="password" id="setupPassword" class="form-control" placeholder="Min. 6 tekens" required minlength="6" autocomplete="new-password">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-secondary btn-full">Gebruikersnaam en Wachtwoord Instellen</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="quickLoginAlreadySetUp" style="display: none;">
+                    <p style="color: var(--gray);">Je kan al inloggen met gebruikersnaam <strong id="quickLoginCurrentUsername"></strong> op het inlogscherm, via "Inloggen met gebruikersnaam en wachtwoord".</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
                 <h3 style="margin-bottom: 10px; color: var(--danger);">Account Verwijderen</h3>
                 <p style="margin-bottom: 15px; color: var(--gray);">Dit zal jouw account en alle gegevens permanent verwijderen. Je kunt later opnieuw registreren met hetzelfde e-mailadres indien gewenst.</p>
                 <div class="form-group">
@@ -1513,14 +1713,59 @@
 
         function showAdminLogin() {
             document.getElementById('userAccessForm').classList.add('hidden');
+            document.getElementById('usernameLoginForm').classList.add('hidden');
             document.getElementById('loginForm').classList.remove('hidden');
             document.getElementById('authFooter').style.display = 'none';
         }
         
         function showUserAccess() {
             document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('usernameLoginForm').classList.add('hidden');
             document.getElementById('userAccessForm').classList.remove('hidden');
             document.getElementById('authFooter').style.display = 'block';
+        }
+
+        function showUsernameLogin() {
+            document.getElementById('userAccessForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('usernameLoginForm').classList.remove('hidden');
+            document.getElementById('authFooter').style.display = 'none';
+        }
+
+        // === Onboarding (uitleg over tokens voor nieuwe vrijwilligers) ===
+        let onboardingStep = 1;
+        const ONBOARDING_TOTAL_STEPS = 3;
+
+        function renderOnboardingStep() {
+            for (let i = 1; i <= ONBOARDING_TOTAL_STEPS; i++) {
+                const stepEl = document.querySelector(`.onboarding-step[data-step="${i}"]`);
+                const dotEl = document.querySelector(`.onboarding-dot[data-dot="${i}"]`);
+                if (stepEl) stepEl.style.display = i === onboardingStep ? 'block' : 'none';
+                if (dotEl) dotEl.classList.toggle('active', i === onboardingStep);
+            }
+            const nextBtn = document.getElementById('onboardingNextBtn');
+            const skipBtn = document.getElementById('onboardingSkipBtn');
+            if (nextBtn) nextBtn.textContent = onboardingStep === ONBOARDING_TOTAL_STEPS ? 'Aan de slag!' : 'Volgende';
+            if (skipBtn) skipBtn.style.display = onboardingStep === ONBOARDING_TOTAL_STEPS ? 'none' : 'inline-flex';
+        }
+
+        function openOnboarding() {
+            onboardingStep = 1;
+            renderOnboardingStep();
+            document.getElementById('onboardingOverlay').style.display = 'block';
+        }
+
+        function closeOnboarding(markSeen = true) {
+            document.getElementById('onboardingOverlay').style.display = 'none';
+            if (markSeen) {
+                localStorage.setItem('ohk_onboarding_seen', '1');
+            }
+        }
+
+        function maybeShowOnboarding() {
+            if (!localStorage.getItem('ohk_onboarding_seen')) {
+                openOnboarding();
+            }
         }
 
         function showModal(modalId) {
@@ -2164,6 +2409,18 @@
 
         function openAccountSettingsModal() {
             document.getElementById('newUsername').value = currentUser?.name || '';
+
+            const notSetUp = document.getElementById('quickLoginNotSetUp');
+            const alreadySetUp = document.getElementById('quickLoginAlreadySetUp');
+            if (currentUser?.authUid) {
+                notSetUp.style.display = 'none';
+                alreadySetUp.style.display = 'block';
+                document.getElementById('quickLoginCurrentUsername').textContent = currentUser?.loginUsername || '';
+            } else {
+                notSetUp.style.display = 'block';
+                alreadySetUp.style.display = 'none';
+            }
+
             showModal('accountSettingsModal');
         }
 
@@ -2279,6 +2536,9 @@
         function userLogout() {
             currentUser = null;
             localStorage.removeItem('ohk_user_code');
+            // Also end any Firebase Auth session (relevant for volunteers who log in
+            // with a username/password instead of the 10-digit code).
+            auth.signOut();
             showContainer('auth');
             document.getElementById('authFooter').style.display = 'block';
         }
@@ -2420,6 +2680,101 @@
             
             if (backToUserBtn) {
                 backToUserBtn.addEventListener('click', showUserAccess);
+            }
+
+            // Volunteer username/password login toggle
+            const showUsernameLoginLink = document.getElementById('showUsernameLoginLink');
+            const backToUserAccessFromUsernameBtn = document.getElementById('backToUserAccessFromUsernameBtn');
+
+            if (showUsernameLoginLink) {
+                showUsernameLoginLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showUsernameLogin();
+                });
+            }
+
+            if (backToUserAccessFromUsernameBtn) {
+                backToUserAccessFromUsernameBtn.addEventListener('click', showUserAccess);
+            }
+
+            // Onboarding controls
+            const showOnboardingLink = document.getElementById('showOnboardingLink');
+            const onboardingNextBtn = document.getElementById('onboardingNextBtn');
+            const onboardingSkipBtn = document.getElementById('onboardingSkipBtn');
+
+            if (showOnboardingLink) {
+                showOnboardingLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openOnboarding();
+                });
+            }
+
+            if (onboardingNextBtn) {
+                onboardingNextBtn.addEventListener('click', function() {
+                    if (onboardingStep < ONBOARDING_TOTAL_STEPS) {
+                        onboardingStep++;
+                        renderOnboardingStep();
+                    } else {
+                        closeOnboarding(true);
+                    }
+                });
+            }
+
+            if (onboardingSkipBtn) {
+                onboardingSkipBtn.addEventListener('click', function() {
+                    closeOnboarding(true);
+                });
+            }
+
+            // Volunteer username/password login form
+            const usernameLoginForm = document.getElementById('usernameLoginForm');
+            if (usernameLoginForm) {
+                usernameLoginForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+
+                    const username = document.getElementById('volunteerUsernameInput').value.trim().toLowerCase();
+                    const password = document.getElementById('volunteerPasswordInput').value;
+                    const alertEl = document.getElementById('usernameLoginAlert');
+
+                    if (!username || !password) {
+                        showAlert(alertEl, 'Vul gebruikersnaam en wachtwoord in');
+                        return;
+                    }
+
+                    showLoading('Inloggen...');
+
+                    try {
+                        const email = `${username}@ohkwallet-volunteers.local`;
+                        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                        const uid = userCredential.user.uid;
+
+                        const usersSnapshot = await database.ref('users').orderByChild('authUid').equalTo(uid).once('value');
+
+                        if (!usersSnapshot.exists()) {
+                            await auth.signOut();
+                            throw new Error('Geen vrijwilligersaccount gevonden voor deze inlog.');
+                        }
+
+                        const users = usersSnapshot.val();
+                        const userId = Object.keys(users)[0];
+                        const userData = users[userId];
+
+                        currentUser = { ...userData, id: userId };
+
+                        hideLoading();
+                        showContainer('dashboard');
+                        await initializeUserDashboard(currentUser);
+
+                    } catch (error) {
+                        hideLoading();
+                        console.error('Volunteer username login error:', error);
+                        let message = 'Inloggen mislukt: ongeldige gebruikersnaam of wachtwoord.';
+                        if (error.message && error.message.includes('Geen vrijwilligersaccount')) {
+                            message = error.message;
+                        }
+                        showAlert(alertEl, message);
+                    }
+                });
             }
 
             // User access form
@@ -2792,6 +3147,74 @@
                 });
             }
 
+            // One-time username/password setup for volunteers (does not touch admin accounts)
+            const setupUsernamePasswordForm = document.getElementById('setupUsernamePasswordForm');
+            if (setupUsernamePasswordForm) {
+                setupUsernamePasswordForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+
+                    const username = document.getElementById('setupUsername').value.trim().toLowerCase();
+                    const password = document.getElementById('setupPassword').value;
+                    const alertEl = document.getElementById('setupUsernamePasswordAlert');
+
+                    if (!currentUser) {
+                        showAlert(alertEl, 'Je bent niet ingelogd.');
+                        return;
+                    }
+
+                    if (!/^[a-z0-9._-]{3,}$/.test(username)) {
+                        showAlert(alertEl, 'Gebruikersnaam mag alleen letters, cijfers, punten, underscores en streepjes bevatten (min. 3 tekens).');
+                        return;
+                    }
+
+                    if (!password || password.length < 6) {
+                        showAlert(alertEl, 'Wachtwoord moet minstens 6 tekens lang zijn.');
+                        return;
+                    }
+
+                    showLoading('Instellen...');
+
+                    try {
+                        const email = `${username}@ohkwallet-volunteers.local`;
+
+                        // Creating this Firebase Auth account signs it in as the current
+                        // Firebase user. That's fine: the volunteer dashboard state is
+                        // already being driven by `currentUser`, not by auth.currentUser,
+                        // and this never touches the `admins/` node.
+                        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                        const uid = userCredential.user.uid;
+
+                        await database.ref(`users/${currentUser.id}`).update({
+                            authUid: uid,
+                            loginUsername: username
+                        });
+
+                        currentUser.authUid = uid;
+                        currentUser.loginUsername = username;
+
+                        hideLoading();
+
+                        document.getElementById('quickLoginNotSetUp').style.display = 'none';
+                        document.getElementById('quickLoginAlreadySetUp').style.display = 'block';
+                        document.getElementById('quickLoginCurrentUsername').textContent = username;
+
+                        showAlert(document.getElementById('accountSettingsSuccessAlert'), 'Gebruikersnaam en wachtwoord ingesteld! Je kan hiermee voortaan inloggen.');
+
+                    } catch (error) {
+                        hideLoading();
+                        console.error('Error setting up username/password login:', error);
+
+                        let message = 'Fout bij instellen: ' + error.message;
+                        if (error.code === 'auth/email-already-in-use') {
+                            message = 'Deze gebruikersnaam is al bezet. Kies een andere.';
+                        } else if (error.code === 'auth/weak-password') {
+                            message = 'Wachtwoord is te zwak (min. 6 tekens).';
+                        }
+                        showAlert(alertEl, message);
+                    }
+                });
+            }
+
             // Admin password modal handlers
             const closeAdminPasswordModal = document.getElementById('closeAdminPasswordModal');
             if (closeAdminPasswordModal) {
@@ -2964,6 +3387,22 @@
                         setTimeout(async () => {
                             await initializeAdminPanel(adminData);
                         }, 200);
+                    } else {
+                        // Not an admin — check whether this is a volunteer who set up
+                        // a username/password login (so their session survives a reload).
+                        const volunteerSnapshot = await database.ref('users').orderByChild('authUid').equalTo(user.uid).once('value');
+                        if (volunteerSnapshot.exists()) {
+                            const usersData = volunteerSnapshot.val();
+                            const volunteerId = Object.keys(usersData)[0];
+                            const volunteerData = usersData[volunteerId];
+
+                            if (!currentUser || currentUser.id !== volunteerId) {
+                                console.log('✅ Volunteer session restored for:', user.email);
+                                currentUser = { ...volunteerData, id: volunteerId };
+                                showContainer('dashboard');
+                                await initializeUserDashboard(currentUser);
+                            }
+                        }
                     }
                 } else {
                     console.log('🔓 Auth state changed: User logged out');
@@ -2996,10 +3435,12 @@
                         console.log('❌ Auto-login failed:', error.message);
                         localStorage.removeItem('ohk_user_code');
                         showUserAccess();
+                        maybeShowOnboarding();
                     }
                 }, 1000);
             } else {
                 showUserAccess();
+                maybeShowOnboarding();
             }
             
             console.log('🎉 OHK Wallet setup complete!');
