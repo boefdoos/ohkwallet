@@ -609,8 +609,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(17, 17, 17, 0.82);
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
+            overflow: hidden;
         }
 
         .modal-content {
@@ -620,7 +619,9 @@
             border-radius: var(--border-radius);
             width: calc(100% - 40px);
             max-width: 600px;
-            overflow-y: visible;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             box-shadow: 0 20px 25px rgba(0, 0, 0, 0.2);
             position: relative;
         }
@@ -1028,6 +1029,8 @@
                 margin: 10px auto;
                 width: calc(100% - 20px);
                 max-height: calc(100vh - 20px);
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
                 padding: 20px 16px;
             }
 
@@ -1861,12 +1864,42 @@
             }
         }
 
+        let bodyScrollLockY = 0;
+
+        function lockBodyScroll() {
+            if (document.body.style.position === 'fixed') return; // al vergrendeld
+            bodyScrollLockY = window.scrollY || window.pageYOffset || 0;
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${bodyScrollLockY}px`;
+            document.body.style.left = '0';
+            document.body.style.right = '0';
+            document.body.style.width = '100%';
+        }
+
+        function unlockBodyScroll() {
+            if (document.body.style.position !== 'fixed') return;
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.left = '';
+            document.body.style.right = '';
+            document.body.style.width = '';
+            window.scrollTo(0, bodyScrollLockY);
+        }
+
+        function anyModalOpen() {
+            return Array.from(document.querySelectorAll('.modal')).some(m => m.style.display === 'block');
+        }
+
         function showModal(modalId) {
             document.getElementById(modalId).style.display = 'block';
+            lockBodyScroll();
         }
 
         function hideModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
+            if (!anyModalOpen()) {
+                unlockBodyScroll();
+            }
         }
 
         function generateUserCode() {
@@ -3443,7 +3476,7 @@
                 const modals = document.querySelectorAll('.modal');
                 modals.forEach(modal => {
                     if (event.target === modal) {
-                        modal.style.display = 'none';
+                        hideModal(modal.id);
                     }
                 });
             });
