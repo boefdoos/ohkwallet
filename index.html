@@ -620,7 +620,9 @@
             width: calc(100% - 40px);
             max-width: 600px;
             max-height: calc(100vh - 40px);
+            max-height: calc(100dvh - 40px);
             overflow-y: auto;
+            overscroll-behavior: contain;
             -webkit-overflow-scrolling: touch;
             box-shadow: 0 20px 25px rgba(0, 0, 0, 0.2);
             position: relative;
@@ -1029,7 +1031,9 @@
                 margin: 10px auto;
                 width: calc(100% - 20px);
                 max-height: calc(100vh - 20px);
+                max-height: calc(100dvh - 20px);
                 overflow-y: auto;
+                overscroll-behavior: contain;
                 -webkit-overflow-scrolling: touch;
                 padding: 20px 16px;
             }
